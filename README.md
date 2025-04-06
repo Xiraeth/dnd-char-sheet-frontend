@@ -1,3 +1,3 @@
-# NextJS Skeleton files
+# Dungeons & Dragons Character sheet app
 
-So I don't do this again and again. :)
+frontend
