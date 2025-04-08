@@ -33,9 +33,23 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Initialize from localStorage after mount
     const savedUser = localStorage.getItem("dnd-char-sheet-user");
-    if (savedUser) {
+
+    // Check if the user is authenticated via the custom header
+    const authStatus = document
+      .querySelector('meta[name="auth-status"]')
+      ?.getAttribute("content");
+
+    // If the user is not authenticated according to the server but exists in localStorage,
+    // clear the user from localStorage
+    if (authStatus === "unauthenticated" && savedUser) {
+      console.log(
+        "User is not authenticated according to server, clearing from localStorage"
+      );
+      localStorage.removeItem("dnd-char-sheet-user");
+    } else if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
+
     setIsLoading(false);
   }, []);
 

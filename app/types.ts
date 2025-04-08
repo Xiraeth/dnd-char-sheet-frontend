@@ -19,23 +19,26 @@ export interface Attack {
   description?: string;
 }
 
-export interface SpellComponents {
-  verbal: boolean;
-  somatic: boolean;
-  material?: string[];
-}
-
 export interface Spell {
   source?: string;
   name: string;
   level: number;
   school: string;
-  castingTime: string;
+  casting_time: string;
   range: string;
-  components: SpellComponents;
+  components: string[];
   duration: string;
-  description: string;
-  descriptionAtHigherLevels?: string;
+  desc: string;
+  higher_level: string[];
+  damage?: {
+    damage_type: {
+      name: string;
+    };
+    damage_at_slot_level?: {
+      damage: string;
+      level: number;
+    }[];
+  };
 }
 
 export interface Feat {
@@ -123,9 +126,15 @@ export interface DeathSaves {
   failure?: number;
 }
 
+export interface Item {
+  name: string;
+  description: string;
+}
+
 export interface Inventory {
   gold?: number;
-  items?: string[];
+  items?: Item[];
+  weight?: number;
 }
 
 export interface Appearance {
@@ -135,13 +144,12 @@ export interface Appearance {
   eyes?: string;
   hair?: string;
   skin?: string;
-  description?: string;
   photo?: string;
 }
 
 export interface Spellcasting {
   spellcastingClass?: string;
-  spellcastingAbility?: string;
+  spellcastingAbility?: keyof CharacterAbilities;
   spellSaveDC?: number;
   spellAttackBonus?: number;
 }
