@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SpellSearch } from "@/app/create-character/components/SpellSearch";
 import { X } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import CustomSpellForm from "@/app/create-character/components/CustomSpellForm";
 
 const SelectedSpellBlock = ({
   spell,
@@ -26,7 +27,7 @@ const SelectedSpellBlock = ({
 };
 
 const SpellsCard = () => {
-  // const [isCreateSpellFormOpen, setIsCreateSpellFormOpen] = useState(false);
+  const [isCreateSpellFormOpen, setIsCreateSpellFormOpen] = useState(false);
   const [limitQueryToClass, setLimitQueryToClass] = useState(true);
 
   const { watch, setValue } = useFormContext<Character>();
@@ -40,7 +41,7 @@ const SpellsCard = () => {
           Spells{" "}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pb-0 mb-4">
         <div className="flex gap-2 items-center">
           <p className="italic text-sm text-black/60">
             Limit search to selected class
@@ -66,13 +67,18 @@ const SpellsCard = () => {
           ))}
         </div>
       </CardContent>
+
+      {isCreateSpellFormOpen && (
+        <CustomSpellForm setIsCreateSpellFormOpen={setIsCreateSpellFormOpen} />
+      )}
+
       <Button
         type="button"
         className="w-full"
         variant="outline"
-        // onClick={() => {
-        //   setIsCreateSpellFormOpen(true);
-        // }}
+        onClick={() => {
+          setIsCreateSpellFormOpen(true);
+        }}
       >
         Add a Spell
       </Button>

@@ -15,14 +15,14 @@ export const ALIGNMENTS = [
 export const DICE_OPTIONS = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"];
 
 export const SPELL_SCHOOLS = [
-  "Abjuration",
-  "Conjuration",
-  "Divination",
-  "Enchantment",
-  "Evocation",
-  "Illusion",
-  "Necromancy",
-  "Transmutation",
+  { label: "Abjuration", value: "abjuration" },
+  { label: "Conjuration", value: "conjuration" },
+  { label: "Divination", value: "divination" },
+  { label: "Enchantment", value: "enchantment" },
+  { label: "Evocation", value: "evocation" },
+  { label: "Illusion", value: "illusion" },
+  { label: "Necromancy", value: "necromancy" },
+  { label: "Transmutation", value: "transmutation" },
 ];
 
 export const ABILITIES = [
@@ -189,4 +189,21 @@ export const CHARISMA_SKILLS = [
   { label: "Intimidation", value: "intimidation", ability: "charisma" },
   { label: "Performance", value: "performance", ability: "charisma" },
   { label: "Persuasion", value: "persuasion", ability: "charisma" },
+];
+
+export const DAMAGE_TYPES = [
+  { label: "None", value: "none" },
+  { label: "Acid", value: "acid" },
+  { label: "Cold", value: "cold" },
+  { label: "Fire", value: "fire" },
+  { label: "Lightning", value: "lightning" },
+  { label: "Poison", value: "poison" },
+  { label: "Thunder", value: "thunder" },
+  { label: "Necrotic", value: "necrotic" },
+  { label: "Psychic", value: "psychic" },
+  { label: "Radiant", value: "radiant" },
+  { label: "Slashing", value: "slashing" },
+  { label: "Bludgeoning", value: "bludgeoning" },
+  { label: "Piercing", value: "piercing" },
+  { label: "Force", value: "force" },
 ];

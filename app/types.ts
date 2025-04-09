@@ -22,21 +22,28 @@ export interface Attack {
 export interface Spell {
   source?: string;
   name: string;
-  level: number;
-  school: string;
+  level: string;
+  school: {
+    name: string;
+    desc?: string;
+  };
   casting_time: string;
   range: string;
   components: string[];
   duration: string;
   desc: string;
   higher_level: string[];
+  healing_at_slot_level?: {
+    healing: string;
+    level: string;
+  }[];
   damage?: {
     damage_type: {
       name: string;
     };
     damage_at_slot_level?: {
       damage: string;
-      level: number;
+      level: string;
     }[];
   };
 }
