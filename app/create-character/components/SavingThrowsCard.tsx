@@ -49,12 +49,13 @@ const SavingThrowsCard = () => {
             modifier > 0
               ? "text-green-500"
               : modifier < 0
-              ? "text-red-500"
+              ? "text-red-600"
               : "text-black";
 
           return (
             <div
-              className="flex gap-2 justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+              className="flex gap-2 justify-between w-full border-[1px] border-black/15 rounded-lg px-4 py-2 
+              shadow-card"
               key={ability.value}
             >
               <p>{ability.label}</p>

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DAMAGE_TYPES, SPELL_SCHOOLS } from "@/app/constants";
-
+import { Textarea } from "@/components/ui/textarea";
 const CustomSpellForm = ({
   setIsCreateSpellFormOpen,
 }: {
@@ -45,6 +45,7 @@ const CustomSpellForm = ({
       damage_at_slot_level: [],
     },
   });
+
   const [errors, setErrors] = useState<Partial<Spell>>({});
 
   const validateSpell = () => {
@@ -111,19 +112,19 @@ const CustomSpellForm = ({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="name">
-          Name <span className="text-red-500">*</span>
+          Name <span className="text-red-600">*</span>
         </label>
         <Input
           id="name"
           value={spell.name}
           onChange={(e) => setSpell({ ...spell, name: e.target.value })}
         />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+        {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="level">
-          Level <span className="text-red-500">*</span>
+          Level <span className="text-red-600">*</span>
         </label>
         <Input
           id="level"
@@ -146,12 +147,12 @@ const CustomSpellForm = ({
             })
           }
         />
-        {errors.level && <p className="text-red-500 text-sm">{errors.level}</p>}
+        {errors.level && <p className="text-red-600 text-sm">{errors.level}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="school">
-          School <span className="text-red-500">*</span>
+          School <span className="text-red-600">*</span>
         </label>
         <Select
           onValueChange={(value) =>
@@ -176,13 +177,13 @@ const CustomSpellForm = ({
           </SelectContent>
         </Select>
         {errors.school && (
-          <p className="text-red-500 text-sm">{errors.school.name}</p>
+          <p className="text-red-600 text-sm">{errors.school.name}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="casting_time">
-          Casting Time <span className="text-red-500">*</span>
+          Casting Time <span className="text-red-600">*</span>
         </label>
         <Input
           id="casting_time"
@@ -190,25 +191,25 @@ const CustomSpellForm = ({
           onChange={(e) => setSpell({ ...spell, casting_time: e.target.value })}
         />
         {errors.casting_time && (
-          <p className="text-red-500 text-sm">{errors.casting_time}</p>
+          <p className="text-red-600 text-sm">{errors.casting_time}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="range">
-          Range <span className="text-red-500">*</span>
+          Range <span className="text-red-600">*</span>
         </label>
         <Input
           id="range"
           value={spell.range}
           onChange={(e) => setSpell({ ...spell, range: e.target.value })}
         />
-        {errors.range && <p className="text-red-500 text-sm">{errors.range}</p>}
+        {errors.range && <p className="text-red-600 text-sm">{errors.range}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="duration">
-          Duration <span className="text-red-500">*</span>
+          Duration <span className="text-red-600">*</span>
         </label>
         <Input
           id="duration"
@@ -216,7 +217,7 @@ const CustomSpellForm = ({
           onChange={(e) => setSpell({ ...spell, duration: e.target.value })}
         />
         {errors.duration && (
-          <p className="text-red-500 text-sm">{errors.duration}</p>
+          <p className="text-red-600 text-sm">{errors.duration}</p>
         )}
       </div>
 
@@ -288,33 +289,33 @@ const CustomSpellForm = ({
 
       <div className="flex flex-col gap-1 md:col-span-2">
         <label htmlFor="components">
-          Components <span className="text-red-500">*</span>
+          Components <span className="text-red-600">*</span>
         </label>
         <ToggleGroup
           type="multiple"
           onValueChange={(value) => setSpell({ ...spell, components: value })}
-          className="border-[1px] border-gray-300 rounded-md"
+          className="border-[1px] border-black/40 rounded-md"
         >
           <ToggleGroupItem value="verbal">Verbal</ToggleGroupItem>
           <ToggleGroupItem value="somatic">Somatic</ToggleGroupItem>
           <ToggleGroupItem value="material">Material</ToggleGroupItem>
         </ToggleGroup>
         {errors.components && (
-          <p className="text-red-500 text-sm">{errors.components.join("")}</p>
+          <p className="text-red-600 text-sm">{errors.components.join("")}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1 md:col-span-2">
         <label htmlFor="desc">
-          Description <span className="text-red-500">*</span>
+          Description <span className="text-red-600">*</span>
         </label>
-        <textarea
+        <Textarea
           id="desc"
           className="min-h-[100px] p-2 border rounded-md"
           value={spell.desc}
           onChange={(e) => setSpell({ ...spell, desc: e.target.value })}
         />
-        {errors.desc && <p className="text-red-500 text-sm">{errors.desc}</p>}
+        {errors.desc && <p className="text-red-600 text-sm">{errors.desc}</p>}
       </div>
 
       <div className="flex flex-col gap-1 md:col-span-2">

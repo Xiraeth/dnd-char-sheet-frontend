@@ -46,7 +46,7 @@ const BasicInfoCard = ({
             })}
           />
           {errors?.basicInfo?.name && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.name.message}
             </p>
           )}
@@ -103,7 +103,7 @@ const BasicInfoCard = ({
             </SelectContent>
           </Select>
           {errors?.basicInfo?.class && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.class.message}
             </p>
           )}
@@ -112,7 +112,7 @@ const BasicInfoCard = ({
         <div className="flex flex-col gap-2">
           <RaceSearch />
           {errors?.basicInfo?.race && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.race.message}
             </p>
           )}
@@ -156,7 +156,7 @@ const BasicInfoCard = ({
             })}
           />
           {errors?.basicInfo?.level && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.level.message}
             </p>
           )}
@@ -181,7 +181,7 @@ const BasicInfoCard = ({
             </SelectContent>
           </Select>
           {errors?.basicInfo?.alignment && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.alignment.message}
             </p>
           )}
@@ -195,7 +195,7 @@ const BasicInfoCard = ({
             })}
           />
           {errors?.basicInfo?.background && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.background.message}
             </p>
           )}
@@ -209,7 +209,7 @@ const BasicInfoCard = ({
             })}
           />
           {errors?.basicInfo?.playerName && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.basicInfo.playerName.message}
             </p>
           )}

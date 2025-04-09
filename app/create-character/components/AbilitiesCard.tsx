@@ -35,7 +35,7 @@ const AbilitiesCard = () => {
             modifier > 0
               ? "text-green-500"
               : modifier < 0
-              ? "text-red-500"
+              ? "text-red-600"
               : "text-black";
 
           return (
@@ -110,7 +110,7 @@ const AbilitiesCard = () => {
               {errors?.abilities?.[
                 ability.value as keyof CharacterAbilities
               ] && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-600 text-sm">
                   {
                     errors.abilities[ability.value as keyof CharacterAbilities]
                       ?.message

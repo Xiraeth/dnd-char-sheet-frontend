@@ -22,6 +22,15 @@ import SpellSlotsCard from "@/app/create-character/components/SpellSlotsCard";
 import { useState } from "react";
 import SpellsCard from "@/app/create-character/components/SpellsCard";
 import { Switch } from "@/components/ui/switch";
+import PersonalityCard from "@/app/create-character/components/PersonalityCard";
+import ProfsAndLangsCard from "@/app/create-character/components/ProfsAndLangsCard";
+import { getModifier, getProficiencyBonus } from "@/lib/utils";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import FeaturesAndTraitsCard from "@/app/create-character/components/FeaturesAndTraits";
+import AttacksCard from "@/app/create-character/components/Attacks";
+import FeatsCard from "@/app/create-character/components/FeatsCard";
 
 const defaultValues: Partial<Character> = {
   savingThrows: ABILITIES.reduce((acc, ability) => {
@@ -47,15 +56,57 @@ const defaultValues: Partial<Character> = {
 
 const CreateCharacter = () => {
   const [isSpellcaster, setIsSpellcaster] = useState(false);
+  const router = useRouter();
 
   const methods = useForm<Character>({
     defaultValues,
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit, watch, setError, setValue, clearErrors } = methods;
+  const race = watch("basicInfo.race");
 
-  const onSubmit = (data: Character) => {
-    console.log(data);
+  const onSubmit = async (data: Character) => {
+    const perceptionModifier = getModifier(data.abilities.wisdom);
+    const isProficientInPerception = data.skills.perception.hasProficiency;
+    const hitpoints = data.stats.hitPointsTotal;
+    const level = data.basicInfo.level;
+    const profBonus = isProficientInPerception
+      ? getProficiencyBonus(data.basicInfo.level)
+      : 0;
+
+    const passiveWisdom = isProficientInPerception
+      ? perceptionModifier + 10 + profBonus
+      : perceptionModifier + 10;
+
+    setValue("passiveWisdom", passiveWisdom);
+    setValue("stats.hitPointsCurrent", hitpoints);
+    setValue("stats.hitDice.remaining", level);
+    setValue("stats.hitDice.total", level);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/create-character`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/");
+        toast.success("Character created successfully");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.error ||
+            error.response?.data?.message ||
+            "An error occurred"
+        );
+      }
+
+      toast.error("Server is probably down.");
+    }
   };
 
   const characterClass = watch("basicInfo.class");
@@ -65,7 +116,7 @@ const CreateCharacter = () => {
       <BackButton url="/" />
       <p className="text-2xl font-bold text-center">Create a new character</p>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 ">
           {/* basic info */}
           <BasicInfoCard setIsSpellcaster={setIsSpellcaster} />
 
@@ -81,11 +132,14 @@ const CreateCharacter = () => {
           {/* stats */}
           <StatsCard />
 
-          {/* appearance */}
-          <AppearanceCard />
+          {/* attacks */}
+          <AttacksCard />
 
-          {/* inventory */}
-          <InventoryCard />
+          {/* features and traits */}
+          <FeaturesAndTraitsCard />
+
+          {/* feats */}
+          <FeatsCard />
 
           {/* set spellcaster for custom class */}
           {characterClass?.toLowerCase() === "custom" && (
@@ -104,7 +158,31 @@ const CreateCharacter = () => {
           {/* spells */}
           {isSpellcaster && <SpellsCard />}
 
-          <Button type="submit" className="w-full">
+          {/* proficiencies and languages */}
+          <ProfsAndLangsCard />
+
+          {/* inventory */}
+          <InventoryCard />
+
+          {/* appearance */}
+          <AppearanceCard />
+
+          {/* personality traits */}
+          <PersonalityCard />
+
+          <Button
+            type="submit"
+            className="w-full"
+            onClick={() => {
+              if (!race?.length) {
+                setError("basicInfo.race", {
+                  message: "Race is required",
+                });
+              } else {
+                clearErrors("basicInfo.race");
+              }
+            }}
+          >
             Create Character
           </Button>
         </form>

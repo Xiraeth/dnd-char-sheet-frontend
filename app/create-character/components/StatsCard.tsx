@@ -35,7 +35,7 @@ const StatsCard = () => {
             })}
           />
           {errors?.stats?.initiative && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.stats.initiative.message}
             </p>
           )}
@@ -50,7 +50,7 @@ const StatsCard = () => {
             })}
           />
           {errors?.stats?.speed && (
-            <p className="text-red-500 text-sm">{errors.stats.speed.message}</p>
+            <p className="text-red-600 text-sm">{errors.stats.speed.message}</p>
           )}
         </div>
 
@@ -63,7 +63,7 @@ const StatsCard = () => {
             })}
           />
           {errors?.stats?.armorClass && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.stats.armorClass.message}
             </p>
           )}
@@ -78,7 +78,7 @@ const StatsCard = () => {
             })}
           />
           {errors?.stats?.hitPointsTotal && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.stats.hitPointsTotal.message}
             </p>
           )}
@@ -106,7 +106,7 @@ const StatsCard = () => {
             </SelectContent>
           </Select>
           {errors?.stats?.hitDice?.diceType && (
-            <p className="text-red-500 text-sm">
+            <p className="text-red-600 text-sm">
               {errors.stats.hitDice.diceType.message}
             </p>
           )}

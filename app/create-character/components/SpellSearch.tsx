@@ -21,9 +21,14 @@ import { GET_SPELLS } from "@/lib/apollo/operations/queries";
 import { useQuery } from "@apollo/client";
 import { Character, Spell } from "@/app/types";
 import SearchLoading from "./SearchLoading";
+
+type SpellTypeFromApi = Omit<Spell, "desc"> & {
+  desc: string[];
+};
+
 type SpellObject = {
   label: string;
-  value: Spell;
+  value: SpellTypeFromApi;
 };
 
 export function SpellSearch({
@@ -77,10 +82,10 @@ export function SpellSearch({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between text-gray-500"
+          variant="subtle"
+          className="w-full justify-between"
         >
           Search for a spell
           <ChevronsUpDown className="opacity-50" />
@@ -117,7 +122,12 @@ export function SpellSearch({
                             remove(indexToRemove);
                           }
                         } else {
-                          append(spell.value);
+                          const joinedSpellDescription =
+                            spell.value.desc.join(", ");
+                          append({
+                            ...spell.value,
+                            desc: joinedSpellDescription,
+                          });
                         }
 
                         setOpen(false);

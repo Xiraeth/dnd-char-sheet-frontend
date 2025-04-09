@@ -51,7 +51,10 @@ const SpellsCard = () => {
             onCheckedChange={setLimitQueryToClass}
           />
         </div>
+
+        {/* search spells from dnd 5e api (2014) */}
         <SpellSearch limitQueryToClass={limitQueryToClass} />
+
         <div className="flex flex-wrap gap-2">
           {spells?.map((spell) => (
             <SelectedSpellBlock
@@ -66,22 +69,21 @@ const SpellsCard = () => {
             />
           ))}
         </div>
+
+        <Button
+          type="button"
+          className="w-full"
+          onClick={() => {
+            setIsCreateSpellFormOpen(true);
+          }}
+        >
+          Add a Spell
+        </Button>
       </CardContent>
 
       {isCreateSpellFormOpen && (
         <CustomSpellForm setIsCreateSpellFormOpen={setIsCreateSpellFormOpen} />
       )}
-
-      <Button
-        type="button"
-        className="w-full"
-        variant="outline"
-        onClick={() => {
-          setIsCreateSpellFormOpen(true);
-        }}
-      >
-        Add a Spell
-      </Button>
     </Card>
   );
 };

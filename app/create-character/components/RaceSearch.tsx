@@ -33,7 +33,10 @@ export function RaceSearch() {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger
+        asChild
+        className="bg-transparent border-black/40 hover:bg-black/5"
+      >
         <Button
           variant="outline"
           role="combobox"

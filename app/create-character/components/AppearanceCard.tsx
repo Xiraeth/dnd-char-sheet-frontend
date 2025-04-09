@@ -34,7 +34,7 @@ const AppearanceCard = () => {
         />
 
         {errors?.appearance?.photo && (
-          <p className="text-red-500 text-sm">
+          <p className="text-red-600 text-sm">
             {errors.appearance.photo.message}
           </p>
         )}

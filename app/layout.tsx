@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="light">
       <head>
         <meta name="auth-status" content="loading" />
         <Script id="auth-status-script" strategy="beforeInteractive">
@@ -59,7 +59,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} min-h-screen bg-background-dark`}
+        className={`bg-bgTexture bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} min-h-screen bg-background-dark`}
         suppressHydrationWarning
       >
         <ThemeProvider>

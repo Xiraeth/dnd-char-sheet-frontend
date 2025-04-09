@@ -42,7 +42,7 @@ const SkillsCard = () => {
       <CardContent className="space-y-6">
         {/* Strength Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center">Strength</p>
+          <p className="text-base font-semibold mb-2 text-center ">Strength</p>
           <div className="lg:w-[350px] w-full mx-auto">
             {STRENGTH_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
@@ -73,12 +73,12 @@ const SkillsCard = () => {
                   modifier > 0
                     ? "text-green-500"
                     : modifier < 0
-                    ? "text-red-500"
+                    ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
                     key={skill.value}
                   >
                     <p>{skill.label}</p>
@@ -184,12 +184,12 @@ const SkillsCard = () => {
                   modifier > 0
                     ? "text-green-500"
                     : modifier < 0
-                    ? "text-red-500"
+                    ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
                     key={skill.value}
                   >
                     <p>{skill.label}</p>
@@ -297,12 +297,12 @@ const SkillsCard = () => {
                   modifier > 0
                     ? "text-green-500"
                     : modifier < 0
-                    ? "text-red-500"
+                    ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
                     key={skill.value}
                   >
                     <p>{skill.label}</p>
@@ -408,12 +408,12 @@ const SkillsCard = () => {
                   modifier > 0
                     ? "text-green-500"
                     : modifier < 0
-                    ? "text-red-500"
+                    ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
                     key={skill.value}
                   >
                     <p>{skill.label}</p>
@@ -519,12 +519,12 @@ const SkillsCard = () => {
                   modifier > 0
                     ? "text-green-500"
                     : modifier < 0
-                    ? "text-red-500"
+                    ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-md"
+                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
                     key={skill.value}
                   >
                     <p>{skill.label}</p>

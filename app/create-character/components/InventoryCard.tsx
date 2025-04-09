@@ -51,7 +51,7 @@ const InventoryCard = () => {
                 />
 
                 <Trash
-                  className="min-w-[20px] max-w-[20px] w-[20px] cursor-pointer text-red-500"
+                  className="min-w-[20px] max-w-[20px] w-[20px] cursor-pointer text-red-600"
                   onClick={() => remove(index)}
                 />
               </div>
@@ -60,8 +60,7 @@ const InventoryCard = () => {
 
           <Button
             type="button"
-            className="w-full text-black"
-            variant="outline"
+            className="w-full"
             onClick={() => append({ name: "", description: "" } as Item)}
           >
             Add Item

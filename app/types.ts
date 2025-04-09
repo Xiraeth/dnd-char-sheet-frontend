@@ -11,12 +11,13 @@ export interface UserCredentials {
 
 export interface Attack {
   name: string;
-  atkBonus: number;
-  damage: string;
-  type: string;
-  range: string;
-  reach: string;
+  attackRoll?: string;
+  damageRoll?: string;
+  damageType?: string;
+  range?: string;
   description?: string;
+  abilitySave?: string;
+  areaOfEffect?: string;
 }
 
 export interface Spell {
@@ -51,6 +52,7 @@ export interface Spell {
 export interface Feat {
   name: string;
   description: string;
+  level: string;
 }
 
 export interface CharacterBasicInfo {
@@ -80,9 +82,9 @@ export interface CharacterStats {
   hitPointsTotal: number;
   hitPointsTemp?: number;
   hitDice: {
-    remaining: number;
+    remaining?: number;
     diceType: number;
-    total: number;
+    total?: number;
   };
 }
 
@@ -191,15 +193,15 @@ export interface Character {
   attacks?: Attack[];
   feats?: Feat[];
   spells?: Spell[];
-  personalityTraits?: string[];
-  ideals?: string[];
-  bonds?: string[];
-  flaws?: string[];
-  otherProficienciesAndLanguages?: string[];
+  personalityTraits?: string;
+  ideals?: string;
+  bonds?: string;
+  flaws?: string;
+  otherProficiencies?: string;
+  languages?: string;
   inspiration?: number;
   characterBackstory?: string;
   notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  proficiencyBonus?: number;
 }

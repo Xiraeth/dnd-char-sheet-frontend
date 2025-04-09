@@ -76,7 +76,7 @@ const Login = () => {
                 })}
               />
               {errors.username && (
-                <p className="text-red-500 text-sm pl-2">
+                <p className="text-red-600 text-sm pl-2">
                   {errors.username.message}
                 </p>
               )}
@@ -90,16 +90,16 @@ const Login = () => {
                 })}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm pl-2">
+                <p className="text-red-600 text-sm pl-2">
                   {errors.password.message}
                 </p>
               )}
             </div>
             <Button>Log In</Button>
             {error && (
-              <p className="text-red-500 text-sm pl-2 text-center">{error}</p>
+              <p className="text-red-600 text-sm pl-2 text-center">{error}</p>
             )}
-            <Separator className="w-5/6 mx-auto" />
+            <Separator className="w-5/6 mx-auto bg-black/40" />
 
             <p className="text-center">
               Don&apos;t have an account?{" "}
