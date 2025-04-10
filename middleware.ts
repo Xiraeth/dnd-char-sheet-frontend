@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const publicPaths = ["/login", "/signup"];
+const protectedPaths = ["/characters"];
+
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token");
-  const isPublicPath =
-    request.nextUrl.pathname === "/login" ||
-    request.nextUrl.pathname === "/signup";
-
+  const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
+  const isProtectedPath = protectedPaths.includes(request.nextUrl.pathname);
   // Create a response object
   const response = NextResponse.next();
 
@@ -20,6 +21,10 @@ export function middleware(request: NextRequest) {
   // Redirect if authenticated user tries to access public paths
   if (token && isPublicPath) {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (!token && isProtectedPath) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return response;

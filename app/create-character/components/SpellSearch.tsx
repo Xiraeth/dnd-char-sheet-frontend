@@ -20,7 +20,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { GET_SPELLS } from "@/lib/apollo/operations/queries";
 import { useQuery } from "@apollo/client";
 import { Character, Spell } from "@/app/types";
-import SearchLoading from "./SearchLoading";
+import SearchLoading from "./LoadingDots";
 
 type SpellTypeFromApi = Omit<Spell, "desc"> & {
   desc: string[];
