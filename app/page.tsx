@@ -40,8 +40,8 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-xl sm:text-4xl font-bold text-text-dark text-red-600 font-montserrat text-center">
+      <div className="h-screen flex flex-col items-center justify-center gap-4 font-bookInsanity">
+        <p className="text-xl sm:text-4xl font-bold text-text-dark text-red-600 text-center">
           D&D Character Sheet
         </p>
         <div className="flex gap-4">
@@ -69,8 +69,8 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center gap-4">
-      <p className="text-xl sm:text-4xl font-bold text-text-dark text-red-600 font-montserrat text-center">
+    <div className="h-screen flex flex-col items-center justify-center gap-4 font-bookInsanity">
+      <p className="text-xl sm:text-4xl font-bold text-text-dark text-red-600 text-center">
         Welcome {user?.username}
       </p>
       <div className="flex gap-4">

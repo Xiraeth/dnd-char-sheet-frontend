@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { UserProvider } from "./UserProvider";
 import { ApolloProvider } from "@/lib/apollo/ApolloProvider";
 import Script from "next/script";
+import localFont from "next/font/local";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,48 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
+const bookinsanity = localFont({
+  src: [
+    {
+      path: "../public/fonts/fantasyFonts/BookinsanityRemakeRegular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/fantasyFonts/BookinsanityRemakeBold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/fantasyFonts/BookinsanityRemakeItalic.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/fantasyFonts/BookinsanityRemakeSmbldItlc.otf",
+      weight: "700",
+      style: "italic",
+    },
+  ],
+  variable: "--font-bookinsanity",
+});
+
+const scalySans = localFont({
+  src: [
+    {
+      path: "../public/fonts/fantasyFonts/Scaly Sans.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-scaly-sans",
+});
+
+const mrEaves = localFont({
+  src: "../public/fonts/fantasyFonts/Mr Eaves Small Caps.otf",
+  variable: "--font-mr-eaves",
+});
+
 export const metadata: Metadata = {
   title: "D&D Character Sheet",
   description: "Create and manage your D&D characters",
@@ -29,6 +72,32 @@ export const metadata: Metadata = {
     icon: "./favicon.ico",
   },
 };
+
+// create multiple fonts
+// const roboto = localFont({
+//   src: [
+//     {
+//       path: './Roboto-Regular.woff2',
+//       weight: '400',
+//       style: 'normal',
+//     },
+//     {
+//       path: './Roboto-Italic.woff2',
+//       weight: '400',
+//       style: 'italic',
+//     },
+//     {
+//       path: './Roboto-Bold.woff2',
+//       weight: '700',
+//       style: 'normal',
+//     },
+//     {
+//       path: './Roboto-BoldItalic.woff2',
+//       weight: '700',
+//       style: 'italic',
+//     },
+//   ],
+// })
 
 export default function RootLayout({
   children,
@@ -59,7 +128,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`bg-bgTexture bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} min-h-screen bg-background-dark`}
+        className={`bg-bgTextureDarkened bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${bookinsanity.variable} ${scalySans.variable} ${mrEaves.variable} min-h-screen`}
         suppressHydrationWarning
       >
         <ThemeProvider>

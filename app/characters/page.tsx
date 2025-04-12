@@ -7,7 +7,7 @@ import CharacterCard from "@/components/CharacterCard";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 type CharactersResponse = {
   success: boolean;
   count: number;
@@ -16,6 +16,7 @@ type CharactersResponse = {
 
 const Characters = () => {
   const { user } = useUser();
+  const router = useRouter();
   const [characters, setCharacters] = useState<CharactersResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +53,12 @@ const Characters = () => {
     }
   }, [user]);
 
+  const handleCharacterClick = (characterId?: string) => {
+    if (characterId) {
+      router.push(`/characters/${characterId}`);
+    }
+  };
+
   if (isLoading)
     return (
       <div className="h-screen flex flex-col items-center justify-center">
@@ -69,11 +76,15 @@ const Characters = () => {
   return (
     <>
       <BackButton url="/" />
-      <div className="h-screen flex flex-col items-center justify-center">
+      <div className="h-screen flex flex-col items-center justify-center font-bookInsanity">
         <h1 className="text-2xl font-bold mb-4">Your characters</h1>
         {characters?.data &&
           characters?.data?.map((char) => (
-            <CharacterCard key={char._id} character={char} />
+            <CharacterCard
+              key={char._id}
+              character={char}
+              onClick={handleCharacterClick}
+            />
           ))}
       </div>
     </>

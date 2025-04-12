@@ -207,3 +207,11 @@ export const DAMAGE_TYPES = [
   { label: "Piercing", value: "piercing" },
   { label: "Force", value: "force" },
 ];
+
+export const SKILLS_PER_ABILITY = {
+  strength: STRENGTH_SKILLS,
+  dexterity: DEXTERITY_SKILLS,
+  intelligence: INTELLIGENCE_SKILLS,
+  wisdom: WISDOM_SKILLS,
+  charisma: CHARISMA_SKILLS,
+};

@@ -23,7 +23,7 @@ const FeaturesAndTraitsCard = () => {
   const [isCreateFeatureFormOpen, setIsCreateFeatureFormOpen] = useState(false);
   const [feature, setFeature] = useState<Feature>(DEFAULT_FEATURE);
   const [errors, setErrors] = useState<Partial<Feature>>({});
-  const features = watch("features");
+  const featuresAndTraits = watch("featuresAndTraits");
 
   const validateFeature = () => {
     const newErrors: Partial<Feature> = {};
@@ -50,7 +50,7 @@ const FeaturesAndTraitsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      setValue("features", [...(features || []), feature]);
+      setValue("featuresAndTraits", [...(featuresAndTraits || []), feature]);
       setFeature(DEFAULT_FEATURE);
       setIsCreateFeatureFormOpen(false);
     }
@@ -63,8 +63,8 @@ const FeaturesAndTraitsCard = () => {
 
   const handleDelete = (index: number) => {
     setValue(
-      "features",
-      features?.filter((feature: Feature, i: number) => i !== index)
+      "featuresAndTraits",
+      featuresAndTraits?.filter((feature: Feature, i: number) => i !== index)
     );
   };
 
@@ -75,7 +75,7 @@ const FeaturesAndTraitsCard = () => {
       </CardHeader>
       <CardContent>
         <div className="flex gap-2 flex-wrap">
-          {features?.map((feature: Feature, index: number) => (
+          {featuresAndTraits?.map((feature: Feature, index: number) => (
             <div
               key={index}
               className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4"

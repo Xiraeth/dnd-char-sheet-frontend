@@ -9,13 +9,10 @@
   --background: #fafafa;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
     --radius: 0.5rem;
+    --dnd-red: 109 0 0;
   }
 }
 

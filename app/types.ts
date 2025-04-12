@@ -177,6 +177,7 @@ export interface SpellSlots {
 
 export interface Character {
   _id?: string;
+  proficiencyBonus?: number;
   basicInfo: CharacterBasicInfo;
   abilities: CharacterAbilities;
   stats: CharacterStats;

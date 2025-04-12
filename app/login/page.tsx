@@ -57,7 +57,7 @@ const Login = () => {
     <div>
       <BackButton url="/" />
       <form
-        className="h-screen flex flex-col items-center justify-center"
+        className="h-screen flex flex-col items-center justify-center font-mrEaves"
         onSubmit={handleSubmit(submitFormHandler)}
       >
         <Card className="w-[350px] sm:w-[400px]">
@@ -69,6 +69,7 @@ const Login = () => {
           <CardContent className="flex flex-col gap-4 px-6 py-2">
             <div className="flex flex-col gap-2">
               <Input
+                className="font-bookInsanity"
                 type="text"
                 placeholder="Username"
                 {...register("username", {
