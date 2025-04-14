@@ -9,6 +9,11 @@ export interface UserCredentials {
   password: string;
 }
 
+export interface CharacterContextType {
+  character?: Character | null;
+  setCharacter: (character: Character) => void;
+}
+
 export interface Attack {
   name: string;
   attackRoll?: string;
