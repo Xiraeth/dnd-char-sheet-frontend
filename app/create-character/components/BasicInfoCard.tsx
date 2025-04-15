@@ -90,6 +90,7 @@ const BasicInfoCard = ({
             {...register("basicInfo.class", {
               required: "Class is required",
             })}
+            value={watch("basicInfo.class")}
           >
             <SelectTrigger>
               <SelectValue placeholder="Class" />
@@ -165,6 +166,7 @@ const BasicInfoCard = ({
         <div className="flex flex-col gap-2">
           <Select
             onValueChange={(value) => setValue("basicInfo.alignment", value)}
+            value={watch("basicInfo.alignment")}
             {...register("basicInfo.alignment", {
               required: "Alignment is required",
             })}

@@ -9,9 +9,18 @@ export interface UserCredentials {
   password: string;
 }
 
+export interface DeleteCharacterResponseType {
+  status: number;
+  message: string;
+  character?: Character;
+}
+
 export interface CharacterContextType {
   character?: Character | null;
   setCharacter: (character: Character) => void;
+  deleteCharacter: (
+    characterId: string
+  ) => Promise<DeleteCharacterResponseType>;
 }
 
 export interface Attack {
@@ -180,6 +189,12 @@ export interface SpellSlots {
   level9?: number;
 }
 
+export interface Feature {
+  name: string;
+  description: string;
+  source?: string;
+}
+
 export interface Character {
   _id?: string;
   proficiencyBonus?: number;
@@ -195,7 +210,7 @@ export interface Character {
   spellSlots?: SpellSlots;
   spellSlotsExpanded?: SpellSlots;
   passiveWisdom?: number;
-  featuresAndTraits?: string[];
+  featuresAndTraits?: Feature[];
   attacks?: Attack[];
   feats?: Feat[];
   spells?: Spell[];

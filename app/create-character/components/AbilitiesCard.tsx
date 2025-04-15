@@ -33,7 +33,7 @@ const AbilitiesCard = () => {
 
           const modifierColour =
             modifier > 0
-              ? "text-green-500"
+              ? "text-green-600"
               : modifier < 0
               ? "text-red-600"
               : "text-black";
@@ -99,7 +99,7 @@ const AbilitiesCard = () => {
                 />
                 <p
                   className={clsx(
-                    "w-1/12 opacity-50 text-start",
+                    "w-1/12 text-start font-bold",
                     modifierColour
                   )}
                 >

@@ -19,7 +19,7 @@ const Skills = () => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center gap-2">
-        <span className="text-2xl sm:text-2xl font-bold text-dndRed ml-auto font-mrEaves">
+        <span className="text-2xl sm:text-3xl font-bold ml-auto font-mrEaves">
           Skills
         </span>
         <ChevronDown

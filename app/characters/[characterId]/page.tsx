@@ -11,11 +11,14 @@ import { use } from "react";
 import CharacterProvider, {
   useCharacter,
 } from "@/app/characters/[characterId]/components/CharacterProvider";
-import BasicInfo from "@/app/characters/[characterId]/components/basicInfo";
+import BasicInfo from "@/app/characters/[characterId]/components/BasicInfo";
 import { Stats } from "@/app/characters/[characterId]/components/Stats";
 import Abilities from "@/app/characters/[characterId]/components/Abilities";
 import SavingThrows from "@/app/characters/[characterId]/components/SavingThrows";
 import Skills from "@/app/characters/[characterId]/components/Skills";
+import FeaturesAndTraits from "@/app/characters/[characterId]/components/FeaturesAndTraits";
+import OtherProficienciesAndLanguages from "@/app/characters/[characterId]/components/OtherProficienciesAndLanguages";
+import Equipment from "@/app/characters/[characterId]/components/Equipment";
 
 // Define the params type
 type CharacterParams = {
@@ -42,7 +45,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
     }
 
     try {
-      const fetchCharacters = async () => {
+      const fetchCharacter = async () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/${characterId}`,
           {
@@ -57,7 +60,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
         setIsLoading(false);
       };
 
-      fetchCharacters();
+      fetchCharacter();
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(
@@ -107,18 +110,27 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
 
         <DndDivider />
 
-        {/* abilities */}
         <Abilities />
 
         <DndDivider />
 
-        {/* saving throws */}
         <SavingThrows />
 
         <DndDivider />
 
-        {/* skills */}
         <Skills />
+
+        <DndDivider />
+
+        <FeaturesAndTraits />
+
+        <DndDivider />
+
+        <Equipment />
+
+        <DndDivider />
+
+        <OtherProficienciesAndLanguages />
 
         <DndDivider />
       </div>

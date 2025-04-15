@@ -76,8 +76,8 @@ const Characters = () => {
   return (
     <>
       <BackButton url="/" />
-      <div className="h-screen flex flex-col items-center justify-center font-bookInsanity">
-        <h1 className="text-2xl font-bold mb-4">Your characters</h1>
+      <div className="h-screen flex flex-col gap-4 items-center justify-center font-bookInsanity">
+        <h1 className="text-2xl font-bold">Your characters</h1>
         {characters?.data &&
           characters?.data?.map((char) => (
             <CharacterCard

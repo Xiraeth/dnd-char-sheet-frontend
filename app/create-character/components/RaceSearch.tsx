@@ -28,7 +28,7 @@ export function RaceSearch() {
 
   const racesObjectArray = RACES?.map((race) => ({
     label: race,
-    value: race?.toLowerCase(),
+    value: race,
   }));
 
   return (

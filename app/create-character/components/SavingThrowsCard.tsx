@@ -47,7 +47,7 @@ const SavingThrowsCard = () => {
 
           const modifierColour =
             modifier > 0
-              ? "text-green-500"
+              ? "text-green-600"
               : modifier < 0
               ? "text-red-600"
               : "text-black";
@@ -61,7 +61,7 @@ const SavingThrowsCard = () => {
               <p>{ability.label}</p>
 
               <div className="flex gap-4 items-center">
-                <p className={clsx(modifierColour)}>
+                <p className={clsx(modifierColour, "font-bold")}>
                   ({modifier > 0 ? "+" + modifier : modifier})
                 </p>
                 <Switch
