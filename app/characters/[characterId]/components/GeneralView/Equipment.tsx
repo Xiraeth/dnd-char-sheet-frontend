@@ -2,6 +2,7 @@ import { useCharacter } from "@/app/characters/[characterId]/components/Characte
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+
 const Equipment = () => {
   const { character } = useCharacter();
   const [isEquipmentVisible, setIsEquipmentVisible] = useState(false);
@@ -22,27 +23,31 @@ const Equipment = () => {
       </div>
       {isEquipmentVisible && (
         <div className="text-base sm:text-lg">
-          <div className="flex gap-2 text-dndRed font-bookInsanity">
-            <p className="font-bold">Gold: </p>
-            <p>{character?.inventory?.gold}</p>
-          </div>
+          {!!character?.inventory?.gold && (
+            <div className="flex gap-2 text-dndRed font-bookInsanity">
+              <p className="font-bold">Gold: </p>
+              <p>{character?.inventory?.gold}</p>
+            </div>
+          )}
 
-          <div className="flex flex-col gap-2 font-bookInsanity">
-            <p className="text-lg sm:text-xl text-center mb-2 font-scalySans border-b border-b-black/45">
-              Items
-            </p>
-            {character?.inventory?.items?.map((item) => {
-              const itemName = item?.name;
-              const itemDescription = item?.description;
+          {!!character?.inventory?.items?.length && (
+            <div className="flex flex-col gap-2 font-bookInsanity">
+              <p className="text-lg sm:text-xl text-center mb-2 font-scalySans border-b border-b-black/45">
+                Items
+              </p>
+              {character?.inventory?.items?.map((item) => {
+                const itemName = item?.name;
+                const itemDescription = item?.description;
 
-              return (
-                <div key={itemName}>
-                  <p className="font-bold text-dndRed">{itemName}</p>
-                  <p>{itemDescription}</p>
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <div key={itemName}>
+                    <p className="font-bold text-dndRed">{itemName}</p>
+                    <p>{itemDescription}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>

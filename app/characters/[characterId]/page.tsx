@@ -2,7 +2,6 @@
 
 import { useUser } from "@/app/UserProvider";
 import BackButton from "@/components/BackButton";
-import DndDivider from "@/components/RedDivider";
 import axios from "axios";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,14 +10,10 @@ import { use } from "react";
 import CharacterProvider, {
   useCharacter,
 } from "@/app/characters/[characterId]/components/CharacterProvider";
-import BasicInfo from "@/app/characters/[characterId]/components/BasicInfo";
-import { Stats } from "@/app/characters/[characterId]/components/Stats";
-import Abilities from "@/app/characters/[characterId]/components/Abilities";
-import SavingThrows from "@/app/characters/[characterId]/components/SavingThrows";
-import Skills from "@/app/characters/[characterId]/components/Skills";
-import FeaturesAndTraits from "@/app/characters/[characterId]/components/FeaturesAndTraits";
-import OtherProficienciesAndLanguages from "@/app/characters/[characterId]/components/OtherProficienciesAndLanguages";
-import Equipment from "@/app/characters/[characterId]/components/Equipment";
+import ViewMode from "@/app/characters/[characterId]/components/Viewmode";
+import GeneralPage from "@/app/characters/[characterId]/components/GeneralView/GeneralPage";
+import SpellsPage from "@/app/characters/[characterId]/components/SpellsView/SpellsPage";
+import CombatPage from "@/app/characters/[characterId]/components/CombatView/CombatPage";
 
 // Define the params type
 type CharacterParams = {
@@ -31,6 +26,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
   const { character, setCharacter } = useCharacter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState("General");
 
   // Unwrap params using React.use()
   const unwrappedParams = use(params);
@@ -102,37 +98,11 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
       <BackButton url="/characters" />
 
       <div id="content" className="p-4 mt-6 sm:mt-0 sm:p-12">
-        <BasicInfo />
+        <ViewMode viewMode={viewMode} setViewMode={setViewMode} />
 
-        <DndDivider />
-
-        <Stats />
-
-        <DndDivider />
-
-        <Abilities />
-
-        <DndDivider />
-
-        <SavingThrows />
-
-        <DndDivider />
-
-        <Skills />
-
-        <DndDivider />
-
-        <FeaturesAndTraits />
-
-        <DndDivider />
-
-        <Equipment />
-
-        <DndDivider />
-
-        <OtherProficienciesAndLanguages />
-
-        <DndDivider />
+        {viewMode === "General" && <GeneralPage />}
+        {viewMode === "Combat" && <CombatPage />}
+        {viewMode === "Spells" && <SpellsPage />}
       </div>
     </div>
   );

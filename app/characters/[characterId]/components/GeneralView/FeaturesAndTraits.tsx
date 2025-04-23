@@ -23,27 +23,28 @@ const FeaturesAndTraits = () => {
           }
         />
       </div>
-      {areFeaturesAndTraitsVisible && (
-        <div className="flex flex-col gap-4 text-base sm:text-lg">
-          {character?.featuresAndTraits?.map((feature) => {
-            const title = feature?.name;
-            const description = feature?.description;
-            const source = feature?.source;
+      {!!areFeaturesAndTraitsVisible &&
+        !!character?.featuresAndTraits?.length && (
+          <div className="flex flex-col gap-4 text-base sm:text-lg">
+            {character?.featuresAndTraits?.map((feature) => {
+              const title = feature?.name;
+              const description = feature?.description;
+              const source = feature?.source;
 
-            return (
-              <div key={title} className="font-bookInsanity">
-                <p className="text-lg font-bold text-dndRed">{title}</p>
-                <p>{description}</p>
-                {source && (
-                  <p className="text-black/80 my-1 italic font-scalySans">
-                    Source: {source}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+              return (
+                <div key={title} className="font-bookInsanity">
+                  <p className="text-lg font-bold text-dndRed">{title}</p>
+                  <p>{description}</p>
+                  {source && (
+                    <p className="text-black/80 my-1 italic font-scalySans">
+                      Source: {source}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
     </div>
   );
 };

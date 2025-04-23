@@ -136,16 +136,7 @@ export default function RootLayout({
             <UserProvider>{children}</UserProvider>
           </ApolloProvider>
         </ThemeProvider>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              backgroundColor: "green",
-              color: "#fff",
-              borderWidth: "0px",
-            },
-          }}
-        />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

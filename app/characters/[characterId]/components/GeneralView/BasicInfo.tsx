@@ -57,12 +57,12 @@ const BasicInfo = () => {
               <Menu size={20} className="text-white" />
             </div>
           </PopoverTrigger>
-          <PopoverContent className="bg-black/95 text-white w-fit text-center p-0 font-mrEaves">
-            <p className="cursor-pointer border-b border-white/45 hover:bg-white/10 transition-all duration-150 p-2">
+          <PopoverContent className="bg-white text-black w-fit text-center p-0 font-mrEaves">
+            <p className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2">
               Edit
             </p>
             <p
-              className="cursor-pointer hover:bg-white/10 transition-all duration-150 p-2 text-red-600"
+              className="cursor-pointer hover:bg-black/10 transition-all duration-150 p-2 text-red-600"
               onClick={() => setIsDeleteDialogOpen(true)}
             >
               Delete
@@ -112,7 +112,7 @@ const BasicInfo = () => {
           {character?.basicInfo?.class}{" "}
         </p>
         <VerticalDivider />
-        <p className="text-base sm:text-lg">
+        <p className="text-base sm:text-lg flex justify-between">
           {character?.basicInfo?.alignment}, {character?.basicInfo?.background}
         </p>
       </div>

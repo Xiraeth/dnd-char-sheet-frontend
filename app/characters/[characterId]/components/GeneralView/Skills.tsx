@@ -93,6 +93,10 @@ const Skills = () => {
             );
           })}
       </div>
+
+      <div className="text-base sm:text-lg font-bookInsanity text-dndRed italic text-center">
+        Senses passive perception {character?.passiveWisdom}
+      </div>
     </div>
   );
 };

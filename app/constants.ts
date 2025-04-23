@@ -99,7 +99,7 @@ export const SPELLCASTING_CLASSES = [
 ];
 
 export const RACES = [
-  "Common",
+  "Custom",
   "Dragonborn",
   "Dwarf",
   "Elf",

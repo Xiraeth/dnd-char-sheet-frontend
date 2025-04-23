@@ -12,6 +12,10 @@ export const Stats = () => {
       <p className="text-base sm:text-lg text-dndRed">
         <span className="font-bold">Hit Points:</span>{" "}
         {character?.stats?.hitPointsCurrent}/{character?.stats?.hitPointsTotal}
+        <span className="text-sm opacity-80">
+          {" "}
+          (+{character?.stats?.hitPointsTemp || 0})
+        </span>
       </p>
 
       <p className="text-base sm:text-lg text-dndRed">

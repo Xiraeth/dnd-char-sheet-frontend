@@ -67,6 +67,16 @@ const CreateCharacter = () => {
   const { handleSubmit, watch, setError, setValue, clearErrors } = methods;
   const race = watch("basicInfo.race");
 
+  const validateRace = () => {
+    if (!race?.length) {
+      setError("basicInfo.race", {
+        message: "Race is required",
+      });
+    } else {
+      clearErrors("basicInfo.race");
+    }
+  };
+
   const onSubmit = async (data: Character) => {
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
@@ -133,6 +143,9 @@ const CreateCharacter = () => {
     setValue("abilities.intelligence", 18);
     setValue("abilities.wisdom", 16);
     setValue("abilities.charisma", 12);
+
+    // Passive Wisdom
+    setValue("passiveWisdom", 16);
 
     // Stats
     setValue("stats.initiative", 2);
@@ -292,7 +305,7 @@ const CreateCharacter = () => {
   };
 
   return (
-    <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto relative">
+    <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
       <BackButton url="/" />
       <p className="text-2xl font-bold text-center">Create a new character</p>
       <Button
@@ -357,19 +370,7 @@ const CreateCharacter = () => {
           {/* personality traits */}
           <PersonalityCard />
 
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={() => {
-              if (!race?.length) {
-                setError("basicInfo.race", {
-                  message: "Race is required",
-                });
-              } else {
-                clearErrors("basicInfo.race");
-              }
-            }}
-          >
+          <Button type="submit" className="w-full" onClick={validateRace}>
             Create Character
           </Button>
         </form>
