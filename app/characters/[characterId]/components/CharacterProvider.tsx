@@ -5,8 +5,10 @@ import {
   UpdateCharacterResponseType,
 } from "@/app/types";
 import axios from "axios";
-import { useContext, createContext, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useContext, createContext, useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useUser } from "@/app/UserProvider";
 
 const CharacterContext = createContext<CharacterContextType>({
   character: null,
@@ -22,7 +24,52 @@ const CharacterContext = createContext<CharacterContextType>({
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
+  const router = useRouter();
+  const { user } = useUser();
   const [character, setCharacter] = useState<Character | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [characterError, setCharacterError] = useState<string | null>(null);
+
+  const { characterId } = useParams();
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    if (!user && !isLoading) {
+      router.replace("/");
+      return;
+    }
+
+    try {
+      const fetchCharacter = async () => {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/${characterId}`,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setCharacter(response.data.character);
+        setIsLoading(false);
+      };
+
+      fetchCharacter();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setCharacterError(
+          err.response?.data?.error ||
+            err.response?.data?.message ||
+            "An error occurred"
+        );
+      } else {
+        setCharacterError("An error occurred.");
+      }
+      setIsLoading(false);
+    }
+  }, [user, characterId, router]);
 
   const deleteCharacter = async (
     characterId: string
@@ -131,6 +178,8 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         deleteCharacter,
         updateCharacterField,
         updateCharacter,
+        characterError,
+        isLoading,
       }}
     >
       {children}
