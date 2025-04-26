@@ -21,6 +21,19 @@ export interface CharacterContextType {
   deleteCharacter: (
     characterId: string
   ) => Promise<DeleteCharacterResponseType>;
+  updateCharacterField: ({
+    field,
+    value,
+  }: {
+    field: string;
+    value: string | number;
+  }) => void;
+  updateCharacter: (
+    characterId: string,
+    character: Character
+  ) => Promise<DeleteCharacterResponseType>;
+  wasCharacterUpdated: boolean;
+  setWasCharacterUpdated: (wasCharacterUpdated: boolean) => void;
 }
 
 export interface Attack {

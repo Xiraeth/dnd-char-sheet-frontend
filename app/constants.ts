@@ -148,7 +148,7 @@ export const SKILLS = [
   { label: "Intimidation", value: "intimidation", ability: "charisma" },
   { label: "Investigation", value: "investigation", ability: "intelligence" },
   { label: "Medicine", value: "medicine", ability: "wisdom" },
-  { label: "Nature", value: "nature", ability: "wisdom" },
+  { label: "Nature", value: "nature", ability: "intelligence" },
   { label: "Perception", value: "perception", ability: "wisdom" },
   { label: "Performance", value: "performance", ability: "charisma" },
   { label: "Persuasion", value: "persuasion", ability: "charisma" },

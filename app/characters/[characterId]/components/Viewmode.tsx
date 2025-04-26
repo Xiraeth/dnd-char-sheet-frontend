@@ -8,16 +8,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+export type ViewMode = "General" | "Combat" | "Spells" | null;
+
 const ViewMode = ({
   viewMode,
   setViewMode,
 }: {
-  viewMode: string;
-  setViewMode: (viewMode: string) => void;
+  viewMode: ViewMode;
+  setViewMode: (viewMode: ViewMode) => void;
 }) => {
   return (
     <div className="sm:mt-6">
-      <Select value={viewMode} onValueChange={setViewMode}>
+      <Select
+        value={viewMode || "General"}
+        onValueChange={(value) => {
+          setViewMode(value as ViewMode);
+          localStorage.setItem("dnd-char-sheet-character-view-mode", value);
+        }}
+      >
         <SelectTrigger className="text-white font-mrEaves w-full mb-4 text-lg sm:text-xl bg-neutral-800 hover:bg-neutral-800/90 border border-white/40 transition-all duration-150">
           <SelectValue placeholder={`View mode (${viewMode})`} />
         </SelectTrigger>

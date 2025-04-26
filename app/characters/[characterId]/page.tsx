@@ -10,7 +10,9 @@ import { use } from "react";
 import CharacterProvider, {
   useCharacter,
 } from "@/app/characters/[characterId]/components/CharacterProvider";
-import ViewMode from "@/app/characters/[characterId]/components/Viewmode";
+import ViewMode, {
+  ViewMode as ViewModeType,
+} from "@/app/characters/[characterId]/components/Viewmode";
 import GeneralPage from "@/app/characters/[characterId]/components/GeneralView/GeneralPage";
 import SpellsPage from "@/app/characters/[characterId]/components/SpellsView/SpellsPage";
 import CombatPage from "@/app/characters/[characterId]/components/CombatView/CombatPage";
@@ -26,7 +28,18 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
   const { character, setCharacter } = useCharacter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState("General");
+  const [viewMode, setViewMode] = useState<ViewModeType>(null);
+
+  useEffect(() => {
+    const viewModeFromLocalStorage = localStorage.getItem(
+      "dnd-char-sheet-character-view-mode"
+    );
+    if (viewModeFromLocalStorage) {
+      setViewMode(viewModeFromLocalStorage as ViewModeType);
+    } else {
+      setViewMode("General");
+    }
+  }, []);
 
   // Unwrap params using React.use()
   const unwrappedParams = use(params);
