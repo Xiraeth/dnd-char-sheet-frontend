@@ -85,7 +85,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
     }
   }, [user, characterId, router]);
 
-  const resetVeiwMode = () => {
+  const resetViewMode = () => {
     setViewMode(null);
     localStorage.removeItem("dnd-char-sheet-character-view-mode");
   };
@@ -98,6 +98,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
         <Loader className="w-10 h-10 animate-spin" />
       </div>
     );
+
   if (error)
     return (
       <div className="w-screen h-screen flex items-center justify-center">
@@ -114,7 +115,7 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
 
   return (
     <div>
-      <BackButton url="/characters" onClick={resetVeiwMode} />
+      <BackButton url="/characters" onClick={resetViewMode} />
 
       <div id="content" className="p-4 pt-10 sm:mt-0 sm:p-12">
         <ViewMode viewMode={viewMode} setViewMode={setViewMode} />

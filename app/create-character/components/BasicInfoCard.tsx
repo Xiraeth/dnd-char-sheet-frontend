@@ -19,6 +19,7 @@ import {
 import { useFormContext } from "react-hook-form";
 import { RaceSearch } from "./RaceSearch";
 import { calculateSpellAttackBonus, calculateSpellSaveDC } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 const BasicInfoCard = ({
   setIsSpellcaster,
@@ -38,8 +39,13 @@ const BasicInfoCard = ({
         <CardTitle className="text-center">Basic Information</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-600">
+        {/* name */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.name">
+            Name
+          </Label>
           <Input
+            id="basicInfo.name"
             placeholder="Name"
             {...register("basicInfo.name", {
               required: "Name is required",
@@ -52,7 +58,11 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* class */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.class">
+            Class
+          </Label>
           <Select
             onValueChange={(value) => {
               setValue("basicInfo.class", value);
@@ -110,7 +120,11 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* race */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.race">
+            Race
+          </Label>
           <RaceSearch />
           {errors?.basicInfo?.race && (
             <p className="text-red-600 text-sm">
@@ -119,8 +133,13 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* level */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.level">
+            Level
+          </Label>
           <Input
+            id="basicInfo.level"
             placeholder="Level"
             type="number"
             {...register("basicInfo.level", {
@@ -163,7 +182,11 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* alignment */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.alignment">
+            Alignment
+          </Label>
           <Select
             onValueChange={(value) => setValue("basicInfo.alignment", value)}
             value={watch("basicInfo.alignment")}
@@ -189,8 +212,13 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* background */}
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="basicInfo.background">
+            Background
+          </Label>
           <Input
+            id="basicInfo.background"
             placeholder="Background"
             {...register("basicInfo.background", {
               required: "Background is required",
@@ -203,8 +231,13 @@ const BasicInfoCard = ({
           )}
         </div>
 
+        {/* player name */}
         <div className="flex flex-col gap-2 md:col-span-2">
+          <Label className="text-black" htmlFor="basicInfo.playerName">
+            Player Name
+          </Label>
           <Input
+            id="basicInfo.playerName"
             placeholder="Player Name"
             {...register("basicInfo.playerName", {
               required: "Player Name is required",

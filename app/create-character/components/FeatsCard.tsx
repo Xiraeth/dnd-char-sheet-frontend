@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { X } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 interface Feat {
+  id?: string;
   name: string;
   description: string;
   level: string;
@@ -20,7 +22,7 @@ const DEFAULT_FEAT: Feat = {
 
 const FeatsCard = () => {
   const { watch, setValue } = useFormContext();
-  const [isCreateFeatFormOpen, setIsCreateFeatFormOpen] = useState(false);
+  const [isEditFeatFormOpen, setIsEditFeatFormOpen] = useState(false);
   const [feat, setFeat] = useState<Feat>(DEFAULT_FEAT);
   const [errors, setErrors] = useState<Partial<Feat>>({});
   const feats = watch("feats");
@@ -50,22 +52,45 @@ const FeatsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      setValue("feats", [...(feats || []), feat]);
+      if (feat.id) {
+        setValue(
+          "feats",
+          feats.map((f: Feat) => {
+            if (f.id === feat.id) {
+              return { ...f, ...feat };
+            }
+            return f;
+          })
+        );
+      } else {
+        setValue("feats", [...(feats || []), { ...feat, id: uuidv4() }]);
+      }
       setFeat(DEFAULT_FEAT);
-      setIsCreateFeatFormOpen(false);
+      setIsEditFeatFormOpen(false);
     }
   };
 
   const handleCancel = () => {
     setFeat(DEFAULT_FEAT);
-    setIsCreateFeatFormOpen(false);
+    setIsEditFeatFormOpen(false);
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (
+    e: React.MouseEvent<SVGElement>,
+    id: string | undefined
+  ) => {
+    e?.stopPropagation();
+    setIsEditFeatFormOpen(false);
+    setFeat(DEFAULT_FEAT);
     setValue(
       "feats",
-      feats?.filter((feat: Feat, i: number) => i !== index)
+      feats?.filter((feat: Feat) => feat.id !== id)
     );
+  };
+
+  const handleFeatClick = (id: string) => {
+    setFeat(feats?.find((feat: Feat) => feat.id === id));
+    setIsEditFeatFormOpen(true);
   };
 
   return (
@@ -77,21 +102,22 @@ const FeatsCard = () => {
         <div className="flex gap-2 flex-wrap">
           {feats?.map((feat: Feat, index: number) => (
             <div
-              key={index}
-              className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4"
+              key={feat?.id || index}
+              className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
+              onClick={() => handleFeatClick(feat?.id || "")}
             >
               <p>
                 {feat.name} (Level {feat.level})
               </p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={() => handleDelete(index)}
+                onClick={(e) => handleDelete(e, feat?.id)}
               />
             </div>
           ))}
         </div>
 
-        {isCreateFeatFormOpen && (
+        {isEditFeatFormOpen && (
           <div className="grid grid-cols-1 gap-4 mb-4">
             <div>
               <label htmlFor="name" className="block mb-1">
@@ -144,17 +170,17 @@ const FeatsCard = () => {
           </div>
         )}
 
-        {!isCreateFeatFormOpen && (
+        {!isEditFeatFormOpen && (
           <Button
             className="w-full"
             type="button"
-            onClick={() => setIsCreateFeatFormOpen(true)}
+            onClick={() => setIsEditFeatFormOpen(true)}
           >
             Add Feat
           </Button>
         )}
 
-        {isCreateFeatFormOpen && (
+        {isEditFeatFormOpen && (
           <div className="flex gap-2">
             <Button className="w-full" type="button" onClick={handleConfirm}>
               Confirm

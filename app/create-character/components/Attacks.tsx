@@ -1,4 +1,3 @@
-import { Attack } from "@/app/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +13,19 @@ import {
 } from "@/components/ui/select";
 import { DAMAGE_TYPES, ABILITIES } from "@/app/constants";
 import { X } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+
+interface Attack {
+  id?: string;
+  name: string;
+  attackRoll?: string;
+  damageRoll?: string;
+  damageType?: string;
+  range?: string;
+  description?: string;
+  abilitySave?: string;
+  areaOfEffect?: string;
+}
 
 const DEFAULT_ATTACK: Attack = {
   name: "",
@@ -28,7 +40,7 @@ const DEFAULT_ATTACK: Attack = {
 
 const AttacksCard = () => {
   const { watch, setValue } = useFormContext();
-  const [isCreateAttackFormOpen, setIsCreateAttackFormOpen] = useState(false);
+  const [isEditAttackFormOpen, setIsEditAttackFormOpen] = useState(false);
   const [attack, setAttack] = useState<Attack>(DEFAULT_ATTACK);
   const [errors, setErrors] = useState<Partial<Attack>>({});
   const attacks = watch("attacks");
@@ -50,23 +62,38 @@ const AttacksCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      setValue("attacks", [...(attacks || []), attack]);
+      if (attack.id) {
+        setValue(
+          "attacks",
+          attacks.map((a: Attack) => (a.id === attack.id ? attack : a))
+        );
+      } else {
+        setValue("attacks", [...(attacks || []), { ...attack, id: uuidv4() }]);
+      }
       setAttack(DEFAULT_ATTACK);
-      setIsCreateAttackFormOpen(false);
+      setIsEditAttackFormOpen(false);
     }
   };
 
   const handleCancel = () => {
     setAttack(DEFAULT_ATTACK);
 
-    setIsCreateAttackFormOpen(false);
+    setIsEditAttackFormOpen(false);
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (e: React.MouseEvent<SVGElement>, id: string) => {
+    e?.stopPropagation();
     setValue(
       "attacks",
-      attacks?.filter((attack: Attack, i: number) => i !== index)
+      attacks?.filter((attack: Attack) => attack.id !== id)
     );
+    setIsEditAttackFormOpen(false);
+    setAttack(DEFAULT_ATTACK);
+  };
+
+  const handleEditAttack = (id: string) => {
+    setAttack(attacks.find((attack: Attack) => attack.id === id));
+    setIsEditAttackFormOpen(true);
   };
 
   return (
@@ -75,20 +102,23 @@ const AttacksCard = () => {
         <CardTitle>Attacks</CardTitle>
       </CardHeader>
       <CardContent>
-        {attacks?.map((attack: Attack, index: number) => (
-          <div
-            key={index}
-            className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4"
-          >
-            <p>{attack.name}</p>
-            <X
-              className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-              onClick={() => handleDelete(index)}
-            />
-          </div>
-        ))}
+        <div className="flex gap-2 flex-wrap">
+          {attacks?.map((attack: Attack, index: number) => (
+            <div
+              key={attack?.id || index}
+              className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
+              onClick={() => handleEditAttack(attack?.id || "")}
+            >
+              <p>{attack.name}</p>
+              <X
+                className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
+                onClick={(e) => handleDelete(e, attack?.id || "")}
+              />
+            </div>
+          ))}
+        </div>
 
-        {isCreateAttackFormOpen && (
+        {isEditAttackFormOpen && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
             <div>
               <Input
@@ -168,17 +198,17 @@ const AttacksCard = () => {
           </div>
         )}
 
-        {!isCreateAttackFormOpen && (
+        {!isEditAttackFormOpen && (
           <Button
             className="w-full"
             type="button"
-            onClick={() => setIsCreateAttackFormOpen(true)}
+            onClick={() => setIsEditAttackFormOpen(true)}
           >
             Add Attack
           </Button>
         )}
 
-        {isCreateAttackFormOpen && (
+        {isEditAttackFormOpen && (
           <div className="flex gap-2">
             <Button className="w-full" type="button" onClick={handleConfirm}>
               Confirm

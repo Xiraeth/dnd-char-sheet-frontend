@@ -12,6 +12,7 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { DICE_OPTIONS } from "@/app/constants";
+import { Label } from "@/components/ui/label";
 
 const StatsCard = () => {
   const {
@@ -27,6 +28,9 @@ const StatsCard = () => {
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-600">
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="stats.initiative">
+            Initiative
+          </Label>
           <Input
             placeholder="Initiative"
             type="number"
@@ -42,6 +46,9 @@ const StatsCard = () => {
         </div>
 
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="stats.speed">
+            Speed
+          </Label>
           <Input
             placeholder="Speed"
             type="number"
@@ -55,6 +62,9 @@ const StatsCard = () => {
         </div>
 
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="stats.armorClass">
+            Armor Class
+          </Label>
           <Input
             placeholder="Armor Class"
             type="number"
@@ -70,6 +80,9 @@ const StatsCard = () => {
         </div>
 
         <div className="flex flex-col gap-2">
+          <Label className="text-black" htmlFor="stats.hitPointsTotal">
+            Hit Points
+          </Label>
           <Input
             placeholder="Hit Points"
             type="number"
@@ -85,6 +98,9 @@ const StatsCard = () => {
         </div>
 
         <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
+          <Label className="text-black" htmlFor="stats.hitDice.diceType">
+            Hit Dice Type
+          </Label>
           <Select
             {...register("stats.hitDice.diceType", {
               required: "Hit Dice Type is required",

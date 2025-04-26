@@ -45,6 +45,10 @@ const BasicInfo = () => {
     }
   };
 
+  const handleRedirectToEdit = () => {
+    router.push(`/characters/${character?._id}/edit`);
+  };
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-1 w-full justify-center sm:justify-between">
       <div className="flex justify-between sm:justify-start gap-0 sm:gap-20 w-full sm:w-fit items-center">
@@ -59,7 +63,10 @@ const BasicInfo = () => {
             </div>
           </PopoverTrigger>
           <PopoverContent className="bg-white text-black w-fit text-center p-0 font-mrEaves">
-            <p className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2">
+            <p
+              className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2"
+              onClick={handleRedirectToEdit}
+            >
               Edit
             </p>
             <p

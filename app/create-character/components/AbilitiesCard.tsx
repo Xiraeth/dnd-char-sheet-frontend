@@ -9,6 +9,7 @@ import {
   calculateSpellAttackBonus,
 } from "@/lib/utils";
 import clsx from "clsx";
+import { Label } from "@/components/ui/label";
 
 const AbilitiesCard = () => {
   const {
@@ -40,71 +41,84 @@ const AbilitiesCard = () => {
 
           return (
             <div key={ability.value} className="flex flex-col gap-2">
-              <div className="flex items-center gap-4 w-full">
-                <Input
-                  className="w-11/12"
-                  placeholder={ability.label}
-                  type="number"
-                  {...register(
-                    `abilities.${ability.value as keyof CharacterAbilities}`,
-                    {
-                      required: `${ability.label} is required`,
-                      onChange: (e) => {
-                        const abilityValue =
-                          ability.value as keyof CharacterAbilities;
+              <div className="flex-col items-center gap-4 w-full">
+                <Label
+                  className="text-black"
+                  htmlFor={`abilities.${
+                    ability.value as keyof CharacterAbilities
+                  }`}
+                >
+                  {ability.label}
+                </Label>
+                <div className="flex items-center gap-4 w-full">
+                  <Input
+                    className="w-11/12"
+                    placeholder={ability.label}
+                    type="number"
+                    id={`abilities.${
+                      ability.value as keyof CharacterAbilities
+                    }`}
+                    {...register(
+                      `abilities.${ability.value as keyof CharacterAbilities}`,
+                      {
+                        required: `${ability.label} is required`,
+                        onChange: (e) => {
+                          const abilityValue =
+                            ability.value as keyof CharacterAbilities;
 
-                        // Update saving throw value
-                        setValue(
-                          `savingThrows.${abilityValue}.value` as `savingThrows.${keyof CharacterAbilities}.value`,
-                          getModifier(parseInt(e.target.value))
-                        );
-
-                        // Update spellcasting ability
-                        const spellcastingAbility = watch(
-                          "spellcasting.spellcastingAbility"
-                        );
-                        const charLevel = watch("basicInfo.level");
-
-                        if (spellcastingAbility === abilityValue) {
+                          // Update saving throw value
                           setValue(
-                            "spellcasting.spellSaveDC",
-                            calculateSpellSaveDC({
-                              level: charLevel,
-                              ability: parseInt(e.target.value),
-                            })
+                            `savingThrows.${abilityValue}.value` as `savingThrows.${keyof CharacterAbilities}.value`,
+                            getModifier(parseInt(e.target.value))
                           );
-                          setValue(
-                            "spellcasting.spellAttackBonus",
-                            calculateSpellAttackBonus({
-                              level: charLevel,
-                              ability: parseInt(e.target.value),
-                            })
-                          );
-                        }
 
-                        // Update skill values
-                        SKILLS.forEach((skill) => {
-                          if (skill.ability === ability.value) {
-                            const skillKey =
-                              skill.value as keyof CharacterSkills;
+                          // Update spellcasting ability
+                          const spellcastingAbility = watch(
+                            "spellcasting.spellcastingAbility"
+                          );
+                          const charLevel = watch("basicInfo.level");
+
+                          if (spellcastingAbility === abilityValue) {
                             setValue(
-                              `skills.${skillKey}.value` as `skills.${keyof CharacterSkills}.value`,
-                              getModifier(parseInt(e.target.value))
+                              "spellcasting.spellSaveDC",
+                              calculateSpellSaveDC({
+                                level: charLevel,
+                                ability: parseInt(e.target.value),
+                              })
+                            );
+                            setValue(
+                              "spellcasting.spellAttackBonus",
+                              calculateSpellAttackBonus({
+                                level: charLevel,
+                                ability: parseInt(e.target.value),
+                              })
                             );
                           }
-                        });
-                      },
-                    }
-                  )}
-                />
-                <p
-                  className={clsx(
-                    "w-1/12 text-start font-bold",
-                    modifierColour
-                  )}
-                >
-                  ({modifier > 0 ? "+" + modifier : modifier})
-                </p>
+
+                          // Update skill values
+                          SKILLS.forEach((skill) => {
+                            if (skill.ability === ability.value) {
+                              const skillKey =
+                                skill.value as keyof CharacterSkills;
+                              setValue(
+                                `skills.${skillKey}.value` as `skills.${keyof CharacterSkills}.value`,
+                                getModifier(parseInt(e.target.value))
+                              );
+                            }
+                          });
+                        },
+                      }
+                    )}
+                  />
+                  <p
+                    className={clsx(
+                      "w-1/12 text-start font-bold",
+                      modifierColour
+                    )}
+                  >
+                    ({modifier > 0 ? "+" + modifier : modifier})
+                  </p>
+                </div>
               </div>
 
               {errors?.abilities?.[

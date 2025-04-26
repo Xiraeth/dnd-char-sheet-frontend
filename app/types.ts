@@ -40,6 +40,8 @@ export interface CharacterContextType {
     characterId: string,
     character: Character
   ) => Promise<UpdateCharacterResponseType>;
+  characterError?: string | null;
+  isLoading?: boolean;
 }
 
 export interface Attack {

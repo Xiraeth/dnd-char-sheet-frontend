@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { X } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 interface Feature {
+  id?: string;
   name: string;
   description: string;
   source: string;
@@ -20,7 +22,7 @@ const DEFAULT_FEATURE: Feature = {
 
 const FeaturesAndTraitsCard = () => {
   const { watch, setValue } = useFormContext();
-  const [isCreateFeatureFormOpen, setIsCreateFeatureFormOpen] = useState(false);
+  const [isEditFeatureFormOpen, setIsEditFeatureFormOpen] = useState(false);
   const [feature, setFeature] = useState<Feature>(DEFAULT_FEATURE);
   const [errors, setErrors] = useState<Partial<Feature>>({});
   const featuresAndTraits = watch("featuresAndTraits");
@@ -50,22 +52,50 @@ const FeaturesAndTraitsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      setValue("featuresAndTraits", [...(featuresAndTraits || []), feature]);
+      if (feature.id) {
+        setValue(
+          "featuresAndTraits",
+          featuresAndTraits.map((f: Feature) => {
+            if (f.id === feature.id) {
+              return { ...f, ...feature };
+            }
+            return f;
+          })
+        );
+      } else {
+        setValue("featuresAndTraits", [
+          ...(featuresAndTraits || []),
+          { ...feature, id: uuidv4() },
+        ]);
+      }
       setFeature(DEFAULT_FEATURE);
-      setIsCreateFeatureFormOpen(false);
+      setIsEditFeatureFormOpen(false);
     }
   };
 
   const handleCancel = () => {
     setFeature(DEFAULT_FEATURE);
-    setIsCreateFeatureFormOpen(false);
+    setIsEditFeatureFormOpen(false);
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (
+    e: React.MouseEvent<SVGElement>,
+    id: string | undefined
+  ) => {
+    e?.stopPropagation();
+    setIsEditFeatureFormOpen(false);
+    setFeature(DEFAULT_FEATURE);
     setValue(
       "featuresAndTraits",
-      featuresAndTraits?.filter((feature: Feature, i: number) => i !== index)
+      featuresAndTraits?.filter((feature: Feature) => feature.id !== id)
     );
+  };
+
+  const handleFeatureClick = (id: string) => {
+    setFeature(
+      featuresAndTraits?.find((feature: Feature) => feature.id === id)
+    );
+    setIsEditFeatureFormOpen(true);
   };
 
   return (
@@ -77,19 +107,20 @@ const FeaturesAndTraitsCard = () => {
         <div className="flex gap-2 flex-wrap">
           {featuresAndTraits?.map((feature: Feature, index: number) => (
             <div
-              key={index}
-              className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4"
+              key={feature?.id || index}
+              className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
+              onClick={() => handleFeatureClick(feature?.id || "")}
             >
               <p>{feature.name}</p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={() => handleDelete(index)}
+                onClick={(e) => handleDelete(e, feature?.id)}
               />
             </div>
           ))}
         </div>
 
-        {isCreateFeatureFormOpen && (
+        {isEditFeatureFormOpen && (
           <div className="grid grid-cols-1 gap-4 mb-4">
             <div>
               <label htmlFor="name" className="block mb-1">
@@ -145,17 +176,17 @@ const FeaturesAndTraitsCard = () => {
           </div>
         )}
 
-        {!isCreateFeatureFormOpen && (
+        {!isEditFeatureFormOpen && (
           <Button
             className="w-full"
             type="button"
-            onClick={() => setIsCreateFeatureFormOpen(true)}
+            onClick={() => setIsEditFeatureFormOpen(true)}
           >
             Add Feature
           </Button>
         )}
 
-        {isCreateFeatureFormOpen && (
+        {isEditFeatureFormOpen && (
           <div className="flex gap-2">
             <Button className="w-full" type="button" onClick={handleConfirm}>
               Confirm
