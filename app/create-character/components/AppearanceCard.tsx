@@ -15,17 +15,37 @@ const AppearanceCard = () => {
         <CardTitle className="text-center">Appearance</CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-600">
-        <Input placeholder="Age" {...register("appearance.age")} />
+        <Input placeholder="Age" {...register("appearance.age")} type="text" />
 
-        <Input placeholder="Height" {...register("appearance.height")} />
+        <Input
+          placeholder="Height"
+          {...register("appearance.height")}
+          type="text"
+        />
 
-        <Input placeholder="Weight" {...register("appearance.weight")} />
+        <Input
+          placeholder="Weight"
+          {...register("appearance.weight")}
+          type="text"
+        />
 
-        <Input placeholder="Eyes" {...register("appearance.eyes")} />
+        <Input
+          placeholder="Eyes"
+          {...register("appearance.eyes")}
+          type="text"
+        />
 
-        <Input placeholder="Hair" {...register("appearance.hair")} />
+        <Input
+          placeholder="Hair"
+          {...register("appearance.hair")}
+          type="text"
+        />
 
-        <Input placeholder="Skin" {...register("appearance.skin")} />
+        <Input
+          placeholder="Skin"
+          {...register("appearance.skin")}
+          type="text"
+        />
 
         <Input
           className="flex flex-col gap-2 md:col-span-2"

@@ -161,9 +161,9 @@ export interface Inventory {
 }
 
 export interface Appearance {
-  age?: number;
-  height?: number;
-  weight?: number;
+  age?: string;
+  height?: string;
+  weight?: string;
   eyes?: string;
   hair?: string;
   skin?: string;

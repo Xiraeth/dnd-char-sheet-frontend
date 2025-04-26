@@ -197,9 +197,9 @@ const CreateCharacter = () => {
     setValue("spellSlots.level3", 2);
 
     // Appearance
-    setValue("appearance.age", 45);
-    setValue("appearance.height", 5);
-    setValue("appearance.weight", 10);
+    setValue("appearance.age", "45");
+    setValue("appearance.height", "5'10");
+    setValue("appearance.weight", "180");
     setValue("appearance.eyes", "Blue");
     setValue("appearance.hair", "Gray");
     setValue("appearance.skin", "Fair");
