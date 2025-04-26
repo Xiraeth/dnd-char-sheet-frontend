@@ -16,6 +16,7 @@ import ViewMode, {
 import GeneralPage from "@/app/characters/[characterId]/components/GeneralView/GeneralPage";
 import SpellsPage from "@/app/characters/[characterId]/components/SpellsView/SpellsPage";
 import CombatPage from "@/app/characters/[characterId]/components/CombatView/CombatPage";
+import Notes from "@/app/characters/[characterId]/components/NotesView/Notes";
 
 // Define the params type
 type CharacterParams = {
@@ -84,6 +85,11 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
     }
   }, [user, characterId, router]);
 
+  const resetVeiwMode = () => {
+    setViewMode(null);
+    localStorage.removeItem("dnd-char-sheet-character-view-mode");
+  };
+
   // ----------  return statements ---------- do not write code bellow this point ----------
 
   if (isLoading)
@@ -108,14 +114,15 @@ const CharacterPage = ({ params }: { params: Promise<CharacterParams> }) => {
 
   return (
     <div>
-      <BackButton url="/characters" />
+      <BackButton url="/characters" onClick={resetVeiwMode} />
 
-      <div id="content" className="p-4 mt-6 sm:mt-0 sm:p-12">
+      <div id="content" className="p-4 pt-10 sm:mt-0 sm:p-12">
         <ViewMode viewMode={viewMode} setViewMode={setViewMode} />
 
         {viewMode === "General" && <GeneralPage />}
         {viewMode === "Combat" && <CombatPage />}
         {viewMode === "Spells" && <SpellsPage />}
+        {viewMode === "Notes" && <Notes />}
       </div>
     </div>
   );

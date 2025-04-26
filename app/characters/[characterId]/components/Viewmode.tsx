@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export type ViewMode = "General" | "Combat" | "Spells" | null;
+export type ViewMode = "General" | "Combat" | "Spells" | "Notes" | null;
 
 const ViewMode = ({
   viewMode,

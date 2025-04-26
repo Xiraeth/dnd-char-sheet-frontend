@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Switch } from "@/components/ui/switch";
-import { Check } from "lucide-react";
+import clsx from "clsx";
+import { Check, Plus } from "lucide-react";
 import { useState } from "react";
 
 type Mode = "damage" | "heal";
@@ -15,6 +16,39 @@ const Hitpoints = () => {
   const [damage, setDamage] = useState<string>("");
   const [heal, setHeal] = useState<string>("");
   const [mode, setMode] = useState<Mode>("damage");
+  const [wasCharacterDamaged, setWasCharacterDamaged] = useState(false);
+  const [wasTemporaryHpDamaged, setWasTemporaryHpDamaged] = useState(false);
+  const [wasCharacterHealed, setWasCharacterHealed] = useState(false);
+  const [temporaryHitpoints, setTemporaryHitpoints] = useState<string>("");
+  const [temporaryHpAdded, setTemporaryHpAdded] = useState(false);
+
+  const flashTemporaryHp = (status: "heal" | "damage") => {
+    if (status === "heal") {
+      setTemporaryHpAdded(true);
+      setTimeout(() => {
+        setTemporaryHpAdded(false);
+      }, 400);
+    } else if (status === "damage") {
+      setWasTemporaryHpDamaged(true);
+      setTimeout(() => {
+        setWasTemporaryHpDamaged(false);
+      }, 400);
+    }
+  };
+
+  const flashCurrentHp = (status: "heal" | "damage") => {
+    if (status === "heal") {
+      setWasCharacterHealed(true);
+      setTimeout(() => {
+        setWasCharacterHealed(false);
+      }, 400);
+    } else if (status === "damage") {
+      setWasCharacterDamaged(true);
+      setTimeout(() => {
+        setWasCharacterDamaged(false);
+      }, 400);
+    }
+  };
 
   const toggleMode = () => {
     setMode(mode === "damage" ? "heal" : "damage");
@@ -36,10 +70,15 @@ const Hitpoints = () => {
     newTempHp: number;
     newCurrentHp: number;
     death?: boolean;
-  } => {
+  } | null => {
     if (value < 0) {
       setErrors({ damage: "Value cannot be negative" });
     }
+
+    if (!value) {
+      return null;
+    }
+
     let newTempHp: number = tempHp || 0;
     let newCurrentHp: number = currentHp;
     let death: boolean = false;
@@ -64,12 +103,17 @@ const Hitpoints = () => {
         // if the character has temporary hitpoints and the damage is not enough to break them
         if (tempHp > damageDealt) {
           newTempHp = tempHp - damageDealt;
+          flashTemporaryHp("damage");
         }
 
         // if the character has temporary hitpoints and the damage is enough to break them
         if (tempHp && tempHp <= damageDealt) {
           newTempHp = 0;
           newCurrentHp = effectiveHp - damageDealt;
+          flashTemporaryHp("damage");
+          if (tempHp < damageDealt) {
+            flashCurrentHp("damage");
+          }
 
           // if the character has temporary hitpoints and take damage that would kill them
           if (damageDealt >= maxHp + effectiveHp) {
@@ -93,6 +137,7 @@ const Hitpoints = () => {
           }
         }
 
+        flashCurrentHp("damage");
         returnValue = { newTempHp, newCurrentHp, death };
       }
 
@@ -111,20 +156,39 @@ const Hitpoints = () => {
       }
 
       setHeal("");
-
+      flashCurrentHp("heal");
       returnValue = { newTempHp, newCurrentHp };
     }
+
+    if (character?._id) {
+      updateCharacter(character?._id, {
+        ...character,
+        stats: {
+          ...character?.stats,
+          hitPointsCurrent: returnValue.newCurrentHp,
+          hitPointsTemp: returnValue.newTempHp,
+        },
+      } as Character);
+    }
+
+    return returnValue;
+  };
+
+  const addTemporaryHitpoints = () => {
+    if (!temporaryHitpoints) return;
+    const finalTemporaryHp =
+      Number(temporaryHitpoints) + (character?.stats?.hitPointsTemp || 0);
 
     updateCharacter(character?._id || "", {
       ...character,
       stats: {
         ...character?.stats,
-        hitPointsCurrent: returnValue.newCurrentHp,
-        hitPointsTemp: returnValue.newTempHp,
+        hitPointsTemp: finalTemporaryHp,
       },
     } as Character);
 
-    return returnValue;
+    flashTemporaryHp("heal");
+    setTemporaryHitpoints("");
   };
 
   return (
@@ -135,7 +199,15 @@ const Hitpoints = () => {
 
       <p className="text-center text-lg sm:text-xl text-dndRed">
         <span className="font-bold">Temporary hitpoints: </span>
-        {character?.stats?.hitPointsTemp || 0}
+        <span
+          className={clsx(
+            "transition-all duration-200",
+            temporaryHpAdded && "text-green-500",
+            wasTemporaryHpDamaged && "text-red-500"
+          )}
+        >
+          {character?.stats?.hitPointsTemp || 0}
+        </span>
       </p>
 
       <div className="flex flex-row gap-2 justify-around">
@@ -145,19 +217,27 @@ const Hitpoints = () => {
         </p>
         <p className="text-lg sm:text-lg text-dndRed">
           <span className="font-bold">Current hitpoints: </span>
-          {character?.stats?.hitPointsCurrent}
+          <span
+            className={clsx(
+              "transition-all duration-200",
+              wasCharacterDamaged && "text-red-500",
+              wasCharacterHealed && "text-green-500"
+            )}
+          >
+            {character?.stats?.hitPointsCurrent}
+          </span>
         </p>
       </div>
 
-      <div className="flex justify-center items-center gap-4 text-black font-scalySans">
+      <div className="flex justify-center items-center gap-4 text-black font-scalySans mt-2">
         <p>Damage</p>
         <Switch checked={mode === "heal"} onCheckedChange={toggleMode} />
         <p>Heal</p>
       </div>
 
-      <div className="flex justify-center items-end gap-10">
+      <div className="flex justify-center items-end gap-10 mt-2">
         {mode === "damage" ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             <p className="text-center font-bold font-mrEaves">Take Damage</p>
             <Input
               type="text"
@@ -181,7 +261,7 @@ const Hitpoints = () => {
             />
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col">
             <p className="text-center">Heal</p>
             <Input
               type="text"
@@ -221,6 +301,29 @@ const Hitpoints = () => {
           }
         >
           <Check />
+        </Button>
+      </div>
+
+      <div className="flex sm:justify-center justify-between items-center gap-10 mt-2">
+        <p className="font-scalySans italic">Add Temporary Hitpoints</p>
+        <input
+          type="text"
+          className="w-[70px] sm:w-[100px] text-center bg-transparent border-b border-black outline-none ring-0 focus:border-b-2"
+          value={temporaryHitpoints}
+          onChange={(e) => {
+            if (
+              isNaN(Number(e.target.value)) ||
+              e.target.value?.includes("+") ||
+              e.target.value?.includes("-")
+            ) {
+              return;
+            } else {
+              setTemporaryHitpoints(e.target.value);
+            }
+          }}
+        />
+        <Button onClick={addTemporaryHitpoints}>
+          <Plus />
         </Button>
       </div>
       {errors.damage && (

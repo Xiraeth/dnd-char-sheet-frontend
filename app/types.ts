@@ -13,6 +13,14 @@ export interface DeleteCharacterResponseType {
   status: number;
   message: string;
   character?: Character;
+  error?: string;
+}
+
+export interface UpdateCharacterResponseType {
+  status: number;
+  message: string;
+  error?: string;
+  character?: Character;
 }
 
 export interface CharacterContextType {
@@ -31,9 +39,7 @@ export interface CharacterContextType {
   updateCharacter: (
     characterId: string,
     character: Character
-  ) => Promise<DeleteCharacterResponseType>;
-  wasCharacterUpdated: boolean;
-  setWasCharacterUpdated: (wasCharacterUpdated: boolean) => void;
+  ) => Promise<UpdateCharacterResponseType>;
 }
 
 export interface Attack {

@@ -2,6 +2,7 @@ import {
   Character,
   CharacterContextType,
   DeleteCharacterResponseType,
+  UpdateCharacterResponseType,
 } from "@/app/types";
 import axios from "axios";
 import { useContext, createContext, useState } from "react";
@@ -18,13 +19,10 @@ const CharacterContext = createContext<CharacterContextType>({
       status: 200,
       message: "Character updated successfully",
     }),
-  wasCharacterUpdated: false,
-  setWasCharacterUpdated: () => {},
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   const [character, setCharacter] = useState<Character | null>(null);
-  const [wasCharacterUpdated, setWasCharacterUpdated] = useState(false);
 
   const deleteCharacter = async (
     characterId: string
@@ -55,7 +53,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   const updateCharacter = async (
     characterId: string,
     character: Character
-  ): Promise<DeleteCharacterResponseType> => {
+  ): Promise<UpdateCharacterResponseType> => {
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/${characterId}/update`,
@@ -64,6 +62,14 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
           withCredentials: true,
         }
       );
+
+      if (response.status === 400) {
+        return {
+          status: response.status,
+          message: "Character updated successfully",
+          error: response.data.error,
+        };
+      }
 
       setCharacter(response.data?.character);
 
@@ -125,8 +131,6 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         deleteCharacter,
         updateCharacterField,
         updateCharacter,
-        wasCharacterUpdated,
-        setWasCharacterUpdated,
       }}
     >
       {children}

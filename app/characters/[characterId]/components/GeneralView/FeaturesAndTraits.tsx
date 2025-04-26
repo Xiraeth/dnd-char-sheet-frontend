@@ -34,7 +34,9 @@ const FeaturesAndTraits = () => {
               return (
                 <div key={title} className="font-bookInsanity">
                   <p className="text-lg font-bold text-dndRed">{title}</p>
-                  <p>{description}</p>
+                  <pre className="w-fit font-scalySans text-base text-wrap">
+                    {description}
+                  </pre>
                   {source && (
                     <p className="text-black/80 my-1 italic font-scalySans">
                       Source: {source}
