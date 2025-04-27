@@ -117,7 +117,7 @@ const CreateCharacter = () => {
     setValue("abilities.charisma", 12);
 
     // Passive Wisdom
-    setValue("passiveWisdom", 16);
+    setValue("passiveWisdom", 13);
 
     // Stats
     setValue("stats.initiative", 2);
@@ -143,19 +143,83 @@ const CreateCharacter = () => {
     setValue("savingThrows.charisma.value", 1);
     setValue("savingThrows.charisma.hasProficiency", false);
 
-    // Skills - Setting a few key skills as examples
-    setValue("skills.arcana.value", 4);
+    // Skills - Setting all skills based on ability modifiers
+    // Strength skills
+    setValue("skills.athletics.value", getModifier(10)); // Strength modifier
+    setValue("skills.athletics.hasProficiency", false);
+    setValue("skills.athletics.hasExpertise", false);
+
+    // Dexterity skills
+    setValue("skills.acrobatics.value", getModifier(14)); // Dexterity modifier
+    setValue("skills.acrobatics.hasProficiency", false);
+    setValue("skills.acrobatics.hasExpertise", false);
+
+    setValue("skills.sleightOfHand.value", getModifier(14)); // Dexterity modifier
+    setValue("skills.sleightOfHand.hasProficiency", false);
+    setValue("skills.sleightOfHand.hasExpertise", false);
+
+    setValue("skills.stealth.value", getModifier(14)); // Dexterity modifier
+    setValue("skills.stealth.hasProficiency", false);
+    setValue("skills.stealth.hasExpertise", false);
+
+    // Intelligence skills
+    setValue("skills.arcana.value", getModifier(18) + getProficiencyBonus(5)); // Intelligence modifier + proficiency
     setValue("skills.arcana.hasProficiency", true);
     setValue("skills.arcana.hasExpertise", false);
-    setValue("skills.history.value", 4);
+
+    setValue("skills.history.value", getModifier(18) + getProficiencyBonus(5)); // Intelligence modifier + proficiency
     setValue("skills.history.hasProficiency", true);
     setValue("skills.history.hasExpertise", false);
-    setValue("skills.investigation.value", 4);
-    setValue("skills.investigation.hasProficiency", true);
+
+    setValue("skills.investigation.value", getModifier(18)); // Intelligence modifier
+    setValue("skills.investigation.hasProficiency", false);
     setValue("skills.investigation.hasExpertise", false);
-    setValue("skills.perception.value", 3);
+
+    setValue("skills.nature.value", getModifier(18)); // Intelligence modifier
+    setValue("skills.nature.hasProficiency", false);
+    setValue("skills.nature.hasExpertise", false);
+
+    setValue("skills.religion.value", getModifier(18)); // Intelligence modifier
+    setValue("skills.religion.hasProficiency", false);
+    setValue("skills.religion.hasExpertise", false);
+
+    // Wisdom skills
+    setValue("skills.animalHandling.value", getModifier(16)); // Wisdom modifier
+    setValue("skills.animalHandling.hasProficiency", false);
+    setValue("skills.animalHandling.hasExpertise", false);
+
+    setValue("skills.insight.value", getModifier(16)); // Wisdom modifier
+    setValue("skills.insight.hasProficiency", false);
+    setValue("skills.insight.hasExpertise", false);
+
+    setValue("skills.medicine.value", getModifier(16)); // Wisdom modifier
+    setValue("skills.medicine.hasProficiency", false);
+    setValue("skills.medicine.hasExpertise", false);
+
+    setValue("skills.perception.value", getModifier(16)); // Wisdom modifier
     setValue("skills.perception.hasProficiency", false);
     setValue("skills.perception.hasExpertise", false);
+
+    setValue("skills.survival.value", getModifier(16)); // Wisdom modifier
+    setValue("skills.survival.hasProficiency", false);
+    setValue("skills.survival.hasExpertise", false);
+
+    // Charisma skills
+    setValue("skills.deception.value", getModifier(12)); // Charisma modifier
+    setValue("skills.deception.hasProficiency", false);
+    setValue("skills.deception.hasExpertise", false);
+
+    setValue("skills.intimidation.value", getModifier(12)); // Charisma modifier
+    setValue("skills.intimidation.hasProficiency", false);
+    setValue("skills.intimidation.hasExpertise", false);
+
+    setValue("skills.performance.value", getModifier(12)); // Charisma modifier
+    setValue("skills.performance.hasProficiency", false);
+    setValue("skills.performance.hasExpertise", false);
+
+    setValue("skills.persuasion.value", getModifier(12)); // Charisma modifier
+    setValue("skills.persuasion.hasProficiency", false);
+    setValue("skills.persuasion.hasExpertise", false);
 
     // Spellcasting
     setValue("spellcasting.spellcastingClass", "Wizard");

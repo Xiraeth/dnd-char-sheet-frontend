@@ -142,6 +142,7 @@ export interface Skill {
   ability: keyof CharacterAbilities;
   hasProficiency: boolean;
   hasExpertise: boolean;
+  otherModifier?: number | string;
 }
 
 export interface CharacterSkills {

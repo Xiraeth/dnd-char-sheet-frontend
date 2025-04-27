@@ -128,7 +128,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`bg-bgTextureDarkened bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${bookinsanity.variable} ${scalySans.variable} ${mrEaves.variable} min-h-screen`}
+        className={`mt-0 bg-bgTextureDarkened bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${bookinsanity.variable} ${scalySans.variable} ${mrEaves.variable} min-h-screen`}
         suppressHydrationWarning
       >
         <ThemeProvider>

@@ -14,28 +14,21 @@ import InventoryCard from "@/app/create-character/components/InventoryCard";
 import AppearanceCard from "@/app/create-character/components/AppearanceCard";
 import PersonalityCard from "@/app/create-character/components/PersonalityCard";
 import { Button } from "@/components/ui/button";
-import { useForm, useFormContext } from "react-hook-form";
-import { Character } from "@/app/types";
+import { useFormContext } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
+import { useParams } from "next/navigation";
 
 const CharacterForm = ({
   isSpellcaster,
-  initialValues,
   setIsSpellcaster,
 }: {
   isSpellcaster: boolean;
   setIsSpellcaster: (isSpellcaster: boolean) => void;
-  initialValues?: Partial<Character> | null;
 }) => {
-  const { watch } = useFormContext();
+  const characterId = useParams() as { characterId: string };
+  const { watch, setError, clearErrors } = useFormContext();
   const characterClass = watch("basicInfo.class");
   const race = watch("basicInfo.race");
-
-  const methods = useForm<Character>({
-    defaultValues: initialValues || {},
-  });
-
-  const { setError, clearErrors } = methods;
 
   const validateRace = () => {
     if (!race?.length) {
@@ -87,7 +80,7 @@ const CharacterForm = ({
       {/* personality traits */}
       <PersonalityCard />
       <Button type="submit" className="w-full" onClick={validateRace}>
-        Create Character
+        {characterId ? "Save changes" : "Create Character"}
       </Button>
     </div>
   );

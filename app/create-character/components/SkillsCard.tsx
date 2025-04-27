@@ -42,8 +42,10 @@ const SkillsCard = () => {
       <CardContent className="space-y-6">
         {/* Strength Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center ">Strength</p>
-          <div className="lg:w-[350px] w-full mx-auto">
+          <p className="text-xl font-bold mb-2 text-center font-mrEaves">
+            Strength
+          </p>
+          <div className="w-full mx-auto">
             {STRENGTH_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
                 const hasProficiency = watch(
@@ -71,76 +73,100 @@ const SkillsCard = () => {
 
                 const modifierColour =
                   modifier > 0
-                    ? "text-green-500"
+                    ? "text-green-600"
                     : modifier < 0
                     ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
+                    className="flex flex-col gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card font-bookInsanity"
                     key={skill.value}
                   >
-                    <p>{skill.label}</p>
-
-                    <div className="flex gap-4 items-center">
-                      <p className={clsx(modifierColour)}>
-                        ({modifier > 0 ? "+" + modifier : modifier})
-                      </p>
-                      <Switch
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                        onCheckedChange={(checked) => {
-                          setValue(
+                    <div className="flex w-full justify-between">
+                      <p>{skill.label}</p>
+                      <div className="flex gap-4 items-center">
+                        <p className={clsx(modifierColour, "font-bold")}>
+                          ({modifier > 0 ? "+" + modifier : modifier})
+                        </p>
+                        <Switch
+                          {...register(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`,
-                            checked
-                          );
+                            }.hasProficiency`
+                          )}
+                          onCheckedChange={(checked) => {
+                            setValue(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`,
+                              checked
+                            );
 
-                          if (!checked) {
+                            if (!checked) {
+                              setValue(
+                                `skills.${
+                                  skill.value as keyof CharacterSkills
+                                }.hasExpertise`,
+                                false
+                              );
+                            }
+                          }}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasProficiency`
+                          )}
+                        />
+                        <Checkbox
+                          {...register(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          onCheckedChange={(checked) => {
                             setValue(
                               `skills.${
                                 skill.value as keyof CharacterSkills
                               }.hasExpertise`,
-                              false
+                              checked === true ? true : false
                             );
+                          }}
+                          disabled={
+                            !watch(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`
+                            )
                           }
-                        }}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                      />
-                      <Checkbox
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        onCheckedChange={(checked) => {
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-scalySans flex gap-2 italic text-gray-700">
+                      <label>Other modifier (+/-)</label>
+                      <input
+                        className="bg-transparent border-b border-b-black/30 focus:border-b-black outline-none w-[50px] text-center"
+                        type="number"
+                        onChange={(e) => {
                           setValue(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasExpertise`,
-                            checked === true ? true : false
+                            }.otherModifier`,
+                            Number(e.target.value)
                           );
                         }}
-                        disabled={
-                          !watch(
+                        value={
+                          watch(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`
-                          )
+                            }.otherModifier`
+                          ) || ""
                         }
                       />
                     </div>
@@ -153,8 +179,10 @@ const SkillsCard = () => {
 
         {/* Dexterity Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center">Dexterity</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
+          <p className="text-xl font-bold mb-2 text-center font-mrEaves">
+            Dexterity
+          </p>
+          <div className="w-full mx-auto flex flex-col gap-4">
             {DEXTERITY_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
                 const hasProficiency = watch(
@@ -182,76 +210,100 @@ const SkillsCard = () => {
 
                 const modifierColour =
                   modifier > 0
-                    ? "text-green-500"
+                    ? "text-green-600"
                     : modifier < 0
                     ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
+                    className="flex flex-col gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card font-bookInsanity"
                     key={skill.value}
                   >
-                    <p>{skill.label}</p>
-
-                    <div className="flex gap-4 items-center">
-                      <p className={clsx(modifierColour)}>
-                        ({modifier > 0 ? "+" + modifier : modifier})
-                      </p>
-                      <Switch
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                        onCheckedChange={(checked) => {
-                          setValue(
+                    <div className="flex w-full justify-between">
+                      <p>{skill.label}</p>
+                      <div className="flex gap-4 items-center">
+                        <p className={clsx(modifierColour, "font-bold")}>
+                          ({modifier > 0 ? "+" + modifier : modifier})
+                        </p>
+                        <Switch
+                          {...register(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`,
-                            checked
-                          );
+                            }.hasProficiency`
+                          )}
+                          onCheckedChange={(checked) => {
+                            setValue(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`,
+                              checked
+                            );
 
-                          if (!checked) {
+                            if (!checked) {
+                              setValue(
+                                `skills.${
+                                  skill.value as keyof CharacterSkills
+                                }.hasExpertise`,
+                                false
+                              );
+                            }
+                          }}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasProficiency`
+                          )}
+                        />
+                        <Checkbox
+                          {...register(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          onCheckedChange={(checked) => {
                             setValue(
                               `skills.${
                                 skill.value as keyof CharacterSkills
                               }.hasExpertise`,
-                              false
+                              checked === true ? true : false
                             );
+                          }}
+                          disabled={
+                            !watch(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`
+                            )
                           }
-                        }}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                      />
-                      <Checkbox
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        onCheckedChange={(checked) => {
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-scalySans flex gap-2 italic text-gray-700">
+                      <label>Other modifier (+/-)</label>
+                      <input
+                        className="bg-transparent border-b border-b-black/30 focus:border-b-black outline-none w-[50px] text-center"
+                        type="number"
+                        onChange={(e) => {
                           setValue(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasExpertise`,
-                            checked === true ? true : false
+                            }.otherModifier`,
+                            Number(e.target.value)
                           );
                         }}
-                        disabled={
-                          !watch(
+                        value={
+                          watch(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`
-                          )
+                            }.otherModifier`
+                          ) || ""
                         }
                       />
                     </div>
@@ -264,10 +316,10 @@ const SkillsCard = () => {
 
         {/* Intelligence Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center">
+          <p className="text-xl font-bold mb-2 text-center font-mrEaves">
             Intelligence
           </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
+          <div className="w-full mx-auto flex flex-col gap-4">
             {INTELLIGENCE_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
                 const hasProficiency = watch(
@@ -295,76 +347,100 @@ const SkillsCard = () => {
 
                 const modifierColour =
                   modifier > 0
-                    ? "text-green-500"
+                    ? "text-green-600"
                     : modifier < 0
                     ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
+                    className="flex flex-col gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card font-bookInsanity"
                     key={skill.value}
                   >
-                    <p>{skill.label}</p>
-
-                    <div className="flex gap-4 items-center">
-                      <p className={clsx(modifierColour)}>
-                        ({modifier > 0 ? "+" + modifier : modifier})
-                      </p>
-                      <Switch
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                        onCheckedChange={(checked) => {
-                          setValue(
+                    <div className="flex w-full justify-between">
+                      <p>{skill.label}</p>
+                      <div className="flex gap-4 items-center">
+                        <p className={clsx(modifierColour, "font-bold")}>
+                          ({modifier > 0 ? "+" + modifier : modifier})
+                        </p>
+                        <Switch
+                          {...register(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`,
-                            checked
-                          );
+                            }.hasProficiency`
+                          )}
+                          onCheckedChange={(checked) => {
+                            setValue(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`,
+                              checked
+                            );
 
-                          if (!checked) {
+                            if (!checked) {
+                              setValue(
+                                `skills.${
+                                  skill.value as keyof CharacterSkills
+                                }.hasExpertise`,
+                                false
+                              );
+                            }
+                          }}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasProficiency`
+                          )}
+                        />
+                        <Checkbox
+                          {...register(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          onCheckedChange={(checked) => {
                             setValue(
                               `skills.${
                                 skill.value as keyof CharacterSkills
                               }.hasExpertise`,
-                              false
+                              checked === true ? true : false
                             );
+                          }}
+                          disabled={
+                            !watch(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`
+                            )
                           }
-                        }}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                      />
-                      <Checkbox
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        onCheckedChange={(checked) => {
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-scalySans flex gap-2 italic text-gray-700">
+                      <label>Other modifier (+/-)</label>
+                      <input
+                        className="bg-transparent border-b border-b-black/30 focus:border-b-black outline-none w-[50px] text-center"
+                        type="number"
+                        onChange={(e) => {
                           setValue(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasExpertise`,
-                            checked === true ? true : false
+                            }.otherModifier`,
+                            Number(e.target.value)
                           );
                         }}
-                        disabled={
-                          !watch(
+                        value={
+                          watch(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`
-                          )
+                            }.otherModifier`
+                          ) || ""
                         }
                       />
                     </div>
@@ -377,8 +453,10 @@ const SkillsCard = () => {
 
         {/* Wisdom Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center">Wisdom</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
+          <p className="text-xl font-bold mb-2 text-center font-mrEaves">
+            Wisdom
+          </p>
+          <div className="w-full mx-auto flex flex-col gap-4">
             {WISDOM_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
                 const hasProficiency = watch(
@@ -406,76 +484,100 @@ const SkillsCard = () => {
 
                 const modifierColour =
                   modifier > 0
-                    ? "text-green-500"
+                    ? "text-green-600"
                     : modifier < 0
                     ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
+                    className="flex flex-col gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card font-bookInsanity"
                     key={skill.value}
                   >
-                    <p>{skill.label}</p>
-
-                    <div className="flex gap-4 items-center">
-                      <p className={clsx(modifierColour)}>
-                        ({modifier > 0 ? "+" + modifier : modifier})
-                      </p>
-                      <Switch
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                        onCheckedChange={(checked) => {
-                          setValue(
+                    <div className="flex w-full justify-between">
+                      <p>{skill.label}</p>
+                      <div className="flex gap-4 items-center">
+                        <p className={clsx(modifierColour, "font-bold")}>
+                          ({modifier > 0 ? "+" + modifier : modifier})
+                        </p>
+                        <Switch
+                          {...register(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`,
-                            checked
-                          );
+                            }.hasProficiency`
+                          )}
+                          onCheckedChange={(checked) => {
+                            setValue(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`,
+                              checked
+                            );
 
-                          if (!checked) {
+                            if (!checked) {
+                              setValue(
+                                `skills.${
+                                  skill.value as keyof CharacterSkills
+                                }.hasExpertise`,
+                                false
+                              );
+                            }
+                          }}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasProficiency`
+                          )}
+                        />
+                        <Checkbox
+                          {...register(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          onCheckedChange={(checked) => {
                             setValue(
                               `skills.${
                                 skill.value as keyof CharacterSkills
                               }.hasExpertise`,
-                              false
+                              checked === true ? true : false
                             );
+                          }}
+                          disabled={
+                            !watch(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`
+                            )
                           }
-                        }}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                      />
-                      <Checkbox
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        onCheckedChange={(checked) => {
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-scalySans flex gap-2 italic text-gray-700">
+                      <label>Other modifier (+/-)</label>
+                      <input
+                        className="bg-transparent border-b border-b-black/30 focus:border-b-black outline-none w-[50px] text-center"
+                        type="number"
+                        onChange={(e) => {
                           setValue(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasExpertise`,
-                            checked === true ? true : false
+                            }.otherModifier`,
+                            Number(e.target.value)
                           );
                         }}
-                        disabled={
-                          !watch(
+                        value={
+                          watch(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`
-                          )
+                            }.otherModifier`
+                          ) || ""
                         }
                       />
                     </div>
@@ -488,8 +590,10 @@ const SkillsCard = () => {
 
         {/* Charisma Skills */}
         <div>
-          <p className="text-base font-semibold mb-2 text-center">Charisma</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4">
+          <p className="text-xl font-bold mb-2 text-center font-mrEaves">
+            Charisma
+          </p>
+          <div className="w-full mx-auto flex flex-col gap-4">
             {CHARISMA_SKILLS.map(
               (skill: { label: string; value: string; ability: string }) => {
                 const hasProficiency = watch(
@@ -517,76 +621,100 @@ const SkillsCard = () => {
 
                 const modifierColour =
                   modifier > 0
-                    ? "text-green-500"
+                    ? "text-green-600"
                     : modifier < 0
                     ? "text-red-600"
                     : "text-black";
 
                 return (
                   <div
-                    className="flex gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card"
+                    className="flex flex-col gap-2 items-center justify-between w-full border-[1px] border-black/20 rounded-lg px-4 py-2 shadow-card font-bookInsanity"
                     key={skill.value}
                   >
-                    <p>{skill.label}</p>
-
-                    <div className="flex gap-4 items-center">
-                      <p className={clsx(modifierColour)}>
-                        ({modifier > 0 ? "+" + modifier : modifier})
-                      </p>
-                      <Switch
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                        onCheckedChange={(checked) => {
-                          setValue(
+                    <div className="flex w-full justify-between">
+                      <p>{skill.label}</p>
+                      <div className="flex gap-4 items-center">
+                        <p className={clsx(modifierColour, "font-bold")}>
+                          ({modifier > 0 ? "+" + modifier : modifier})
+                        </p>
+                        <Switch
+                          {...register(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`,
-                            checked
-                          );
+                            }.hasProficiency`
+                          )}
+                          onCheckedChange={(checked) => {
+                            setValue(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`,
+                              checked
+                            );
 
-                          if (!checked) {
+                            if (!checked) {
+                              setValue(
+                                `skills.${
+                                  skill.value as keyof CharacterSkills
+                                }.hasExpertise`,
+                                false
+                              );
+                            }
+                          }}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasProficiency`
+                          )}
+                        />
+                        <Checkbox
+                          {...register(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          checked={watch(
+                            `skills.${
+                              skill.value as keyof CharacterSkills
+                            }.hasExpertise`
+                          )}
+                          onCheckedChange={(checked) => {
                             setValue(
                               `skills.${
                                 skill.value as keyof CharacterSkills
                               }.hasExpertise`,
-                              false
+                              checked === true ? true : false
                             );
+                          }}
+                          disabled={
+                            !watch(
+                              `skills.${
+                                skill.value as keyof CharacterSkills
+                              }.hasProficiency`
+                            )
                           }
-                        }}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasProficiency`
-                        )}
-                      />
-                      <Checkbox
-                        {...register(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        checked={watch(
-                          `skills.${
-                            skill.value as keyof CharacterSkills
-                          }.hasExpertise`
-                        )}
-                        onCheckedChange={(checked) => {
+                        />
+                      </div>
+                    </div>
+
+                    <div className="font-scalySans flex gap-2 italic text-gray-700">
+                      <label>Other modifier (+/-)</label>
+                      <input
+                        className="bg-transparent border-b border-b-black/30 focus:border-b-black outline-none w-[50px] text-center"
+                        type="number"
+                        onChange={(e) => {
                           setValue(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasExpertise`,
-                            checked === true ? true : false
+                            }.otherModifier`,
+                            Number(e.target.value)
                           );
                         }}
-                        disabled={
-                          !watch(
+                        value={
+                          watch(
                             `skills.${
                               skill.value as keyof CharacterSkills
-                            }.hasProficiency`
-                          )
+                            }.otherModifier`
+                          ) || ""
                         }
                       />
                     </div>

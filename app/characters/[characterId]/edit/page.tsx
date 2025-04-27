@@ -4,7 +4,7 @@ import BackButton from "@/components/BackButton";
 import { Character } from "@/app/types";
 import { useForm, FormProvider } from "react-hook-form";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getModifier, getProficiencyBonus } from "@/lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -13,21 +13,36 @@ import CharacterForm from "@/app/create-character/components/CharacterForm";
 import CharacterProvider, {
   useCharacter,
 } from "@/app/characters/[characterId]/components/CharacterProvider";
+import { Loader } from "lucide-react";
 
 const EditCharacter = () => {
-  const { character } = useCharacter();
+  const { character, isLoading, setCharacter } = useCharacter();
 
-  console.log(character);
   const [isSpellcaster, setIsSpellcaster] = useState(false);
   const router = useRouter();
 
   const methods = useForm<Character>({
-    defaultValues: character || {},
+    defaultValues: {},
   });
 
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, reset } = methods;
 
-  const onSubmit = async (data: Character) => {
+  // Reset form when character data is loaded
+  useEffect(() => {
+    if (character) {
+      reset(character);
+
+      // Set isSpellcaster based on character data
+      if (
+        character.basicInfo?.class?.toLowerCase() === "custom" &&
+        character.spellcasting
+      ) {
+        setIsSpellcaster(true);
+      }
+    }
+  }, [character, reset]);
+
+  const preSubmit = async (data: Character) => {
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
     const hitpoints = data.stats.hitPointsTotal;
@@ -42,11 +57,29 @@ const EditCharacter = () => {
 
     setValue("passiveWisdom", passiveWisdom);
     setValue("stats.hitPointsCurrent", hitpoints);
+    setValue("stats.hitPointsTemp", 0);
     setValue("stats.hitDice.remaining", level);
     setValue("stats.hitDice.total", level);
 
+    onSubmit({
+      ...data,
+      passiveWisdom,
+      stats: {
+        ...data.stats,
+        hitPointsCurrent: hitpoints,
+        hitPointsTemp: 0,
+        hitDice: {
+          remaining: level,
+          total: level,
+          diceType: data.stats.hitDice.diceType,
+        },
+      },
+    });
+  };
+
+  const onSubmit = async (data: Character) => {
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/update`,
         {
           ...data,
@@ -57,8 +90,9 @@ const EditCharacter = () => {
       );
 
       if (response.status === 200) {
-        router.push("/");
-        toast.success("Character created successfully");
+        router.push(`/characters/${character?._id}`);
+        toast.success("Character updated successfully");
+        setCharacter(response.data);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -73,26 +107,45 @@ const EditCharacter = () => {
     }
   };
 
+  // ---------- return statements ----------
+
+  if (isLoading)
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Loader size={24} className="animate-spin" />
+      </div>
+    );
+
   if (!character) {
-    return <div>Character not found</div>;
+    return (
+      <div className="w-full flex justify-center items-center text-red-500 text-2xl">
+        Character not found
+      </div>
+    );
   }
 
   return (
+    <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
+      <BackButton url={`/characters/${character?._id}`} />
+      <p className="text-2xl font-bold text-center">Edit character</p>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(preSubmit)} className="space-y-8 ">
+          <CharacterForm
+            isSpellcaster={isSpellcaster}
+            setIsSpellcaster={setIsSpellcaster}
+          />
+        </form>
+      </FormProvider>
+    </div>
+  );
+};
+
+const EditCharacterWrapper = () => {
+  return (
     <CharacterProvider>
-      <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
-        <BackButton url={`/characters/${character?._id}`} />
-        <p className="text-2xl font-bold text-center">Edit character</p>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 ">
-            <CharacterForm
-              isSpellcaster={isSpellcaster}
-              setIsSpellcaster={setIsSpellcaster}
-              initialValues={character}
-            />
-          </form>
-        </FormProvider>
-      </div>
+      <EditCharacter />
     </CharacterProvider>
   );
 };
-export default EditCharacter;
+
+export default EditCharacterWrapper;

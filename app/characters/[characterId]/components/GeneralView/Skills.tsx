@@ -55,10 +55,10 @@ const Skills = () => {
                     hasExpertise,
                   } = skillData || {};
 
-                  const finalSkillValue = hasProficiency
-                    ? skillValue + proficiencyBonus
-                    : hasExpertise
+                  const finalSkillValue = hasExpertise
                     ? skillValue + proficiencyBonus * 2
+                    : hasProficiency
+                    ? skillValue + proficiencyBonus
                     : skillValue;
 
                   const modifierSign = finalSkillValue > 0 ? "+" : "";
@@ -74,7 +74,7 @@ const Skills = () => {
                           <Asterisk className="absolute -top-1 -right-3 text-indigo-500 size-4" />
                         )}
                         {hasExpertise && (
-                          <Asterisk className="absolute -top-1 -right-3 text-indigo-500 size-4" />
+                          <Asterisk className="absolute -top-1 -right-6 text-indigo-500 size-4" />
                         )}
                       </div>
 
@@ -84,7 +84,10 @@ const Skills = () => {
                         )}
                       >
                         ({modifierSign}
-                        {finalSkillValue})
+                        {finalSkillValue +
+                          ((skillData?.otherModifier as number | undefined) ||
+                            0)}
+                        )
                       </span>
                     </div>
                   );
