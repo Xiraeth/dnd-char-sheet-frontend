@@ -4,7 +4,7 @@ import { getModifier, getProficiencyBonus } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 import clsx from "clsx";
 import { Switch } from "@/components/ui/switch";
-import Link from "next/link";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DEXTERITY_SKILLS,
@@ -24,16 +24,8 @@ const SkillsCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-center flex justify-center items-center gap-4 w-full">
-          <p className="relative">
-            Skills{" "}
-            <Link
-              href="#skills-extra"
-              className="absolute -top-2 -right-2 text-blue-500 text-lg cursor-pointer"
-            >
-              *
-            </Link>
-          </p>
+        <CardTitle className="text-center flex justify-center items-center gap-2 w-full">
+          <p className="relative">Skills </p>
           <span className="text-sm opacity-75 font-normal italic">
             (switches for proficiency, checkboxes for expertise)
           </span>
@@ -723,16 +715,6 @@ const SkillsCard = () => {
               }
             )}
           </div>
-        </div>
-
-        <div
-          id="skills-extra"
-          className="mt-4 text-center opacity-75 italic text-sm relative"
-        >
-          <span className="text-blue-500 text-xl mr-2">*</span>
-          In case you want to add extra modifiers to your character&apos;s
-          skills or saving throws, like a paladin&apos;s Aura of Protection, you
-          can do so after completing the creation.
         </div>
       </CardContent>
     </Card>

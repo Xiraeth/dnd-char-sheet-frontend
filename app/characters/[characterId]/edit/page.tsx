@@ -101,9 +101,9 @@ const EditCharacter = () => {
             error.response?.data?.message ||
             "An error occurred"
         );
+      } else {
+        toast.error("Server is probably down.");
       }
-
-      toast.error("Server is probably down.");
     }
   };
 

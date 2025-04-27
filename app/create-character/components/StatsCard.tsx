@@ -18,8 +18,11 @@ const StatsCard = () => {
   const {
     register,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext<Character>();
+
+  // console.log(watch("stats.hitDice.diceType"));
 
   return (
     <Card>
@@ -109,6 +112,7 @@ const StatsCard = () => {
               const sidesOfSelectedDice = value?.split("d")[1];
               setValue("stats.hitDice.diceType", parseInt(sidesOfSelectedDice));
             }}
+            value={`d${watch("stats.hitDice.diceType")}`}
           >
             <SelectTrigger>
               <SelectValue placeholder="Hit Dice Type" />

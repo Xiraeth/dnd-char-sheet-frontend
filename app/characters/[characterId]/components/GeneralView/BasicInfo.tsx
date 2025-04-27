@@ -52,9 +52,17 @@ const BasicInfo = () => {
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-end gap-1 w-full justify-center sm:justify-between">
       <div className="flex justify-between sm:justify-start gap-0 sm:gap-20 w-full sm:w-fit items-center">
-        <p className="text-4xl sm:text-6xl text-dndRed font-scalySans">
+        <div className="text-4xl sm:text-6xl text-dndRed font-scalySans flex gap-2 items-center">
+          {character?.appearance?.photo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={character?.appearance?.photo}
+              alt={character?.basicInfo?.name}
+              className="rounded-full w-[50px] h-[50px]"
+            />
+          )}
           {character?.basicInfo?.name}
-        </p>
+        </div>
 
         <Popover>
           <PopoverTrigger asChild className="sm:absolute sm:right-6 sm:top-6">
