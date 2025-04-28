@@ -12,7 +12,15 @@ export const ALIGNMENTS = [
   "Chaotic Evil",
 ];
 
-export const DICE_OPTIONS = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"];
+export const DICE_OPTIONS = [
+  { label: "d4", value: 4 },
+  { label: "d6", value: 6 },
+  { label: "d8", value: 8 },
+  { label: "d10", value: 10 },
+  { label: "d12", value: 12 },
+  { label: "d20", value: 20 },
+  { label: "d100", value: 100 },
+];
 
 export const SPELL_SCHOOLS = [
   { label: "Abjuration", value: "abjuration" },
@@ -192,20 +200,20 @@ export const CHARISMA_SKILLS = [
 ];
 
 export const DAMAGE_TYPES = [
-  { label: "None", value: "none" },
-  { label: "Acid", value: "acid" },
-  { label: "Cold", value: "cold" },
-  { label: "Fire", value: "fire" },
-  { label: "Lightning", value: "lightning" },
-  { label: "Poison", value: "poison" },
-  { label: "Thunder", value: "thunder" },
-  { label: "Necrotic", value: "necrotic" },
-  { label: "Psychic", value: "psychic" },
-  { label: "Radiant", value: "radiant" },
-  { label: "Slashing", value: "slashing" },
-  { label: "Bludgeoning", value: "bludgeoning" },
-  { label: "Piercing", value: "piercing" },
-  { label: "Force", value: "force" },
+  { label: "None", value: "None" },
+  { label: "Acid", value: "Acid" },
+  { label: "Cold", value: "Cold" },
+  { label: "Fire", value: "Fire" },
+  { label: "Lightning", value: "Lightning" },
+  { label: "Poison", value: "Poison" },
+  { label: "Thunder", value: "Thunder" },
+  { label: "Necrotic", value: "Necrotic" },
+  { label: "Psychic", value: "Psychic" },
+  { label: "Radiant", value: "Radiant" },
+  { label: "Slashing", value: "Slashing" },
+  { label: "Bludgeoning", value: "Bludgeoning" },
+  { label: "Piercing", value: "Piercing" },
+  { label: "Force", value: "Force" },
 ];
 
 export const SKILLS_PER_ABILITY = {

@@ -299,12 +299,17 @@ const CreateCharacter = () => {
     setValue("attacks", [
       {
         name: "Fire Bolt",
-        attackRoll: "+7",
-        damageRoll: "1d10",
+        attackRoll: { modifier: 7 },
+        damageRoll: {
+          numberOfDice: 1,
+          diceType: 10,
+          abilityUsed: "intelligence",
+        },
         damageType: "Fire",
         range: "120 ft.",
         description:
           "A cantrip that hurls a mote of fire at a creature or object within range.",
+        isProficient: true,
       },
     ]);
 

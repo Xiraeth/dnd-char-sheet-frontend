@@ -79,6 +79,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (response.status === 200) {
         sessionStorage.setItem("userLoggedOut", "true");
+        localStorage.removeItem("dnd-char-sheet-user");
         setUser(null);
       } else {
         throw new Error("Failed to log out");

@@ -1,7 +1,7 @@
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
 import clsx from "clsx";
 
-export const Stats = ({ isCombatPage = false }: { isCombatPage?: boolean }) => {
+const Stats = ({ isCombatPage = false }: { isCombatPage?: boolean }) => {
   const { character } = useCharacter();
 
   return (
@@ -55,3 +55,5 @@ export const Stats = ({ isCombatPage = false }: { isCombatPage?: boolean }) => {
     </div>
   );
 };
+
+export default Stats;

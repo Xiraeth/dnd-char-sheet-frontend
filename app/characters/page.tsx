@@ -8,6 +8,7 @@ import axios from "axios";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 type CharactersResponse = {
   success: boolean;
   count: number;
@@ -15,17 +16,28 @@ type CharactersResponse = {
 };
 
 const Characters = () => {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
   const [characters, setCharacters] = useState<CharactersResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [areCharactersLoading, setAreCharactersLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    if (!user) return;
+    setIsMounted(true);
+  }, [user, isLoading]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    if (!user && isMounted) {
+      toast.error("You must be logged in to view your characters");
+      router.push("/");
+      return;
+    }
 
     try {
+      setAreCharactersLoading(true);
       const fetchCharacters = async () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_URL}/${user?.id}/characters`,
@@ -35,11 +47,12 @@ const Characters = () => {
         );
 
         setCharacters(response.data);
-        setIsLoading(false);
+        setAreCharactersLoading(false);
       };
 
       fetchCharacters();
     } catch (err) {
+      setAreCharactersLoading(false);
       if (axios.isAxiosError(err)) {
         setError(
           err.response?.data?.error ||
@@ -49,9 +62,8 @@ const Characters = () => {
       } else {
         setError("An error occurred. Server is probably down.");
       }
-      setIsLoading(false);
     }
-  }, [user]);
+  }, [user, isMounted, isLoading]);
 
   const handleCharacterClick = (characterId?: string) => {
     if (characterId) {
@@ -59,7 +71,7 @@ const Characters = () => {
     }
   };
 
-  if (isLoading)
+  if (isLoading || areCharactersLoading)
     return (
       <div className="h-screen flex flex-col items-center justify-center">
         <Loader className="animate-spin" />

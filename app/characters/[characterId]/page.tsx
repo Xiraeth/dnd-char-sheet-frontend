@@ -61,7 +61,7 @@ const CharacterPage = () => {
     <div>
       <BackButton url="/characters" onClick={resetViewMode} />
 
-      <div id="content" className="p-4 pt-10 sm:mt-0 sm:p-12">
+      <div id="content" className="p-4 pt-10 sm:mt-0 sm:pt-4">
         <ViewMode viewMode={viewMode} setViewMode={setViewMode} />
 
         {viewMode === "General" && <GeneralPage />}

@@ -11,37 +11,34 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { DAMAGE_TYPES, ABILITIES } from "@/app/constants";
+import { DAMAGE_TYPES, ABILITIES, DICE_OPTIONS } from "@/app/constants";
 import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-
-interface Attack {
-  id?: string;
-  name: string;
-  attackRoll?: string;
-  damageRoll?: string;
-  damageType?: string;
-  range?: string;
-  description?: string;
-  abilitySave?: string;
-  areaOfEffect?: string;
-}
+import { Attack, CharacterAbilities } from "@/app/types";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const DEFAULT_ATTACK: Attack = {
   name: "",
-  attackRoll: "",
-  damageRoll: "",
+  attackRoll: {},
+  damageRoll: {
+    numberOfDice: 0,
+    diceType: 4,
+  },
   damageType: "",
   range: "",
   areaOfEffect: "",
   description: "",
   abilitySave: "",
+  isProficient: false,
 };
 
 const AttacksCard = () => {
   const { watch, setValue } = useFormContext();
   const [isEditAttackFormOpen, setIsEditAttackFormOpen] = useState(false);
   const [attack, setAttack] = useState<Attack>(DEFAULT_ATTACK);
+  const [attackType, setAttackType] = useState<"save" | "roll">("roll");
   const [errors, setErrors] = useState<Partial<Attack>>({});
   const attacks = watch("attacks");
 
@@ -77,6 +74,7 @@ const AttacksCard = () => {
 
   const handleCancel = () => {
     setAttack(DEFAULT_ATTACK);
+    setErrors({});
 
     setIsEditAttackFormOpen(false);
   };
@@ -120,8 +118,24 @@ const AttacksCard = () => {
 
         {isEditAttackFormOpen && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+            <div className="col-span-full flex justify-center items-center gap-4">
+              <p>Attack Roll</p>
+              <Switch
+                defaultChecked={false}
+                checked={attackType === "save"}
+                onCheckedChange={() =>
+                  setAttackType(attackType === "roll" ? "save" : "roll")
+                }
+              />
+              <p>Ability save</p>
+            </div>
+
             <div>
+              <Label htmlFor="name" className="text-xs sm:text-sm">
+                Name
+              </Label>
               <Input
+                id="name"
                 placeholder="Name"
                 value={attack.name}
                 onChange={(e) => setAttack({ ...attack, name: e.target.value })}
@@ -131,61 +145,205 @@ const AttacksCard = () => {
               )}
             </div>
 
-            <Input
-              placeholder="Attack Roll"
-              value={attack.attackRoll}
-              onChange={(e) =>
-                setAttack({ ...attack, attackRoll: e.target.value })
-              }
-            />
+            <div>
+              <Label
+                htmlFor="damageRoll.numberOfDice"
+                className="text-xs sm:text-sm"
+              >
+                Number of Dice
+              </Label>
+              <Input
+                id="damageRoll.numberOfDice"
+                placeholder="Number of Dice"
+                value={attack.damageRoll?.numberOfDice || ""}
+                type="text"
+                onChange={(e) => {
+                  if (e.target.value === "") {
+                    setAttack({
+                      ...attack,
+                      damageRoll: { ...attack.damageRoll, numberOfDice: 0 },
+                    });
+                    return;
+                  }
 
-            <Input
-              placeholder="Damage Roll"
-              value={attack.damageRoll}
-              onChange={(e) =>
-                setAttack({ ...attack, damageRoll: e.target.value })
-              }
-            />
+                  if (isNaN(parseInt(e.target.value))) {
+                    return;
+                  }
+                  setAttack({
+                    ...attack,
+                    damageRoll: {
+                      ...attack.damageRoll,
+                      numberOfDice: parseInt(e.target.value),
+                    },
+                  });
+                }}
+              />
+            </div>
 
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Damage Type" />
-              </SelectTrigger>
-              <SelectContent>
-                {DAMAGE_TYPES?.map((damageType) => (
-                  <SelectItem key={damageType.value} value={damageType.value}>
-                    {damageType.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div>
+              <Label
+                htmlFor="damageRoll.diceType"
+                className="text-xs sm:text-sm"
+              >
+                Dice Type
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setAttack({
+                    ...attack,
+                    damageRoll: {
+                      ...attack.damageRoll,
+                      diceType: parseInt(value),
+                    },
+                  });
+                }}
+                value={attack.damageRoll.diceType?.toString() || "4"}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Dice Type" />
+                </SelectTrigger>
+                <SelectContent id="damageRoll.diceType">
+                  {DICE_OPTIONS.map((dice) => (
+                    <SelectItem key={dice.value} value={dice.value.toString()}>
+                      {dice.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Input
-              placeholder="Range"
-              value={attack.range}
-              onChange={(e) => setAttack({ ...attack, range: e.target.value })}
-            />
+            <div>
+              <Label htmlFor="damageType" className="text-xs sm:text-sm">
+                Damage Type
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setAttack({ ...attack, damageType: value });
+                }}
+                value={attack.damageType}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Damage Type" />
+                </SelectTrigger>
+                <SelectContent id="damageType">
+                  {DAMAGE_TYPES?.map((damageType) => (
+                    <SelectItem key={damageType.value} value={damageType.value}>
+                      {damageType.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Input
-              placeholder="Area of Effect"
-              value={attack.areaOfEffect}
-              onChange={(e) =>
-                setAttack({ ...attack, areaOfEffect: e.target.value })
-              }
-            />
+            <div>
+              <Label htmlFor="range" className="text-xs sm:text-sm">
+                Range
+              </Label>
+              <Input
+                id="range"
+                placeholder="Range"
+                value={attack.range}
+                onChange={(e) =>
+                  setAttack({ ...attack, range: e.target.value })
+                }
+              />
+            </div>
 
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Ability save" />
-              </SelectTrigger>
-              <SelectContent>
-                {ABILITIES?.map((ability) => (
-                  <SelectItem key={ability.value} value={ability.value}>
-                    {ability.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div>
+              <Label htmlFor="areaOfEffect" className="text-xs sm:text-sm">
+                Area of Effect
+              </Label>
+              <Input
+                id="areaOfEffect"
+                placeholder="Area of Effect"
+                value={attack.areaOfEffect}
+                onChange={(e) =>
+                  setAttack({ ...attack, areaOfEffect: e.target.value })
+                }
+              />
+            </div>
+
+            {attackType === "roll" && (
+              <div>
+                <Label
+                  htmlFor="damageRoll.abilityUsed"
+                  className="text-ellipsis text-nowrap w-fit text-xs sm:text-sm"
+                >
+                  Ability used in attack
+                </Label>
+                <Select
+                  onValueChange={(value) => {
+                    setAttack({
+                      ...attack,
+                      damageRoll: {
+                        ...attack.damageRoll,
+                        abilityUsed: value as keyof CharacterAbilities,
+                      },
+                      abilitySave: undefined,
+                    });
+                  }}
+                  value={attack.damageRoll.abilityUsed}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Ability used in attack" />
+                  </SelectTrigger>
+                  <SelectContent id="damageRoll.abilityUsed">
+                    {ABILITIES.map((ability) => (
+                      <SelectItem key={ability.value} value={ability.value}>
+                        {ability.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {attackType === "save" && (
+              <div>
+                <Label htmlFor="abilitySave" className="text-xs sm:text-sm">
+                  Ability save
+                </Label>
+                <Select
+                  onValueChange={(value) => {
+                    setAttack({
+                      ...attack,
+                      abilitySave: value,
+                      attackRoll: { modifier: undefined },
+                      damageRoll: {
+                        ...attack.damageRoll,
+                        abilityUsed: undefined,
+                      },
+                    });
+                  }}
+                  value={attack.abilitySave}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Ability save" />
+                  </SelectTrigger>
+                  <SelectContent id="abilitySave">
+                    {ABILITIES?.map((ability) => (
+                      <SelectItem key={ability.value} value={ability.value}>
+                        {ability.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {attackType === "roll" && (
+              <div className="col-span-full flex justify-center items-center gap-4 mt-2">
+                <p className="text-sm italic text-black/80">
+                  Add proficiency bonus to attack roll?
+                </p>
+                <Checkbox
+                  checked={attack.isProficient}
+                  onCheckedChange={() =>
+                    setAttack({ ...attack, isProficient: !attack.isProficient })
+                  }
+                />
+              </div>
+            )}
 
             <Textarea
               className="col-span-full"

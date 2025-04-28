@@ -45,14 +45,23 @@ export interface CharacterContextType {
 }
 
 export interface Attack {
+  id?: string;
   name: string;
-  attackRoll?: string;
-  damageRoll?: string;
-  damageType?: string;
-  range?: string;
+  attackRoll?: {
+    modifier?: number;
+  };
+  damageRoll: {
+    numberOfDice: number;
+    diceType: number;
+    abilityUsed?: keyof CharacterAbilities;
+  };
+  damageType: string;
+  range: string;
   description?: string;
   abilitySave?: string;
   areaOfEffect?: string;
+  otherModifier?: number;
+  isProficient?: boolean;
 }
 
 export interface Spell {

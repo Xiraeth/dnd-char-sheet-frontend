@@ -22,8 +22,6 @@ const StatsCard = () => {
     formState: { errors },
   } = useFormContext<Character>();
 
-  // console.log(watch("stats.hitDice.diceType"));
-
   return (
     <Card>
       <CardHeader>
@@ -109,18 +107,17 @@ const StatsCard = () => {
               required: "Hit Dice Type is required",
             })}
             onValueChange={(value) => {
-              const sidesOfSelectedDice = value?.split("d")[1];
-              setValue("stats.hitDice.diceType", parseInt(sidesOfSelectedDice));
+              setValue("stats.hitDice.diceType", parseInt(value));
             }}
-            value={`d${watch("stats.hitDice.diceType")}`}
+            value={watch("stats.hitDice.diceType")?.toString()}
           >
             <SelectTrigger>
               <SelectValue placeholder="Hit Dice Type" />
             </SelectTrigger>
             <SelectContent>
               {DICE_OPTIONS.map((dice) => (
-                <SelectItem key={dice} value={dice}>
-                  {dice}
+                <SelectItem key={dice.value} value={dice.value.toString()}>
+                  {dice.label}
                 </SelectItem>
               ))}
             </SelectContent>

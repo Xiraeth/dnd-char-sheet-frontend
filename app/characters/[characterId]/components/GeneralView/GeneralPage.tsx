@@ -7,7 +7,7 @@ import OtherProficienciesAndLanguages from "@/app/characters/[characterId]/compo
 import Personality from "@/app/characters/[characterId]/components/GeneralView/Personality";
 import SavingThrows from "@/app/characters/[characterId]/components/GeneralView/SavingThrows";
 import Skills from "@/app/characters/[characterId]/components/GeneralView/Skills";
-import { Stats } from "@/app/characters/[characterId]/components/GeneralView/Stats";
+import Stats from "@/app/characters/[characterId]/components/GeneralView/Stats";
 import DndDivider from "@/components/RedDivider";
 
 const GeneralPage = () => {

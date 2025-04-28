@@ -1,7 +1,8 @@
 import Hitpoints from "@/app/characters/[characterId]/components/CombatView/Hitpoints";
 import Abilities from "@/app/characters/[characterId]/components/GeneralView/Abilities";
 import SavingThrows from "@/app/characters/[characterId]/components/GeneralView/SavingThrows";
-import { Stats } from "@/app/characters/[characterId]/components/GeneralView/Stats";
+import Stats from "@/app/characters/[characterId]/components/GeneralView/Stats";
+import Attacks from "@/app/characters/[characterId]/components/CombatView/Attacks";
 import RedDivider from "@/components/RedDivider";
 
 const CombatPage = () => {
@@ -15,6 +16,7 @@ const CombatPage = () => {
       <RedDivider />
       <Hitpoints />
       <RedDivider />
+      <Attacks />
     </div>
   );
 };

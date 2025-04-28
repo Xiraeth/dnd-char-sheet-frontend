@@ -36,6 +36,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
 
     if (!user && !isLoading) {
+      toast.error("You must be logged in to view this page");
       router.replace("/");
       return;
     }

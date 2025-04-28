@@ -51,7 +51,7 @@ const Signup = () => {
         <Card className="w-[350px] sm:w-[400px]">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
-              Sign up
+              Create an account
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 px-6 py-2">
@@ -85,6 +85,10 @@ const Signup = () => {
               )}
             </div>
             <Button>Sign Up</Button>
+            <p className="text-sm text-center text-red-600/85 italic font-bookInsanity">
+              NOTE: Don&apos;t use a secure password, this app does not use any
+              encryption yet
+            </p>
             {error && (
               <p className="text-red-600 text-sm pl-2 text-center">{error}</p>
             )}
