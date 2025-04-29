@@ -45,6 +45,7 @@ export interface CharacterContextType {
 }
 
 export interface Attack {
+  _id?: string;
   id?: string;
   name: string;
   attackRoll?: {

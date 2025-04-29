@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import clsx from "clsx";
 import { Check, Plus } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type Mode = "damage" | "heal";
 
@@ -97,6 +98,10 @@ const Hitpoints = () => {
 
     if (mode === "damage") {
       const damageDealt = value;
+      if (currentHp === -maxHp) {
+        toast.info("Character is already dead");
+        return null;
+      }
 
       // -------- with temporary hitpoints --------
       if (tempHp) {
@@ -192,12 +197,12 @@ const Hitpoints = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-dndRed font-bold font-scalySans text-center text-2xl sm:text-3xl">
+    <div className="flex flex-col gap-2 font-bookInsanity">
+      <p className="text-dndRed font-bold font-mrEaves text-center text-3xl sm:text-4xl">
         Hitpoints
       </p>
 
-      <p className="text-center text-lg sm:text-xl text-dndRed">
+      <p className="text-center text-md sm:text-lg text-dndRed">
         <span className="font-bold">Temporary hitpoints: </span>
         <span
           className={clsx(
@@ -211,11 +216,11 @@ const Hitpoints = () => {
       </p>
 
       <div className="flex flex-row gap-2 justify-around">
-        <p className="text-lg sm:text-xl text-dndRed">
+        <p className="text-md sm:text-lg text-dndRed">
           <span className="font-bold">Total hitpoints: </span>
           {character?.stats?.hitPointsTotal}
         </p>
-        <p className="text-lg sm:text-lg text-dndRed">
+        <p className="text-md sm:text-lg text-dndRed">
           <span className="font-bold">Current hitpoints: </span>
           <span
             className={clsx(
