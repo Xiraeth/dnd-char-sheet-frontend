@@ -9,6 +9,7 @@ import {
   ReactNode,
 } from "react";
 import axios from "axios";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -79,6 +80,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       if (response.status === 200) {
         sessionStorage.setItem("userLoggedOut", "true");
+        toast.success("Logged out successfully");
         localStorage.removeItem("dnd-char-sheet-user");
         setUser(null);
       } else {

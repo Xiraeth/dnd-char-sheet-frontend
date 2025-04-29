@@ -33,6 +33,8 @@ const DEFAULT_ATTACK: Attack = {
   description: "",
   abilitySave: "",
   isProficient: false,
+  otherAttackRollModifier: 0,
+  otherDamageModifier: 0,
 };
 
 interface AttackErrors {
@@ -437,6 +439,7 @@ const AttacksCard = () => {
                 type="number"
                 id="otherAttackRollModifier"
                 placeholder="Other attack roll modifier"
+                value={attack.otherAttackRollModifier || ""}
                 onChange={(e) => {
                   const resetOtherAttackRollModifier = () => {
                     setAttack({
@@ -472,6 +475,7 @@ const AttacksCard = () => {
               </Label>
               <Input
                 id="otherDamageModifier"
+                value={attack.otherDamageModifier || ""}
                 onChange={(e) => {
                   const resetOtherDamageModifier = () => {
                     setAttack({

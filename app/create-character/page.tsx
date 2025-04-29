@@ -42,6 +42,7 @@ const defaultValues: Partial<Character> = {
 
 const CreateCharacter = () => {
   const [isSpellcaster, setIsSpellcaster] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { user } = useUser();
 
@@ -52,6 +53,9 @@ const CreateCharacter = () => {
   const { handleSubmit, watch, setValue } = methods;
 
   const onSubmit = async (data: Character) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
     const hitpoints = data.stats.hitPointsTotal;
@@ -81,11 +85,14 @@ const CreateCharacter = () => {
         }
       );
 
+      setIsSubmitting(false);
+
       if (response.status === 200) {
         router.push("/");
         toast.success("Character created successfully");
       }
     } catch (error) {
+      setIsSubmitting(false);
       if (axios.isAxiosError(error)) {
         toast.error(
           error.response?.data?.error ||
@@ -99,6 +106,9 @@ const CreateCharacter = () => {
   };
 
   const populateFormWithTestData = () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     // Basic Info
     setValue("basicInfo.name", "Eldric the Wise");
     setValue("basicInfo.race", "Human");
@@ -239,7 +249,10 @@ const CreateCharacter = () => {
     setValue("appearance.eyes", "Blue");
     setValue("appearance.hair", "Gray");
     setValue("appearance.skin", "Fair");
-    setValue("appearance.photo", "https://example.com/eldric.jpg");
+    setValue(
+      "appearance.photo",
+      "https://www.enworld.org/attachments/th-18483468401-765x1078-png.133719/"
+    );
 
     // Inventory
     setValue("inventory.gold", 150);
@@ -287,6 +300,9 @@ const CreateCharacter = () => {
         name: "Arcane Recovery",
         description: "Regain spell slots during a short rest",
         source: "Wizard",
+        rechargeOn: "daily",
+        usesTotal: 1,
+        usesLeft: 1,
       },
       {
         name: "Arcane Tradition",
@@ -310,6 +326,20 @@ const CreateCharacter = () => {
         description:
           "A cantrip that hurls a mote of fire at a creature or object within range.",
         isProficient: true,
+      },
+      {
+        name: "Fireball",
+        damageRoll: {
+          numberOfDice: 8,
+          diceType: 6,
+        },
+        damageType: "Fire",
+        range: "150 ft.",
+        description:
+          "A spell that creates a fiery explosion at a point within range. Each creature within 10 feet of that point must make a Dexterity saving throw. A creature takes 3d10 fire damage on a failed save, or half as much damage on a successful one.",
+        isProficient: true,
+        areaOfEffect: "10 ft. radius",
+        abilitySave: "Dexterity",
       },
     ]);
 
@@ -342,6 +372,7 @@ const CreateCharacter = () => {
 
     // Set spellcaster flag to true since this is a wizard
     setIsSpellcaster(true);
+    setIsSubmitting(false);
     onSubmit(watch());
   };
 
@@ -361,6 +392,7 @@ const CreateCharacter = () => {
           <CharacterForm
             isSpellcaster={isSpellcaster}
             setIsSpellcaster={setIsSpellcaster}
+            isSubmitting={isSubmitting}
           />
         </form>
       </FormProvider>

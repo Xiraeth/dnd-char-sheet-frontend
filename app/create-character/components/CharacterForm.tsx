@@ -21,9 +21,11 @@ import { useParams } from "next/navigation";
 const CharacterForm = ({
   isSpellcaster,
   setIsSpellcaster,
+  isSubmitting,
 }: {
   isSpellcaster: boolean;
   setIsSpellcaster: (isSpellcaster: boolean) => void;
+  isSubmitting?: boolean;
 }) => {
   const characterId = useParams() as { characterId: string };
   const { watch, setError, clearErrors } = useFormContext();
@@ -79,8 +81,17 @@ const CharacterForm = ({
       <AppearanceCard />
       {/* personality traits */}
       <PersonalityCard />
-      <Button type="submit" className="w-full" onClick={validateRace}>
-        {characterId ? "Save changes" : "Create Character"}
+      <Button
+        type="submit"
+        className="w-full"
+        onClick={validateRace}
+        disabled={isSubmitting}
+      >
+        {isSubmitting
+          ? "Saving..."
+          : characterId
+          ? "Save changes"
+          : "Create Character"}
       </Button>
     </div>
   );

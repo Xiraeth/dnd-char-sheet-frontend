@@ -5,8 +5,8 @@ import { useFormContext } from "react-hook-form";
 import { useState } from "react";
 import { SpellSearch } from "@/app/create-character/components/SpellSearch";
 import { X } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
 import CustomSpellForm from "@/app/create-character/components/CustomSpellForm";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const SelectedSpellBlock = ({
   spell,
@@ -34,6 +34,8 @@ const SpellsCard = () => {
 
   const spells = watch("spells");
 
+  const characterClass = watch("basicInfo.class");
+
   return (
     <Card>
       <CardHeader>
@@ -42,15 +44,21 @@ const SpellsCard = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 pb-0 mb-4">
-        <div className="flex gap-2 items-center">
-          <p className="italic text-sm text-black/60">
-            Limit search to selected class
-          </p>
-          <Switch
-            checked={limitQueryToClass}
-            onCheckedChange={setLimitQueryToClass}
-          />
-        </div>
+        {characterClass !== "Custom" && (
+          <div className="flex gap-2 items-center">
+            <p className="italic text-sm text-black/60">
+              Limit search to selected class
+            </p>
+            <Checkbox
+              checked={limitQueryToClass}
+              onCheckedChange={(checked) => {
+                setLimitQueryToClass((prev) => {
+                  return checked === "indeterminate" ? !prev : checked;
+                });
+              }}
+            />
+          </div>
+        )}
 
         {/* search spells from dnd 5e api (2014) */}
         <SpellSearch limitQueryToClass={limitQueryToClass} />

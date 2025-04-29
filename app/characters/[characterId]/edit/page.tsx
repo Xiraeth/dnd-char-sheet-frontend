@@ -16,6 +16,7 @@ import CharacterProvider, {
 import { Loader } from "lucide-react";
 
 const EditCharacter = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { character, isLoading, setCharacter } = useCharacter();
 
   const [isSpellcaster, setIsSpellcaster] = useState(false);
@@ -78,6 +79,9 @@ const EditCharacter = () => {
   };
 
   const onSubmit = async (data: Character) => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/update`,
@@ -90,11 +94,13 @@ const EditCharacter = () => {
       );
 
       if (response.status === 200) {
+        setIsSubmitting(false);
         router.push(`/characters/${character?._id}`);
         toast.success("Character updated successfully");
         setCharacter(response.data);
       }
     } catch (error) {
+      setIsSubmitting(false);
       if (axios.isAxiosError(error)) {
         toast.error(
           error.response?.data?.error ||
@@ -133,6 +139,7 @@ const EditCharacter = () => {
           <CharacterForm
             isSpellcaster={isSpellcaster}
             setIsSpellcaster={setIsSpellcaster}
+            isSubmitting={isSubmitting}
           />
         </form>
       </FormProvider>
