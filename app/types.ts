@@ -60,7 +60,8 @@ export interface Attack {
   description?: string;
   abilitySave?: string;
   areaOfEffect?: string;
-  otherModifier?: number;
+  otherAttackRollModifier?: number;
+  otherDamageModifier?: number;
   isProficient?: boolean;
 }
 
@@ -221,9 +222,15 @@ export interface SpellSlots {
 }
 
 export interface Feature {
+  id?: string;
   name: string;
   description: string;
   source?: string;
+  isExpendable?: boolean;
+  usesLeft?: number;
+  usesTotal?: number;
+  rechargeOn?: string;
+  areUsesTotalEqualToProfBonus?: boolean;
 }
 
 export interface Character {

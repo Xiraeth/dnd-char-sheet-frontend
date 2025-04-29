@@ -3,32 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "./UserProvider";
-import { toast } from "sonner";
 import { Loader } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, logout } = useUser();
-
-  const userLoggedIn =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("userLoggedIn")
-      : null;
-
-  const userLoggedOut =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("userLoggedOut")
-      : null;
-
-  if (userLoggedIn === "true" && typeof window !== "undefined") {
-    sessionStorage.removeItem("userLoggedIn");
-    toast.success("Logged in successfully");
-  }
-
-  if (userLoggedOut === "true" && typeof window !== "undefined") {
-    sessionStorage.removeItem("userLoggedOut");
-    toast.success("Logged out successfully");
-  }
 
   if (isLoading) {
     return (

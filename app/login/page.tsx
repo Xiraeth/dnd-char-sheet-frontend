@@ -22,16 +22,6 @@ const Login = () => {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const userCreationSuccessful =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("userCreationSuccessful")
-      : null;
-
-  if (userCreationSuccessful && typeof window !== "undefined") {
-    sessionStorage.removeItem("userCreationSuccessful");
-    toast.success("User created successfully");
-  }
-
   const {
     register,
     handleSubmit,
@@ -41,14 +31,19 @@ const Login = () => {
   const submitFormHandler = async (data: UserCredentials) => {
     try {
       const response = await axios.post(`${API_URL}/login`, data);
-      setUser(response.data.user);
-      sessionStorage.setItem("userLoggedIn", "true");
-      router.push("/");
+      if (response.data.user) {
+        setUser(response.data.user);
+        toast.success("Logged in successfully");
+        router.push("/");
+      } else {
+        throw new Error("User not found");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "An error occurred");
       } else {
         setError("An unexpected error occurred");
+        toast.error(error as string);
       }
     }
   };

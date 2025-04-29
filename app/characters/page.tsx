@@ -39,15 +39,30 @@ const Characters = () => {
     try {
       setAreCharactersLoading(true);
       const fetchCharacters = async () => {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/${user?.id}/characters`,
-          {
-            withCredentials: true,
-          }
-        );
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/${user?.id}/characters`,
+            {
+              withCredentials: true,
+            }
+          );
 
-        setCharacters(response.data);
-        setAreCharactersLoading(false);
+          setCharacters(response.data);
+          setAreCharactersLoading(false);
+        } catch (err) {
+          setAreCharactersLoading(false);
+          if (axios.isAxiosError(err)) {
+            setError(err.response?.data?.message || "An error occurred");
+            if (err?.status === 401) {
+              toast.error("You must be logged in to view your characters");
+              localStorage.removeItem("dnd-char-sheet-user");
+              router.push("/");
+              return;
+            }
+          } else {
+            setError("An error occurred. Server is probably down.");
+          }
+        }
       };
 
       fetchCharacters();

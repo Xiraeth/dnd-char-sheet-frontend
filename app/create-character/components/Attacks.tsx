@@ -18,6 +18,7 @@ import { Attack, CharacterAbilities } from "@/app/types";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getModifier } from "@/lib/utils";
 
 const DEFAULT_ATTACK: Attack = {
   name: "",
@@ -34,19 +35,56 @@ const DEFAULT_ATTACK: Attack = {
   isProficient: false,
 };
 
+interface AttackErrors {
+  name?: string;
+  abilitySave?: string;
+  damageType?: string;
+  range?: string;
+  damageRoll?: {
+    numberOfDice?: string;
+    abilityUsed?: string;
+  };
+}
+
 const AttacksCard = () => {
   const { watch, setValue } = useFormContext();
   const [isEditAttackFormOpen, setIsEditAttackFormOpen] = useState(false);
   const [attack, setAttack] = useState<Attack>(DEFAULT_ATTACK);
   const [attackType, setAttackType] = useState<"save" | "roll">("roll");
-  const [errors, setErrors] = useState<Partial<Attack>>({});
+  const [errors, setErrors] = useState<AttackErrors>({});
   const attacks = watch("attacks");
+  const abilities = watch("abilities");
 
   const validateAttack = () => {
-    const newErrors: Partial<Attack> = {};
+    const newErrors: AttackErrors = {};
 
     if (!attack.name) {
-      newErrors.name = "Name is required";
+      newErrors.name = "Required";
+    }
+
+    if (!attack.abilitySave && attackType === "save") {
+      newErrors.abilitySave = "Required";
+    }
+
+    if (!attack.damageRoll.numberOfDice) {
+      newErrors.damageRoll = {
+        numberOfDice: "Required",
+      };
+    }
+
+    if (!attack.damageType) {
+      newErrors.damageType = "Required";
+    }
+
+    if (!attack.range) {
+      newErrors.range = "Required";
+    }
+
+    if (attackType === "roll" && !attack.damageRoll.abilityUsed) {
+      newErrors.damageRoll = {
+        ...newErrors.damageRoll,
+        abilityUsed: "Required",
+      };
     }
 
     setErrors(newErrors);
@@ -58,18 +96,38 @@ const AttacksCard = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       return;
-    } else {
-      if (attack.id) {
-        setValue(
-          "attacks",
-          attacks.map((a: Attack) => (a.id === attack.id ? attack : a))
-        );
-      } else {
-        setValue("attacks", [...(attacks || []), { ...attack, id: uuidv4() }]);
-      }
-      setAttack(DEFAULT_ATTACK);
-      setIsEditAttackFormOpen(false);
     }
+
+    const isAttackRoll = attackType === "roll";
+
+    const attackRollModifier =
+      isAttackRoll &&
+      getModifier(
+        abilities[attack?.damageRoll?.abilityUsed as keyof CharacterAbilities]
+      );
+
+    const attackToSave = {
+      ...attack,
+      isProficient: isAttackRoll ? attack.isProficient : undefined,
+      attackRoll: isAttackRoll ? { modifier: attackRollModifier } : undefined,
+      damageRoll: isAttackRoll
+        ? attack.damageRoll
+        : { ...attack.damageRoll, abilityUsed: undefined },
+    };
+
+    if (attack.id) {
+      setValue(
+        "attacks",
+        attacks.map((a: Attack) => (a.id === attack.id ? attackToSave : a))
+      );
+    } else {
+      setValue("attacks", [
+        ...(attacks || []),
+        { ...attackToSave, id: uuidv4() },
+      ]);
+    }
+    setAttack(DEFAULT_ATTACK);
+    setIsEditAttackFormOpen(false);
   };
 
   const handleCancel = () => {
@@ -169,6 +227,7 @@ const AttacksCard = () => {
                   if (isNaN(parseInt(e.target.value))) {
                     return;
                   }
+
                   setAttack({
                     ...attack,
                     damageRoll: {
@@ -178,6 +237,11 @@ const AttacksCard = () => {
                   });
                 }}
               />
+              {errors.damageRoll?.numberOfDice && (
+                <p className="text-red-600 text-sm">
+                  {errors.damageRoll?.numberOfDice}
+                </p>
+              )}
             </div>
 
             <div>
@@ -233,6 +297,9 @@ const AttacksCard = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.damageType && (
+                <p className="text-red-600 text-sm">{errors.damageType}</p>
+              )}
             </div>
 
             <div>
@@ -247,6 +314,9 @@ const AttacksCard = () => {
                   setAttack({ ...attack, range: e.target.value })
                 }
               />
+              {errors.range && (
+                <p className="text-red-600 text-sm">{errors.range}</p>
+              )}
             </div>
 
             <div>
@@ -295,6 +365,14 @@ const AttacksCard = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.damageRoll?.abilityUsed && (
+                  <p className="text-red-600 text-sm">
+                    {errors.damageRoll?.abilityUsed}
+                  </p>
+                )}
+                {errors.abilitySave && (
+                  <p className="text-red-600 text-sm">{errors.abilitySave}</p>
+                )}
               </div>
             )}
 
@@ -328,6 +406,9 @@ const AttacksCard = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.abilitySave && (
+                  <p className="text-red-600 text-sm">{errors.abilitySave}</p>
+                )}
               </div>
             )}
 
@@ -344,6 +425,79 @@ const AttacksCard = () => {
                 />
               </div>
             )}
+
+            <div className=" col-span-2  sm:w-1/2">
+              <Label
+                htmlFor="otherAttackRollModifier"
+                className="text-xs sm:text-sm text-nowrap text-ellipsis"
+              >
+                Other attack modifier
+              </Label>
+              <Input
+                type="number"
+                id="otherAttackRollModifier"
+                placeholder="Other attack roll modifier"
+                onChange={(e) => {
+                  const resetOtherAttackRollModifier = () => {
+                    setAttack({
+                      ...attack,
+                      otherAttackRollModifier: 0,
+                    });
+                  };
+
+                  if (e.target.value === "") {
+                    resetOtherAttackRollModifier();
+                    return;
+                  }
+
+                  if (isNaN(parseInt(e.target.value))) {
+                    resetOtherAttackRollModifier();
+                    return;
+                  }
+
+                  setAttack({
+                    ...attack,
+                    otherAttackRollModifier: parseInt(e.target.value),
+                  });
+                }}
+              />
+            </div>
+
+            <div className="col-span-2 w-full sm:col-span-1 ">
+              <Label
+                htmlFor="otherDamageModifier"
+                className="text-xs sm:text-sm text-nowrap text-ellipsis text"
+              >
+                Other damage modifier
+              </Label>
+              <Input
+                id="otherDamageModifier"
+                onChange={(e) => {
+                  const resetOtherDamageModifier = () => {
+                    setAttack({
+                      ...attack,
+                      otherDamageModifier: 0,
+                    });
+                  };
+
+                  if (e.target.value === "") {
+                    resetOtherDamageModifier();
+                    return;
+                  }
+
+                  if (isNaN(parseInt(e.target.value))) {
+                    resetOtherDamageModifier();
+                    return;
+                  }
+
+                  setAttack({
+                    ...attack,
+                    otherDamageModifier: parseInt(e.target.value),
+                  });
+                }}
+                placeholder="Other damage modifier"
+              />
+            </div>
 
             <Textarea
               className="col-span-full"

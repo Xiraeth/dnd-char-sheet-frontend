@@ -6,18 +6,27 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-
-interface Feature {
-  id?: string;
-  name: string;
-  description: string;
-  source: string;
-}
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Feature } from "@/app/types";
+import {
+  Select,
+  SelectValue,
+  SelectTrigger,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { getProficiencyBonus } from "@/lib/utils";
 
 const DEFAULT_FEATURE: Feature = {
   name: "",
   description: "",
   source: "",
+  isExpendable: false,
+  usesLeft: 0,
+  usesTotal: 0,
+  rechargeOn: "",
 };
 
 const FeaturesAndTraitsCard = () => {
@@ -26,6 +35,8 @@ const FeaturesAndTraitsCard = () => {
   const [feature, setFeature] = useState<Feature>(DEFAULT_FEATURE);
   const [errors, setErrors] = useState<Partial<Feature>>({});
   const featuresAndTraits = watch("featuresAndTraits");
+
+  const proficiencyBonus = getProficiencyBonus(watch("basicInfo.level"));
 
   const validateFeature = () => {
     const newErrors: Partial<Feature> = {};
@@ -75,6 +86,7 @@ const FeaturesAndTraitsCard = () => {
 
   const handleCancel = () => {
     setFeature(DEFAULT_FEATURE);
+    setErrors({});
     setIsEditFeatureFormOpen(false);
   };
 
@@ -172,6 +184,107 @@ const FeaturesAndTraitsCard = () => {
               {errors.description && (
                 <p className="text-red-600 text-sm">{errors.description}</p>
               )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 justify-center text-center">
+              <div className="col-span-2 flex gap-2 justify-center items-center">
+                <Label htmlFor="isExpendable">Is expendable?</Label>
+                <Switch
+                  id="isExpendable"
+                  checked={feature.isExpendable}
+                  onCheckedChange={() => {
+                    setFeature({
+                      ...feature,
+                      isExpendable: !feature.isExpendable,
+                      usesLeft: !feature.isExpendable ? 0 : undefined,
+                      usesTotal: !feature.isExpendable ? 0 : undefined,
+                      rechargeOn: !feature.isExpendable ? "" : undefined,
+                    });
+                  }}
+                />
+              </div>
+              {feature?.isExpendable && (
+                <>
+                  <div className="flex flex-col items-center gap-2">
+                    <Label htmlFor="usesTotal">Uses total</Label>
+                    <Input
+                      id="usesTotal"
+                      type="text"
+                      disabled={feature?.areUsesTotalEqualToProfBonus}
+                      value={feature.usesTotal || ""}
+                      onChange={(e) => {
+                        const resetUsesTotal = () => {
+                          setFeature({
+                            ...feature,
+                            usesTotal: 0,
+                            usesLeft: 0,
+                          });
+                        };
+
+                        if (e.target.value === "") {
+                          resetUsesTotal();
+                          return;
+                        }
+
+                        if (isNaN(parseInt(e.target.value))) {
+                          resetUsesTotal();
+                          return;
+                        }
+
+                        setFeature({
+                          ...feature,
+                          usesTotal: parseInt(e.target.value),
+                          usesLeft: parseInt(e.target.value),
+                        });
+                      }}
+                    />
+                    <div className="flex justify-between gap-2 items-center">
+                      <p className="italic text-black/80 text-xs">
+                        (equal to proficiency bonus)
+                      </p>
+                      <Checkbox
+                        checked={feature?.areUsesTotalEqualToProfBonus}
+                        onCheckedChange={() => {
+                          setFeature({
+                            ...feature,
+                            usesTotal: feature?.areUsesTotalEqualToProfBonus
+                              ? feature.usesTotal
+                              : proficiencyBonus,
+                            usesLeft: feature?.areUsesTotalEqualToProfBonus
+                              ? feature.usesLeft
+                              : proficiencyBonus,
+                            areUsesTotalEqualToProfBonus:
+                              !feature?.areUsesTotalEqualToProfBonus,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 ">
+                    <Label htmlFor="rechargeOn">Recharge</Label>
+                    <Select
+                      value={feature.rechargeOn}
+                      onValueChange={(value) =>
+                        setFeature({ ...feature, rechargeOn: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select recharge" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="shortRest">On short rest</SelectItem>
+                        <SelectItem value="longRest">On long rest</SelectItem>
+                        <SelectItem value="longOrShortRest">
+                          On long/short rest
+                        </SelectItem>
+                        <SelectItem value="daily">Daily</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+
+              <div></div>
             </div>
           </div>
         )}
