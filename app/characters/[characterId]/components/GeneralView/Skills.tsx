@@ -19,9 +19,7 @@ const Skills = () => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center gap-2">
-        <span className="text-2xl sm:text-3xl font-bold ml-auto font-mrEaves">
-          Skills
-        </span>
+        <span className="text-3xl font-bold ml-auto font-mrEaves">Skills</span>
         <ChevronDown
           className={clsx(
             "size-6 ml-auto cursor-pointer bg-white/20 rounded-full p-1",
@@ -55,17 +53,22 @@ const Skills = () => {
                     hasExpertise,
                   } = skillData || {};
 
+                  const otherModifier = skillData?.otherModifier;
+
+                  const basePlusOtherModifier =
+                    skillValue + Number(otherModifier || 0);
+
                   const skillValueWithModifiers = hasExpertise
-                    ? skillValue + proficiencyBonus * 2
+                    ? basePlusOtherModifier + proficiencyBonus * 2
                     : hasProficiency
-                    ? skillValue + proficiencyBonus
-                    : skillValue;
+                    ? basePlusOtherModifier + proficiencyBonus
+                    : basePlusOtherModifier;
 
-                  const finalSkillValue =
-                    skillValueWithModifiers +
-                    ((skillData?.otherModifier as number) || 0);
+                  const modifierSign = skillValueWithModifiers > 0 ? "+" : "";
 
-                  const modifierSign = finalSkillValue > 0 ? "+" : "";
+                  const color = otherModifier
+                    ? "text-indigo-600 font-bold"
+                    : "text-dndRed";
 
                   return (
                     <div
@@ -84,11 +87,12 @@ const Skills = () => {
 
                       <span
                         className={clsx(
-                          hasProficiency ? "font-bold text-lg" : ""
+                          hasProficiency ? "font-bold text-lg" : "",
+                          color
                         )}
                       >
                         ({modifierSign}
-                        {finalSkillValue})
+                        {skillValueWithModifiers})
                       </span>
                     </div>
                   );

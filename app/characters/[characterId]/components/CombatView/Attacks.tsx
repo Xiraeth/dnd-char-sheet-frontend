@@ -1,14 +1,9 @@
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
 import { Attack } from "@/app/types";
-import { getProficiencyBonus } from "@/lib/utils";
 import Image from "next/image";
+
 const Attacks = () => {
   const { character } = useCharacter();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const proficiencyBonus = getProficiencyBonus(
-    character?.basicInfo?.level || 0
-  );
 
   return (
     <div>

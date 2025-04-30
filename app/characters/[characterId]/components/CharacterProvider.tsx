@@ -15,7 +15,6 @@ const CharacterContext = createContext<CharacterContextType>({
   setCharacter: () => {},
   deleteCharacter: () =>
     Promise.resolve({ status: 200, message: "Character deleted successfully" }),
-  updateCharacterField: () => {},
   updateCharacter: () =>
     Promise.resolve({
       status: 200,
@@ -135,49 +134,12 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // will probably not use this
-  const updateCharacterField = ({
-    field,
-    value,
-  }: {
-    field: string;
-    value: string | number;
-  }) => {
-    if (!character) return;
-
-    // Handle nested properties (e.g., "basicInfo.level")
-    const updateNestedProperty = (
-      obj: Record<string, unknown>,
-      path: string,
-      val: string | number
-    ) => {
-      const keys = path.split(".");
-      const lastKey = keys.pop()!;
-      const target = keys.reduce(
-        (o, key) => o[key] as Record<string, unknown>,
-        obj
-      );
-      target[lastKey] = val;
-      return obj;
-    };
-
-    // Create a deep copy of the character
-    const characterCopy = JSON.parse(JSON.stringify(character));
-
-    // Update the nested property
-    updateNestedProperty(characterCopy, field, value);
-
-    // Set the updated character
-    setCharacter(characterCopy);
-  };
-
   return (
     <CharacterContext.Provider
       value={{
         character,
         setCharacter,
         deleteCharacter,
-        updateCharacterField,
         updateCharacter,
         characterError,
         isLoading,

@@ -29,13 +29,6 @@ export interface CharacterContextType {
   deleteCharacter: (
     characterId: string
   ) => Promise<DeleteCharacterResponseType>;
-  updateCharacterField: ({
-    field,
-    value,
-  }: {
-    field: string;
-    value: string | number;
-  }) => void;
   updateCharacter: (
     characterId: string,
     character: Character
@@ -137,6 +130,7 @@ export interface CharacterStats {
 export interface SavingThrow {
   value: number;
   hasProficiency: boolean;
+  otherModifier?: number | string;
 }
 
 export interface CharacterSavingThrows {
@@ -223,7 +217,7 @@ export interface SpellSlots {
 }
 
 export interface Feature {
-  id?: string;
+  _id?: string;
   name: string;
   description: string;
   source?: string;

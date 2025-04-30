@@ -3,6 +3,7 @@ import { getProficiencyBonus } from "@/lib/utils";
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
 import { capitalize } from "@/lib/utils";
 import { Asterisk } from "lucide-react";
+import clsx from "clsx";
 
 const SavingThrows = () => {
   const { character } = useCharacter();
@@ -18,11 +19,17 @@ const SavingThrows = () => {
           charSavingThrows?.map(([ability, savingThrow]) => {
             const value = savingThrow?.value;
             const hasProficiency = savingThrow?.hasProficiency;
+            const otherModifier = savingThrow?.otherModifier;
+
             const finalValue = hasProficiency
-              ? value + proficiencyBonus
-              : value;
+              ? value + proficiencyBonus + otherModifier
+              : value + otherModifier;
 
             const modifierSign = finalValue > 0 ? "+" : "";
+
+            const color = otherModifier
+              ? "text-indigo-600 font-bold"
+              : "text-dndRed";
 
             return (
               <div
@@ -33,11 +40,11 @@ const SavingThrows = () => {
                   <p className="font-bold">
                     {capitalize(ability?.slice(0, 3))}
                   </p>
-                  <div className="flex items-center gap-1">
+                  <div className={clsx(color, "flex items-center gap-1")}>
                     ({modifierSign}
                     {finalValue})
                     {hasProficiency && (
-                      <Asterisk className="absolute -top-1 -right-3 text-indigo-500 size-4" />
+                      <Asterisk className="absolute -top-1 -right-3 text-indigo-600 size-4" />
                     )}
                   </div>
                 </div>

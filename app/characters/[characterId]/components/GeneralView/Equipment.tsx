@@ -10,7 +10,7 @@ const Equipment = () => {
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-2xl sm:text-3xl font-bold text-center font-mrEaves ml-auto">
+        <p className="text-3xl font-bold text-center font-mrEaves ml-auto">
           Equipment
         </p>
         <ChevronDown
