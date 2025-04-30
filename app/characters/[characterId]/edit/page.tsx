@@ -35,7 +35,7 @@ const EditCharacter = () => {
 
       // Set isSpellcaster based on character data
       if (
-        character.basicInfo?.class?.toLowerCase() === "custom" &&
+        character.basicInfo?.class?.toLowerCase() === "custom" ||
         character.spellcasting
       ) {
         setIsSpellcaster(true);
@@ -82,10 +82,18 @@ const EditCharacter = () => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
+
+    const spellsWithoutV4Ids = data?.spells?.map((spell) => {
+      return {
+        ...spell,
+        _id: spell?._id?.length === 24 ? spell._id : undefined,
+      };
+    });
+
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/update`,
-        data,
+        { ...data, spells: spellsWithoutV4Ids },
         {
           withCredentials: true,
         }

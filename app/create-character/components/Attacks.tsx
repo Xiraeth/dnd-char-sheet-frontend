@@ -11,7 +11,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { DAMAGE_TYPES, ABILITIES, DICE_OPTIONS } from "@/app/constants";
+import {
+  DAMAGE_TYPES,
+  ABILITIES,
+  DICE_OPTIONS,
+  ACTION_TYPES,
+} from "@/app/constants";
 import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { Attack, CharacterAbilities } from "@/app/types";
@@ -42,6 +47,7 @@ interface AttackErrors {
   abilitySave?: string;
   damageType?: string;
   range?: string;
+  actionType?: string;
   damageRoll?: {
     numberOfDice?: string;
     abilityUsed?: string;
@@ -52,7 +58,9 @@ const AttacksCard = () => {
   const { watch, setValue } = useFormContext();
   const [isEditAttackFormOpen, setIsEditAttackFormOpen] = useState(false);
   const [attack, setAttack] = useState<Attack>(DEFAULT_ATTACK);
-  const [attackType, setAttackType] = useState<"save" | "roll">("roll");
+  const [attackType, setAttackType] = useState<"save" | "roll">(
+    attack.abilitySave ? "save" : "roll"
+  );
   const [errors, setErrors] = useState<AttackErrors>({});
   const attacks = watch("attacks");
   const abilities = watch("abilities");
@@ -87,6 +95,10 @@ const AttacksCard = () => {
         ...newErrors.damageRoll,
         abilityUsed: "Required",
       };
+    }
+
+    if (!attack.actionType) {
+      newErrors.actionType = "Required";
     }
 
     setErrors(newErrors);
@@ -150,7 +162,9 @@ const AttacksCard = () => {
   };
 
   const handleEditAttack = (id: string) => {
-    setAttack(attacks.find((attack: Attack) => attack._id === id));
+    const selectedAttack = attacks.find((attack: Attack) => attack._id === id);
+    setAttack(selectedAttack);
+    setAttackType(selectedAttack.abilitySave ? "save" : "roll");
     setIsEditAttackFormOpen(true);
   };
 
@@ -199,6 +213,7 @@ const AttacksCard = () => {
                 placeholder="Name"
                 value={attack.name}
                 onChange={(e) => setAttack({ ...attack, name: e.target.value })}
+                className="text-indigo-600"
               />
               {errors.name && (
                 <p className="text-red-600 text-sm">{errors.name}</p>
@@ -217,6 +232,7 @@ const AttacksCard = () => {
                 placeholder="Number of Dice"
                 value={attack.damageRoll?.numberOfDice || ""}
                 type="text"
+                className="text-indigo-600"
                 onChange={(e) => {
                   if (e.target.value === "") {
                     setAttack({
@@ -265,7 +281,7 @@ const AttacksCard = () => {
                 }}
                 value={attack.damageRoll.diceType?.toString() || "4"}
               >
-                <SelectTrigger>
+                <SelectTrigger className="text-indigo-600">
                   <SelectValue placeholder="Dice Type" />
                 </SelectTrigger>
                 <SelectContent id="damageRoll.diceType">
@@ -288,7 +304,7 @@ const AttacksCard = () => {
                 }}
                 value={attack.damageType}
               >
-                <SelectTrigger>
+                <SelectTrigger className="text-indigo-600">
                   <SelectValue placeholder="Damage Type" />
                 </SelectTrigger>
                 <SelectContent id="damageType">
@@ -312,6 +328,7 @@ const AttacksCard = () => {
                 id="range"
                 placeholder="Range"
                 value={attack.range}
+                className="text-indigo-600"
                 onChange={(e) =>
                   setAttack({ ...attack, range: e.target.value })
                 }
@@ -329,6 +346,7 @@ const AttacksCard = () => {
                 id="areaOfEffect"
                 placeholder="Area of Effect"
                 value={attack.areaOfEffect}
+                className="text-indigo-600"
                 onChange={(e) =>
                   setAttack({ ...attack, areaOfEffect: e.target.value })
                 }
@@ -356,7 +374,7 @@ const AttacksCard = () => {
                   }}
                   value={attack.damageRoll.abilityUsed}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-indigo-600">
                     <SelectValue placeholder="Ability used in attack" />
                   </SelectTrigger>
                   <SelectContent id="damageRoll.abilityUsed">
@@ -378,6 +396,38 @@ const AttacksCard = () => {
               </div>
             )}
 
+            <div>
+              <Label htmlFor="actionType" className="text-xs sm:text-sm">
+                Action type
+              </Label>
+              <Select
+                onValueChange={(value) => {
+                  setAttack({
+                    ...attack,
+                    actionType: value,
+                  });
+                }}
+                value={attack.actionType}
+              >
+                <SelectTrigger className="text-indigo-600">
+                  <SelectValue placeholder="Action required" />
+                </SelectTrigger>
+                <SelectContent id="actionType">
+                  {ACTION_TYPES.map((actionType) => (
+                    <SelectItem
+                      key={actionType.value}
+                      value={actionType.value.toString()}
+                    >
+                      {actionType.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.actionType && (
+                <p className="text-red-600 text-sm">{errors.actionType}</p>
+              )}
+            </div>
+
             {attackType === "save" && (
               <div>
                 <Label htmlFor="abilitySave" className="text-xs sm:text-sm">
@@ -397,7 +447,7 @@ const AttacksCard = () => {
                   }}
                   value={attack.abilitySave}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-indigo-600">
                     <SelectValue placeholder="Ability save" />
                   </SelectTrigger>
                   <SelectContent id="abilitySave">
@@ -428,43 +478,46 @@ const AttacksCard = () => {
               </div>
             )}
 
-            <div className=" col-span-2  sm:w-1/2">
-              <Label
-                htmlFor="otherAttackRollModifier"
-                className="text-xs sm:text-sm text-nowrap text-ellipsis"
-              >
-                Other attack modifier
-              </Label>
-              <Input
-                type="number"
-                id="otherAttackRollModifier"
-                placeholder="Other attack roll modifier"
-                value={attack.otherAttackRollModifier || ""}
-                onChange={(e) => {
-                  const resetOtherAttackRollModifier = () => {
+            {attackType === "roll" && (
+              <div className=" col-span-2  sm:w-1/2">
+                <Label
+                  htmlFor="otherAttackRollModifier"
+                  className="text-xs sm:text-sm text-nowrap text-ellipsis"
+                >
+                  Other attack modifier
+                </Label>
+                <Input
+                  type="number"
+                  id="otherAttackRollModifier"
+                  placeholder="Other attack roll modifier"
+                  value={attack.otherAttackRollModifier || ""}
+                  className="text-indigo-600"
+                  onChange={(e) => {
+                    const resetOtherAttackRollModifier = () => {
+                      setAttack({
+                        ...attack,
+                        otherAttackRollModifier: 0,
+                      });
+                    };
+
+                    if (e.target.value === "") {
+                      resetOtherAttackRollModifier();
+                      return;
+                    }
+
+                    if (isNaN(parseInt(e.target.value))) {
+                      resetOtherAttackRollModifier();
+                      return;
+                    }
+
                     setAttack({
                       ...attack,
-                      otherAttackRollModifier: 0,
+                      otherAttackRollModifier: parseInt(e.target.value),
                     });
-                  };
-
-                  if (e.target.value === "") {
-                    resetOtherAttackRollModifier();
-                    return;
-                  }
-
-                  if (isNaN(parseInt(e.target.value))) {
-                    resetOtherAttackRollModifier();
-                    return;
-                  }
-
-                  setAttack({
-                    ...attack,
-                    otherAttackRollModifier: parseInt(e.target.value),
-                  });
-                }}
-              />
-            </div>
+                  }}
+                />
+              </div>
+            )}
 
             <div className="col-span-2 w-full sm:col-span-1 ">
               <Label
@@ -476,6 +529,7 @@ const AttacksCard = () => {
               <Input
                 id="otherDamageModifier"
                 value={attack.otherDamageModifier || ""}
+                className="text-indigo-600"
                 onChange={(e) => {
                   const resetOtherDamageModifier = () => {
                     setAttack({
@@ -503,8 +557,14 @@ const AttacksCard = () => {
               />
             </div>
 
+            <div className="col-span-full text-xs sm:text-sm italic text-indigo-600 text-center">
+              * Attack and damage roll modifiers will be automatically
+              calculated, you just have to add modifiers from other features, if
+              there are any.
+            </div>
+
             <Textarea
-              className="col-span-full"
+              className="col-span-full text-indigo-600"
               placeholder="Description"
               value={attack.description}
               onChange={(e) =>

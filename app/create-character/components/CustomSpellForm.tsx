@@ -13,36 +13,42 @@ import {
 } from "@/components/ui/select";
 import { DAMAGE_TYPES, SPELL_SCHOOLS } from "@/app/constants";
 import { Textarea } from "@/components/ui/textarea";
+import { v4 as uuidv4 } from "uuid";
+
 const CustomSpellForm = ({
   setIsCreateSpellFormOpen,
+  selectedSpell,
 }: {
   setIsCreateSpellFormOpen: (isOpen: boolean) => void;
+  selectedSpell: Spell | null;
 }) => {
   const { control } = useFormContext();
 
-  const { append } = useFieldArray({
+  const { append, update, fields } = useFieldArray({
     control,
     name: "spells",
   });
 
+  console.log(selectedSpell);
+
   const [spell, setSpell] = useState<Partial<Spell>>({
-    name: "",
-    desc: "",
-    level: "",
+    name: selectedSpell?.name || "",
+    desc: selectedSpell?.desc || "",
+    level: selectedSpell?.level || "",
     school: {
-      name: "",
-      desc: "",
+      name: selectedSpell?.school?.name || "",
+      desc: selectedSpell?.school?.desc || "",
     },
-    casting_time: "",
-    range: "",
-    components: [],
-    duration: "",
+    casting_time: selectedSpell?.casting_time || "",
+    range: selectedSpell?.range || "",
+    components: selectedSpell?.components || [],
+    duration: selectedSpell?.duration || "",
     higher_level: [],
     damage: {
       damage_type: {
-        name: "",
+        name: selectedSpell?.damage?.damage_type?.name || "",
       },
-      damage_at_slot_level: [],
+      damage_at_slot_level: selectedSpell?.damage?.damage_at_slot_level || [],
     },
   });
 
@@ -92,10 +98,29 @@ const CustomSpellForm = ({
 
     if (Object.keys(validationErrors).length > 0) {
       return;
-    } else {
-      append(spell);
-      setIsCreateSpellFormOpen(false);
     }
+
+    const spellData = { ...spell, _id: selectedSpell?._id || uuidv4() };
+
+    if (selectedSpell?._id) {
+      // Find if the spell exists in the array
+      const spellIndex = fields.findIndex(
+        (field) => field.id === selectedSpell._id
+      );
+
+      if (spellIndex !== -1) {
+        // Update existing spell
+        update(spellIndex, spellData);
+      } else {
+        // Add as new if somehow it has an ID but isn't in the array
+        append(spellData);
+      }
+    } else {
+      // Create new spell
+      append(spellData);
+    }
+
+    setIsCreateSpellFormOpen(false);
   };
 
   return (
@@ -118,6 +143,7 @@ const CustomSpellForm = ({
           id="name"
           value={spell.name}
           onChange={(e) => setSpell({ ...spell, name: e.target.value })}
+          className="text-indigo-600"
         />
         {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
       </div>
@@ -129,6 +155,7 @@ const CustomSpellForm = ({
         <Input
           id="level"
           type="number"
+          className="text-indigo-600"
           value={spell.level}
           onChange={(e) =>
             setSpell({
@@ -164,8 +191,9 @@ const CustomSpellForm = ({
               },
             })
           }
+          value={spell.school?.name}
         >
-          <SelectTrigger>
+          <SelectTrigger className="text-indigo-600">
             <SelectValue placeholder="Select a school" />
           </SelectTrigger>
           <SelectContent>
@@ -188,6 +216,7 @@ const CustomSpellForm = ({
         <Input
           id="casting_time"
           value={spell.casting_time}
+          className="text-indigo-600"
           onChange={(e) => setSpell({ ...spell, casting_time: e.target.value })}
         />
         {errors.casting_time && (
@@ -201,6 +230,7 @@ const CustomSpellForm = ({
         </label>
         <Input
           id="range"
+          className="text-indigo-600"
           value={spell.range}
           onChange={(e) => setSpell({ ...spell, range: e.target.value })}
         />
@@ -213,6 +243,7 @@ const CustomSpellForm = ({
         </label>
         <Input
           id="duration"
+          className="text-indigo-600"
           value={spell.duration}
           onChange={(e) => setSpell({ ...spell, duration: e.target.value })}
         />
@@ -230,8 +261,9 @@ const CustomSpellForm = ({
               damage: { ...spell.damage, damage_type: { name: value } },
             })
           }
+          value={spell.damage?.damage_type?.name}
         >
-          <SelectTrigger>
+          <SelectTrigger className="text-indigo-600">
             <SelectValue placeholder="Select a damage type" />
           </SelectTrigger>
           <SelectContent>
@@ -248,6 +280,7 @@ const CustomSpellForm = ({
         <label htmlFor="damage">Damage at selected level</label>
         <Input
           id="damage"
+          className="text-indigo-600"
           value={spell.damage?.damage_at_slot_level?.[0]?.damage || ""}
           onChange={(e) =>
             setSpell({
@@ -272,6 +305,7 @@ const CustomSpellForm = ({
         <label htmlFor="healing">Healing at selected level</label>
         <Input
           id="healing"
+          className="text-indigo-600"
           value={spell.healing_at_slot_level?.[0]?.healing || ""}
           onChange={(e) =>
             setSpell({
@@ -293,6 +327,7 @@ const CustomSpellForm = ({
         </label>
         <ToggleGroup
           type="multiple"
+          value={spell.components}
           onValueChange={(value) => setSpell({ ...spell, components: value })}
           className="border-[1px] border-black/40 rounded-md"
         >
@@ -311,7 +346,7 @@ const CustomSpellForm = ({
         </label>
         <Textarea
           id="desc"
-          className="min-h-[100px] p-2 border rounded-md"
+          className="min-h-[100px] p-2 border rounded-md text-indigo-600"
           value={spell.desc}
           onChange={(e) => setSpell({ ...spell, desc: e.target.value })}
         />
@@ -322,6 +357,7 @@ const CustomSpellForm = ({
         <label htmlFor="higher_level">Higher Level Effects</label>
         <Input
           id="higher_level"
+          className="text-indigo-600"
           value={spell.higher_level?.join(", ") || ""}
           onChange={(e) =>
             setSpell({
@@ -341,7 +377,7 @@ const CustomSpellForm = ({
           className="px-4 py-2 bg-black/90 text-white rounded-md hover:bg-black/75 transition-colors"
           onClick={onSave}
         >
-          Save Spell
+          {selectedSpell?._id ? "Update Spell" : "Save Spell"}
         </button>
       </div>
     </div>

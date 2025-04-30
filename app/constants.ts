@@ -22,15 +22,21 @@ export const DICE_OPTIONS = [
   { label: "d100", value: 100 },
 ];
 
+export const ACTION_TYPES = [
+  { label: "Action", value: "action" },
+  { label: "Bonus Action", value: "bonusAction" },
+  { label: "Reaction", value: "reaction" },
+];
+
 export const SPELL_SCHOOLS = [
-  { label: "Abjuration", value: "abjuration" },
-  { label: "Conjuration", value: "conjuration" },
-  { label: "Divination", value: "divination" },
-  { label: "Enchantment", value: "enchantment" },
-  { label: "Evocation", value: "evocation" },
-  { label: "Illusion", value: "illusion" },
-  { label: "Necromancy", value: "necromancy" },
-  { label: "Transmutation", value: "transmutation" },
+  { label: "Abjuration", value: "Abjuration" },
+  { label: "Conjuration", value: "Conjuration" },
+  { label: "Divination", value: "Divination" },
+  { label: "Enchantment", value: "Enchantment" },
+  { label: "Evocation", value: "Evocation" },
+  { label: "Illusion", value: "Illusion" },
+  { label: "Necromancy", value: "Necromancy" },
+  { label: "Transmutation", value: "Transmutation" },
 ];
 
 export const ABILITIES = [

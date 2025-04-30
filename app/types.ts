@@ -37,57 +37,6 @@ export interface CharacterContextType {
   isLoading?: boolean;
 }
 
-export interface Attack {
-  _id?: string;
-  id?: string;
-  name: string;
-  attackRoll?: {
-    modifier?: number;
-  };
-  damageRoll: {
-    numberOfDice: number;
-    diceType: number;
-    abilityUsed?: keyof CharacterAbilities;
-  };
-  damageType: string;
-  range: string;
-  description?: string;
-  abilitySave?: string;
-  areaOfEffect?: string;
-  otherAttackRollModifier?: number;
-  otherDamageModifier?: number;
-  isProficient?: boolean;
-}
-
-export interface Spell {
-  source?: string;
-  name: string;
-  level: string;
-  school: {
-    name: string;
-    desc?: string;
-  };
-  casting_time: string;
-  range: string;
-  components: string[];
-  duration: string;
-  desc: string;
-  higher_level: string[];
-  healing_at_slot_level?: {
-    healing: string;
-    level: string;
-  }[];
-  damage?: {
-    damage_type: {
-      name: string;
-    };
-    damage_at_slot_level?: {
-      damage: string;
-      level: string;
-    }[];
-  };
-}
-
 export interface Feat {
   name: string;
   description: string;
@@ -226,6 +175,61 @@ export interface Feature {
   usesTotal?: number;
   rechargeOn?: string;
   areUsesTotalEqualToProfBonus?: boolean;
+  actionType?: string;
+}
+
+export interface Attack {
+  _id?: string;
+  id?: string;
+  name: string;
+  actionType?: string;
+  attackRoll?: {
+    modifier?: number;
+  };
+  damageRoll: {
+    numberOfDice: number;
+    diceType: number;
+    abilityUsed?: keyof CharacterAbilities;
+  };
+  damageType: string;
+  range: string;
+  description?: string;
+  abilitySave?: string;
+  areaOfEffect?: string;
+  otherAttackRollModifier?: number;
+  otherDamageModifier?: number;
+  isProficient?: boolean;
+}
+
+export interface Spell {
+  _id?: string;
+  source?: string;
+  name: string;
+  level: string;
+  school: {
+    name: string;
+    desc?: string;
+  };
+  casting_time: string;
+  actionType?: string;
+  range: string;
+  components: string[];
+  duration: string;
+  desc: string;
+  higher_level: string[];
+  healing_at_slot_level?: {
+    healing: string;
+    level: string;
+  }[];
+  damage?: {
+    damage_type: {
+      name: string;
+    };
+    damage_at_slot_level?: {
+      damage: string;
+      level: string;
+    }[];
+  };
 }
 
 export interface Character {

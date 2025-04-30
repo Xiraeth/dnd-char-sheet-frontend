@@ -8,6 +8,7 @@ import {
 import { Character, CharacterAbilities } from "@/app/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -31,85 +32,110 @@ const SpellcastingCard = () => {
       <CardHeader>
         <CardTitle className="text-center">Spellcasting</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-indigo-600">
-        <Select
-          value={watch("spellcasting.spellcastingClass")}
-          onValueChange={(value) => {
-            setValue("spellcasting.spellcastingClass", value);
-            const classSpellcastingAbility =
-              SPELLCASTING_CLASSES_ABILITIES_MAP.find(
-                (ability) => ability.label === value
-              )?.value as keyof CharacterAbilities;
+      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="spellcastingClass">Spellcasting Class</Label>
+          <Select
+            value={watch("spellcasting.spellcastingClass")}
+            onValueChange={(value) => {
+              setValue("spellcasting.spellcastingClass", value);
+              const classSpellcastingAbility =
+                SPELLCASTING_CLASSES_ABILITIES_MAP.find(
+                  (ability) => ability.label === value
+                )?.value as keyof CharacterAbilities;
 
-            const abilityValue = watch("abilities")[classSpellcastingAbility];
+              if (classSpellcastingAbility) {
+                const abilities = watch("abilities");
+                if (abilities) {
+                  const abilityValue = abilities[classSpellcastingAbility];
+                  const level = watch("basicInfo.level");
 
-            setValue(
-              "spellcasting.spellcastingAbility",
-              classSpellcastingAbility
-            );
+                  if (abilityValue !== undefined && level) {
+                    const spellAttackBonus = calculateSpellAttackBonus({
+                      level,
+                      ability: Number(abilityValue),
+                    });
+                    const spellSaveDC = calculateSpellSaveDC({
+                      level,
+                      ability: Number(abilityValue),
+                    });
 
-            const spellAttackBonus = calculateSpellAttackBonus({
-              level: watch("basicInfo.level"),
-              ability: abilityValue,
-            });
-            const spellSaveDC = calculateSpellSaveDC({
-              level: watch("basicInfo.level"),
-              ability: abilityValue,
-            });
+                    setValue("spellcasting.spellSaveDC", spellSaveDC);
+                    setValue("spellcasting.spellAttackBonus", spellAttackBonus);
+                  }
+                }
 
-            setValue("spellcasting.spellSaveDC", spellSaveDC);
-            setValue("spellcasting.spellAttackBonus", spellAttackBonus);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Spellcasting Class" />
-          </SelectTrigger>
-          <SelectContent>
-            {spellcastingClassesObject.map((ability) => (
-              <SelectItem key={ability.value} value={ability.value}>
-                {ability.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+                setValue(
+                  "spellcasting.spellcastingAbility",
+                  classSpellcastingAbility
+                );
+              }
+            }}
+          >
+            <SelectTrigger className="text-indigo-600">
+              <SelectValue placeholder="Spellcasting Class" />
+            </SelectTrigger>
+            <SelectContent id="spellcastingClass" className="text-indigo-600">
+              {spellcastingClassesObject.map((ability) => (
+                <SelectItem key={ability.value} value={ability.value}>
+                  {ability.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select
-          value={watch("spellcasting.spellcastingAbility")}
-          onValueChange={(value) => {
-            const ability =
-              watch("abilities")[value as keyof CharacterAbilities];
+        <div>
+          <Label htmlFor="spellcastingAbility">Spellcasting Ability</Label>
+          <Select
+            value={watch("spellcasting.spellcastingAbility")}
+            onValueChange={(value) => {
+              // Set the spellcasting ability first
+              setValue(
+                "spellcasting.spellcastingAbility",
+                value as keyof CharacterAbilities
+              );
 
-            const spellAttackBonus = calculateSpellAttackBonus({
-              level: watch("basicInfo.level"),
-              ability,
-            });
-            const spellSaveDC = calculateSpellSaveDC({
-              level: watch("basicInfo.level"),
-              ability,
-            });
+              // Only calculate if we have valid data
+              const abilities = watch("abilities");
+              if (abilities) {
+                const ability = abilities[value as keyof CharacterAbilities];
+                const level = watch("basicInfo.level");
 
-            setValue(
-              "spellcasting.spellcastingAbility",
-              value as keyof CharacterAbilities
-            );
-            setValue("spellcasting.spellSaveDC", spellSaveDC);
-            setValue("spellcasting.spellAttackBonus", spellAttackBonus);
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Spellcasting Ability" />
-          </SelectTrigger>
-          <SelectContent>
-            {SPELLCASTING_ABILITIES.map((ability) => (
-              <SelectItem key={ability.value} value={ability.value}>
-                {ability.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+                if (ability !== undefined && level) {
+                  const spellAttackBonus = calculateSpellAttackBonus({
+                    level,
+                    ability: Number(ability),
+                  });
+                  const spellSaveDC = calculateSpellSaveDC({
+                    level,
+                    ability: Number(ability),
+                  });
+
+                  setValue("spellcasting.spellSaveDC", spellSaveDC);
+                  setValue("spellcasting.spellAttackBonus", spellAttackBonus);
+                }
+              }
+            }}
+          >
+            <SelectTrigger className="text-indigo-600">
+              <SelectValue placeholder="Spellcasting Ability" />
+            </SelectTrigger>
+            <SelectContent id="spellcastingAbility" className="text-indigo-600">
+              {SPELLCASTING_ABILITIES.map((ability) => (
+                <SelectItem key={ability.value} value={ability.value}>
+                  {ability.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="flex flex-col gap-2 relative">
+          <Label htmlFor="spellSaveDC">Spell Save DC</Label>
           <Input
+            id="spellSaveDC"
+            className="text-indigo-600"
             placeholder="Spell Save DC"
             {...register("spellcasting.spellSaveDC")}
           />
@@ -119,7 +145,10 @@ const SpellcastingCard = () => {
         </div>
 
         <div className="flex flex-col gap-2 relative">
+          <Label htmlFor="spellAttackBonus">Spell Attack Bonus</Label>
           <Input
+            id="spellAttackBonus"
+            className="text-indigo-600"
             placeholder="Spell Attack Bonus"
             type="number"
             {...register("spellcasting.spellAttackBonus")}

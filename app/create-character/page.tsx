@@ -243,16 +243,16 @@ const CreateCharacter = () => {
     setValue("spellSlots.level3", 2);
 
     // Appearance
-    setValue("appearance.age", "45");
-    setValue("appearance.height", "5'10");
-    setValue("appearance.weight", "180");
-    setValue("appearance.eyes", "Blue");
-    setValue("appearance.hair", "Gray");
-    setValue("appearance.skin", "Fair");
-    setValue(
-      "appearance.photo",
-      "https://www.enworld.org/attachments/th-18483468401-765x1078-png.133719/"
-    );
+    setValue("appearance", {
+      age: "45",
+      height: "5'10",
+      weight: "180",
+      eyes: "Blue",
+      hair: "Gray",
+      skin: "Fair",
+      photo:
+        "https://www.enworld.org/attachments/th-18483468401-765x1078-png.133719/",
+    });
 
     // Inventory
     setValue("inventory.gold", 150);
@@ -298,16 +298,20 @@ const CreateCharacter = () => {
     setValue("featuresAndTraits", [
       {
         name: "Arcane Recovery",
-        description: "Regain spell slots during a short rest",
+        description:
+          "Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.",
         source: "Wizard",
         rechargeOn: "daily",
         usesTotal: 1,
         usesLeft: 1,
+        isExpendable: true,
       },
       {
-        name: "Arcane Tradition",
-        description: "School of Evocation",
+        name: "Arcane Tradition - School of Evocation",
+        description:
+          "When you reach 2nd level, you choose an arcane tradition, shaping your practice of magic through one of the following schools. Your choice grants you features at 2nd level and again at 6th, 10th, and 14th level.",
         source: "Wizard",
+        isExpendable: false,
       },
     ]);
 
@@ -315,6 +319,7 @@ const CreateCharacter = () => {
     setValue("attacks", [
       {
         name: "Fire Bolt",
+        actionType: "action",
         attackRoll: { modifier: 7 },
         damageRoll: {
           numberOfDice: 1,
@@ -329,6 +334,7 @@ const CreateCharacter = () => {
       },
       {
         name: "Fireball",
+        actionType: "action",
         damageRoll: {
           numberOfDice: 8,
           diceType: 6,
@@ -360,6 +366,7 @@ const CreateCharacter = () => {
         level: "3",
         school: { name: "Evocation" },
         casting_time: "1 action",
+        actionType: "action",
         range: "150 feet",
         components: ["V", "S", "M"],
         duration: "Instantaneous",
