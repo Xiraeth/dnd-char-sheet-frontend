@@ -154,15 +154,42 @@ export interface Spellcasting {
 }
 
 export interface SpellSlots {
-  level1?: number;
-  level2?: number;
-  level3?: number;
-  level4?: number;
-  level5?: number;
-  level6?: number;
-  level7?: number;
-  level8?: number;
-  level9?: number;
+  level1?: {
+    current: number;
+    total: number;
+  };
+  level2?: {
+    current: number;
+    total: number;
+  };
+  level3?: {
+    current: number;
+    total: number;
+  };
+  level4?: {
+    current: number;
+    total: number;
+  };
+  level5?: {
+    current: number;
+    total: number;
+  };
+  level6?: {
+    current: number;
+    total: number;
+  };
+  level7?: {
+    current: number;
+    total: number;
+  };
+  level8?: {
+    current: number;
+    total: number;
+  };
+  level9?: {
+    current: number;
+    total: number;
+  };
 }
 
 export interface Feature {
@@ -245,7 +272,6 @@ export interface Character {
   appearance?: Appearance;
   spellcasting?: Spellcasting;
   spellSlots?: SpellSlots;
-  spellSlotsExpanded?: SpellSlots;
   passiveWisdom?: number;
   featuresAndTraits?: Feature[];
   attacks?: Attack[];

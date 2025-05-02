@@ -22,7 +22,7 @@ const SpellSlotsCard = () => {
             id="level1"
             type="number"
             placeholder="Lv 1"
-            {...register("spellSlots.level1")}
+            {...register("spellSlots.level1.current")}
           />
         </div>
         <div>
@@ -32,7 +32,7 @@ const SpellSlotsCard = () => {
             id="level2"
             type="number"
             placeholder="Lv 2"
-            {...register("spellSlots.level2")}
+            {...register("spellSlots.level2.current")}
           />
         </div>
         <div>
@@ -42,7 +42,7 @@ const SpellSlotsCard = () => {
             id="level3"
             type="number"
             placeholder="Lv 3"
-            {...register("spellSlots.level3")}
+            {...register("spellSlots.level3.current")}
           />
         </div>
         <div>
@@ -52,7 +52,7 @@ const SpellSlotsCard = () => {
             id="level4"
             type="number"
             placeholder="Lv 4"
-            {...register("spellSlots.level4")}
+            {...register("spellSlots.level4.current")}
           />
         </div>
         <div>
@@ -62,7 +62,7 @@ const SpellSlotsCard = () => {
             id="level5"
             type="number"
             placeholder="Lv 5"
-            {...register("spellSlots.level5")}
+            {...register("spellSlots.level5.current")}
           />
         </div>
         <div>
@@ -72,7 +72,7 @@ const SpellSlotsCard = () => {
             id="level6"
             type="number"
             placeholder="Lv 6"
-            {...register("spellSlots.level6")}
+            {...register("spellSlots.level6.current")}
           />
         </div>
         <div>
@@ -82,7 +82,7 @@ const SpellSlotsCard = () => {
             id="level7"
             type="number"
             placeholder="Lv 7"
-            {...register("spellSlots.level7")}
+            {...register("spellSlots.level7.current")}
           />
         </div>
         <div>
@@ -92,7 +92,7 @@ const SpellSlotsCard = () => {
             id="level8"
             type="number"
             placeholder="Lv 8"
-            {...register("spellSlots.level8")}
+            {...register("spellSlots.level8.current")}
           />
         </div>
         <div>
@@ -102,7 +102,7 @@ const SpellSlotsCard = () => {
             id="level9"
             type="number"
             placeholder="Lv 9"
-            {...register("spellSlots.level9")}
+            {...register("spellSlots.level9.current")}
           />
         </div>
       </CardContent>

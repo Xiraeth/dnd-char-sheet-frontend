@@ -31,6 +31,7 @@ const DEFAULT_ATTACK: Attack = {
   damageRoll: {
     numberOfDice: 0,
     diceType: 4,
+    abilityUsed: undefined,
   },
   damageType: "",
   range: "",
@@ -40,6 +41,7 @@ const DEFAULT_ATTACK: Attack = {
   isProficient: false,
   otherAttackRollModifier: 0,
   otherDamageModifier: 0,
+  actionType: "",
 };
 
 interface AttackErrors {
@@ -58,9 +60,7 @@ const AttacksCard = () => {
   const { watch, setValue } = useFormContext();
   const [isEditAttackFormOpen, setIsEditAttackFormOpen] = useState(false);
   const [attack, setAttack] = useState<Attack>(DEFAULT_ATTACK);
-  const [attackType, setAttackType] = useState<"save" | "roll">(
-    attack.abilitySave ? "save" : "roll"
-  );
+  const [attackType, setAttackType] = useState<"save" | "roll">("roll");
   const [errors, setErrors] = useState<AttackErrors>({});
   const attacks = watch("attacks");
   const abilities = watch("abilities");
@@ -132,12 +132,14 @@ const AttacksCard = () => {
     if (attack._id) {
       setValue(
         "attacks",
-        attacks.map((a: Attack) => (a._id === attack._id ? attackToSave : a))
+        attacks.map((a: Attack) =>
+          a._id === attack._id || a._id === attack.id ? attackToSave : a
+        )
       );
     } else {
       setValue("attacks", [
         ...(attacks || []),
-        { ...attackToSave, _id: uuidv4() },
+        { ...attackToSave, id: uuidv4() },
       ]);
     }
     setAttack(DEFAULT_ATTACK);
@@ -162,10 +164,38 @@ const AttacksCard = () => {
   };
 
   const handleEditAttack = (id: string) => {
-    const selectedAttack = attacks.find((attack: Attack) => attack._id === id);
-    setAttack(selectedAttack);
-    setAttackType(selectedAttack.abilitySave ? "save" : "roll");
-    setIsEditAttackFormOpen(true);
+    const selectedAttack = attacks.find(
+      (attack: Attack) => attack._id === id || attack.id === id
+    );
+
+    if (selectedAttack) {
+      const attackType = selectedAttack.abilitySave ? "save" : "roll";
+
+      const preparedAttack = {
+        ...DEFAULT_ATTACK,
+        ...selectedAttack,
+        damageRoll: {
+          numberOfDice: selectedAttack.damageRoll?.numberOfDice || 0,
+          diceType: selectedAttack.damageRoll?.diceType || 4,
+          abilityUsed:
+            attackType === "roll"
+              ? selectedAttack.damageRoll?.abilityUsed || undefined
+              : undefined,
+        },
+        abilitySave:
+          attackType === "save" ? selectedAttack.abilitySave || "" : "",
+        isProficient:
+          attackType === "roll" ? selectedAttack.isProficient || false : false,
+        otherAttackRollModifier: selectedAttack.otherAttackRollModifier || 0,
+        otherDamageModifier: selectedAttack.otherDamageModifier || 0,
+        description: selectedAttack.description || "",
+        areaOfEffect: selectedAttack.areaOfEffect || "",
+      };
+
+      setAttack(preparedAttack);
+      setAttackType(attackType);
+      setIsEditAttackFormOpen(true);
+    }
   };
 
   return (
@@ -179,12 +209,12 @@ const AttacksCard = () => {
             <div
               key={attack?._id || index}
               className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
-              onClick={() => handleEditAttack(attack?._id || "")}
+              onClick={() => handleEditAttack(attack?._id || attack.id || "")}
             >
               <p>{attack.name}</p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={(e) => handleDelete(e, attack?._id || "")}
+                onClick={(e) => handleDelete(e, attack?._id || attack.id || "")}
               />
             </div>
           ))}
@@ -197,9 +227,36 @@ const AttacksCard = () => {
               <Switch
                 defaultChecked={false}
                 checked={attackType === "save"}
-                onCheckedChange={() =>
-                  setAttackType(attackType === "roll" ? "save" : "roll")
-                }
+                onCheckedChange={() => {
+                  const newType = attackType === "roll" ? "save" : "roll";
+                  setAttackType(newType);
+
+                  if (newType === "save") {
+                    // Switching to save type
+                    setAttack({
+                      ...attack,
+                      abilitySave: attack.abilitySave || "",
+                      isProficient: false,
+                      attackRoll: {},
+                      damageRoll: {
+                        ...attack.damageRoll,
+                        abilityUsed: undefined,
+                      },
+                    });
+                  } else {
+                    // Switching to roll type
+                    setAttack({
+                      ...attack,
+                      abilitySave: "",
+                      isProficient: false,
+                      attackRoll: { modifier: undefined },
+                      damageRoll: {
+                        ...attack.damageRoll,
+                        abilityUsed: undefined,
+                      },
+                    });
+                  }
+                }}
               />
               <p>Ability save</p>
             </div>
@@ -372,7 +429,7 @@ const AttacksCard = () => {
                       abilitySave: undefined,
                     });
                   }}
-                  value={attack.damageRoll.abilityUsed}
+                  value={attack.damageRoll.abilityUsed || undefined}
                 >
                   <SelectTrigger className="text-indigo-600">
                     <SelectValue placeholder="Ability used in attack" />

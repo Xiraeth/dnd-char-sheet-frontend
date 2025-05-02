@@ -18,8 +18,11 @@ const SelectedSpellBlock = ({
   onClickHandler: () => void;
 }) => {
   return (
-    <div className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm cursor-pointer hover:bg-black/80 transition-all duration-150">
-      <p onClick={onClickHandler}>{spell.name}</p>
+    <div
+      className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm cursor-pointer hover:bg-black/80 transition-all duration-150"
+      onClick={onClickHandler}
+    >
+      <p>{spell.name}</p>
       <X
         className="size-4 hover:text-red-400 transition-all duration-150 cursor-pointer"
         onClick={removeHandler}
@@ -42,7 +45,7 @@ const SpellsCard = () => {
     <Card>
       <CardHeader>
         <CardTitle className="text-center flex gap-2 justify-center">
-          Spells{" "}
+          Spells
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 pb-0 mb-4">
@@ -72,6 +75,10 @@ const SpellsCard = () => {
               spell={spell}
               removeHandler={(e) => {
                 e.stopPropagation();
+                if (spell?._id === selectedSpell?._id) {
+                  setSelectedSpell(null);
+                  setIsCreateSpellFormOpen(false);
+                }
                 setValue(
                   "spells",
                   spells.filter((s) => s.name !== spell.name)
@@ -100,6 +107,7 @@ const SpellsCard = () => {
         <CustomSpellForm
           setIsCreateSpellFormOpen={setIsCreateSpellFormOpen}
           selectedSpell={selectedSpell}
+          setSelectedSpell={setSelectedSpell}
         />
       )}
     </Card>

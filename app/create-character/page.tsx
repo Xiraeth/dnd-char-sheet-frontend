@@ -63,6 +63,7 @@ const CreateCharacter = () => {
     const profBonus = isProficientInPerception
       ? getProficiencyBonus(data.basicInfo.level)
       : 0;
+    const spellSlots = data.spellSlots;
 
     const passiveWisdom = isProficientInPerception
       ? perceptionModifier + 10 + profBonus
@@ -72,6 +73,15 @@ const CreateCharacter = () => {
     setValue("stats.hitPointsCurrent", hitpoints);
     setValue("stats.hitDice.remaining", level);
     setValue("stats.hitDice.total", level);
+
+    Object.values(spellSlots || {}).forEach(
+      (spellSlot: { current?: number; total?: number }, index: number) => {
+        setValue(
+          `spellSlots.level${index + 1}.total` as keyof Character,
+          Number(spellSlot.current)
+        );
+      }
+    );
 
     try {
       const response = await axios.post(
@@ -99,9 +109,9 @@ const CreateCharacter = () => {
             error.response?.data?.message ||
             "An error occurred"
         );
+      } else {
+        toast.error("Server is probably down.");
       }
-
-      toast.error("Server is probably down.");
     }
   };
 
@@ -238,9 +248,18 @@ const CreateCharacter = () => {
     setValue("spellcasting.spellAttackBonus", 7);
 
     // Spell Slots
-    setValue("spellSlots.level1", 4);
-    setValue("spellSlots.level2", 3);
-    setValue("spellSlots.level3", 2);
+    setValue("spellSlots.level1", {
+      current: 4,
+      total: 4,
+    });
+    setValue("spellSlots.level2", {
+      current: 3,
+      total: 3,
+    });
+    setValue("spellSlots.level3", {
+      current: 2,
+      total: 2,
+    });
 
     // Appearance
     setValue("appearance", {
@@ -369,6 +388,17 @@ const CreateCharacter = () => {
         actionType: "action",
         range: "150 feet",
         components: ["V", "S", "M"],
+        damage: {
+          damage_type: {
+            name: "Fire",
+          },
+          damage_at_slot_level: [
+            {
+              damage: "8d6",
+              level: "3",
+            },
+          ],
+        },
         duration: "Instantaneous",
         desc: "A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with a low roar into an explosion of flame.",
         higher_level: [

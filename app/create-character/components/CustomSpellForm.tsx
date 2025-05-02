@@ -17,10 +17,12 @@ import { v4 as uuidv4 } from "uuid";
 
 const CustomSpellForm = ({
   setIsCreateSpellFormOpen,
+  setSelectedSpell,
   selectedSpell,
 }: {
   setIsCreateSpellFormOpen: (isOpen: boolean) => void;
   selectedSpell: Spell | null;
+  setSelectedSpell?: (spell: Spell | null) => void;
 }) => {
   const { control } = useFormContext();
 
@@ -29,28 +31,27 @@ const CustomSpellForm = ({
     name: "spells",
   });
 
-  console.log(selectedSpell);
-
-  const [spell, setSpell] = useState<Partial<Spell>>({
-    name: selectedSpell?.name || "",
-    desc: selectedSpell?.desc || "",
-    level: selectedSpell?.level || "",
+  const spell = selectedSpell || {
+    _id: "",
+    name: "",
+    desc: "",
+    level: "",
     school: {
-      name: selectedSpell?.school?.name || "",
-      desc: selectedSpell?.school?.desc || "",
+      name: "",
+      desc: "",
     },
-    casting_time: selectedSpell?.casting_time || "",
-    range: selectedSpell?.range || "",
-    components: selectedSpell?.components || [],
-    duration: selectedSpell?.duration || "",
+    casting_time: "",
+    range: "",
+    components: [],
+    duration: "",
     higher_level: [],
     damage: {
       damage_type: {
-        name: selectedSpell?.damage?.damage_type?.name || "",
+        name: "",
       },
-      damage_at_slot_level: selectedSpell?.damage?.damage_at_slot_level || [],
+      damage_at_slot_level: [],
     },
-  });
+  };
 
   const [errors, setErrors] = useState<Partial<Spell>>({});
 
@@ -102,25 +103,22 @@ const CustomSpellForm = ({
 
     const spellData = { ...spell, _id: selectedSpell?._id || uuidv4() };
 
-    if (selectedSpell?._id) {
-      // Find if the spell exists in the array
-      const spellIndex = fields.findIndex(
-        (field) => field.id === selectedSpell._id
-      );
+    // Find if the spell exists in the array
+    const spellIndex = fields.findIndex(
+      (field) =>
+        (field as unknown as { _id: string })._id === selectedSpell?._id
+    );
 
-      if (spellIndex !== -1) {
-        // Update existing spell
-        update(spellIndex, spellData);
-      } else {
-        // Add as new if somehow it has an ID but isn't in the array
-        append(spellData);
-      }
+    if (spellIndex !== -1) {
+      // Update existing spell
+      update(spellIndex, spellData);
     } else {
-      // Create new spell
+      // Add as new if somehow it has an ID but isn't in the array
       append(spellData);
     }
 
     setIsCreateSpellFormOpen(false);
+    setSelectedSpell?.(null);
   };
 
   return (
@@ -131,7 +129,10 @@ const CustomSpellForm = ({
         </h1>
         <X
           className="size-4 ml-auto cursor-pointer hover:text-black/50 transition-all duration-150"
-          onClick={() => setIsCreateSpellFormOpen(false)}
+          onClick={() => {
+            setIsCreateSpellFormOpen(false);
+            setSelectedSpell?.(null);
+          }}
         />
       </div>
 
@@ -142,7 +143,9 @@ const CustomSpellForm = ({
         <Input
           id="name"
           value={spell.name}
-          onChange={(e) => setSpell({ ...spell, name: e.target.value })}
+          onChange={(e) =>
+            setSelectedSpell?.({ ...spell, name: e.target.value })
+          }
           className="text-indigo-600"
         />
         {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
@@ -158,7 +161,7 @@ const CustomSpellForm = ({
           className="text-indigo-600"
           value={spell.level}
           onChange={(e) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               level: e.target.value,
               damage: {
@@ -183,7 +186,7 @@ const CustomSpellForm = ({
         </label>
         <Select
           onValueChange={(value) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               school: {
                 name: value,
@@ -217,7 +220,12 @@ const CustomSpellForm = ({
           id="casting_time"
           value={spell.casting_time}
           className="text-indigo-600"
-          onChange={(e) => setSpell({ ...spell, casting_time: e.target.value })}
+          onChange={(e) =>
+            setSelectedSpell?.({
+              ...spell,
+              casting_time: e.target.value,
+            })
+          }
         />
         {errors.casting_time && (
           <p className="text-red-600 text-sm">{errors.casting_time}</p>
@@ -232,7 +240,12 @@ const CustomSpellForm = ({
           id="range"
           className="text-indigo-600"
           value={spell.range}
-          onChange={(e) => setSpell({ ...spell, range: e.target.value })}
+          onChange={(e) =>
+            setSelectedSpell?.({
+              ...spell,
+              range: e.target.value,
+            })
+          }
         />
         {errors.range && <p className="text-red-600 text-sm">{errors.range}</p>}
       </div>
@@ -245,7 +258,12 @@ const CustomSpellForm = ({
           id="duration"
           className="text-indigo-600"
           value={spell.duration}
-          onChange={(e) => setSpell({ ...spell, duration: e.target.value })}
+          onChange={(e) =>
+            setSelectedSpell?.({
+              ...spell,
+              duration: e.target.value,
+            })
+          }
         />
         {errors.duration && (
           <p className="text-red-600 text-sm">{errors.duration}</p>
@@ -256,7 +274,7 @@ const CustomSpellForm = ({
         <label htmlFor="damageType">Damage Type</label>
         <Select
           onValueChange={(value) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               damage: { ...spell.damage, damage_type: { name: value } },
             })
@@ -283,7 +301,7 @@ const CustomSpellForm = ({
           className="text-indigo-600"
           value={spell.damage?.damage_at_slot_level?.[0]?.damage || ""}
           onChange={(e) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               damage: {
                 damage_type: {
@@ -308,7 +326,7 @@ const CustomSpellForm = ({
           className="text-indigo-600"
           value={spell.healing_at_slot_level?.[0]?.healing || ""}
           onChange={(e) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               healing_at_slot_level: [
                 {
@@ -328,12 +346,14 @@ const CustomSpellForm = ({
         <ToggleGroup
           type="multiple"
           value={spell.components}
-          onValueChange={(value) => setSpell({ ...spell, components: value })}
+          onValueChange={(value) =>
+            setSelectedSpell?.({ ...spell, components: value })
+          }
           className="border-[1px] border-black/40 rounded-md"
         >
-          <ToggleGroupItem value="verbal">Verbal</ToggleGroupItem>
-          <ToggleGroupItem value="somatic">Somatic</ToggleGroupItem>
-          <ToggleGroupItem value="material">Material</ToggleGroupItem>
+          <ToggleGroupItem value="V">Verbal</ToggleGroupItem>
+          <ToggleGroupItem value="S">Somatic</ToggleGroupItem>
+          <ToggleGroupItem value="M">Material</ToggleGroupItem>
         </ToggleGroup>
         {errors.components && (
           <p className="text-red-600 text-sm">{errors.components.join("")}</p>
@@ -348,7 +368,9 @@ const CustomSpellForm = ({
           id="desc"
           className="min-h-[100px] p-2 border rounded-md text-indigo-600"
           value={spell.desc}
-          onChange={(e) => setSpell({ ...spell, desc: e.target.value })}
+          onChange={(e) =>
+            setSelectedSpell?.({ ...spell, desc: e.target.value })
+          }
         />
         {errors.desc && <p className="text-red-600 text-sm">{errors.desc}</p>}
       </div>
@@ -360,7 +382,7 @@ const CustomSpellForm = ({
           className="text-indigo-600"
           value={spell.higher_level?.join(", ") || ""}
           onChange={(e) =>
-            setSpell({
+            setSelectedSpell?.({
               ...spell,
               higher_level: e.target.value
                 .split(",")
