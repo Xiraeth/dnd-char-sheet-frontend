@@ -120,11 +120,11 @@ const SpellView = () => {
 
       return (
         <div key={index} className="mb-10">
-          <div className="w-full flex justify-between">
-            <div className="flex flex-col  font-scalySans">
-              <p className="font-mrEaves text-xl sm:text-2xl font-bold">{`${
-                index === 0 ? "Cantrips" : `Level ${index}`
-              }`}</p>
+          <p className="font-mrEaves text-2xl sm:text-3xl font-bold text-center">{`${
+            index === 0 ? "Cantrips" : `Level ${index}`
+          }`}</p>
+          <div className="w-full flex justify-between items-center">
+            <div className="flex flex-col font-scalySans">
               {index !== 0 && (
                 <div className="flex gap-2">
                   <p>Spell slots: </p>
@@ -141,7 +141,7 @@ const SpellView = () => {
                     expendSpellSlot(index, spellSlotsCurrent || 0);
                   }}
                 >
-                  Expend a use
+                  Use spell slot
                 </Button>
                 <Button
                   className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
@@ -155,7 +155,7 @@ const SpellView = () => {
                     );
                   }}
                 >
-                  Restore a use
+                  Restore spell slot
                 </Button>
               </div>
             )}
