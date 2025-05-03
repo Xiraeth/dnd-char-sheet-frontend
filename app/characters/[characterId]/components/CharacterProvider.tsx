@@ -52,14 +52,6 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
           }
         );
 
-        // Debug log to check character data
-        console.log("Character data loaded:", {
-          class: response.data.character?.basicInfo?.class,
-          alignment: response.data.character?.basicInfo?.alignment,
-          hitDiceType: response.data.character?.stats?.hitDice?.diceType,
-          hasSpellcasting: !!response.data.character?.spellcasting,
-        });
-
         setCharacter(response.data.character);
         setIsLoading(false);
       };

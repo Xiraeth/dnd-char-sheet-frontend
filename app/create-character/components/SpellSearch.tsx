@@ -54,7 +54,6 @@ export function SpellSearch({
   // Update queryClass whenever characterClass changes
   useEffect(() => {
     if (characterClass) {
-      console.log("Character class found in SpellSearch:", characterClass);
       if (characterClass === "custom") {
         setQueryClass(undefined);
       } else if (limitQueryToClass) {
@@ -75,14 +74,6 @@ export function SpellSearch({
     errorPolicy: "all",
     skip: shouldSkipQuery,
   });
-
-  useEffect(() => {
-    if (data) {
-      console.log("Spells data received:", {
-        count: data.spells?.length || 0,
-      });
-    }
-  }, [data]);
 
   const filteredSpellsObjectArray: SpellObject[] =
     data?.spells?.map((spell: Spell) => ({

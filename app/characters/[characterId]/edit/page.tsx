@@ -33,12 +33,6 @@ const EditCharacter = () => {
   // Reset form when character data is loaded
   useEffect(() => {
     if (character) {
-      console.log("Resetting form with character data:", {
-        class: character.basicInfo?.class,
-        alignment: character.basicInfo?.alignment,
-        hitDiceType: character.stats?.hitDice?.diceType,
-      });
-
       // Reset the form with the character data
       reset(character);
 
@@ -76,12 +70,6 @@ const EditCharacter = () => {
       const hasSpellcastingData = !!character.spellcasting;
       const isCustomSpellcaster =
         character.basicInfo?.class?.toLowerCase() === "custom";
-
-      console.log("Spellcasting detection:", {
-        isSpellcastingClass,
-        hasSpellcastingData,
-        isCustomSpellcaster,
-      });
 
       if (isSpellcastingClass || hasSpellcastingData || isCustomSpellcaster) {
         setIsSpellcaster(true);
