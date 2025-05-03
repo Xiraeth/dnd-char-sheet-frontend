@@ -110,6 +110,7 @@ export const SPELLCASTING_CLASSES = [
   "Sorcerer",
   "Wizard",
   "Warlock",
+  "Custom",
 ];
 
 export const RACES = [

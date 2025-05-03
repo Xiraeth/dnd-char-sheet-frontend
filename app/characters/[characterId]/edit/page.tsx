@@ -67,7 +67,9 @@ const EditCharacter = () => {
       const isSpellcastingClass =
         character.basicInfo?.class &&
         SPELLCASTING_CLASSES.includes(character.basicInfo.class);
-      const hasSpellcastingData = !!character.spellcasting;
+      const hasSpellcastingData =
+        !!character.spellcasting?.spellSaveDC ||
+        !!character?.spellcasting?.spellAttackBonus;
       const isCustomSpellcaster =
         character.basicInfo?.class?.toLowerCase() === "custom";
 
