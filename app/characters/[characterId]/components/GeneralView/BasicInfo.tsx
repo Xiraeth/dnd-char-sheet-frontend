@@ -1,6 +1,5 @@
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
 import { VerticalDivider } from "@/app/characters/[characterId]/components/VerticalDivider";
-import InputSpan from "@/components/InputSpan";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,7 +19,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const BasicInfo = () => {
-  const { character, deleteCharacter, updateCharacterField } = useCharacter();
+  const { character, deleteCharacter } = useCharacter();
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -124,16 +123,7 @@ const BasicInfo = () => {
       </div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-2 font-bookInsanity">
         <div className="text-base sm:text-lg flex gap-2">
-          <span>Level</span>{" "}
-          <InputSpan
-            value={character?.basicInfo?.level}
-            onChange={(value) => {
-              updateCharacterField({
-                field: "basicInfo.level",
-                value,
-              });
-            }}
-          />{" "}
+          <span>Level</span> <span>{character?.basicInfo?.level}</span>
           {character?.basicInfo?.race} {character?.basicInfo?.class}{" "}
         </div>
         <VerticalDivider />
