@@ -207,11 +207,11 @@ export interface Feature {
 
 export interface Attack {
   _id?: string;
-  id?: string;
   name: string;
   actionType?: string;
   attackRoll?: {
     modifier?: number;
+    addModifier?: boolean;
   };
   damageRoll: {
     numberOfDice: number;

@@ -63,11 +63,11 @@ const FeaturesAndTraitsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      if (feature.id) {
+      if (feature._id) {
         setValue(
           "featuresAndTraits",
           featuresAndTraits.map((f: Feature) => {
-            if (f.id === feature.id) {
+            if (f._id === feature._id) {
               return { ...f, ...feature };
             }
             return f;
@@ -76,7 +76,7 @@ const FeaturesAndTraitsCard = () => {
       } else {
         setValue("featuresAndTraits", [
           ...(featuresAndTraits || []),
-          { ...feature, id: uuidv4() },
+          { ...feature, _id: uuidv4() },
         ]);
       }
       setFeature(DEFAULT_FEATURE);
@@ -99,13 +99,13 @@ const FeaturesAndTraitsCard = () => {
     setFeature(DEFAULT_FEATURE);
     setValue(
       "featuresAndTraits",
-      featuresAndTraits?.filter((feature: Feature) => feature.id !== id)
+      featuresAndTraits?.filter((feature: Feature) => feature._id !== id)
     );
   };
 
   const handleFeatureClick = (id: string) => {
     setFeature(
-      featuresAndTraits?.find((feature: Feature) => feature.id === id)
+      featuresAndTraits?.find((feature: Feature) => feature._id === id)
     );
     setIsEditFeatureFormOpen(true);
   };
@@ -119,14 +119,14 @@ const FeaturesAndTraitsCard = () => {
         <div className="flex gap-2 flex-wrap">
           {featuresAndTraits?.map((feature: Feature, index: number) => (
             <div
-              key={feature?.id || index}
+              key={feature?._id || index}
               className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
-              onClick={() => handleFeatureClick(feature?.id || "")}
+              onClick={() => handleFeatureClick(feature?._id || "")}
             >
               <p>{feature.name}</p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={(e) => handleDelete(e, feature?.id)}
+                onClick={(e) => handleDelete(e, feature?._id || "")}
               />
             </div>
           ))}
@@ -141,7 +141,7 @@ const FeaturesAndTraitsCard = () => {
               <Input
                 id="name"
                 placeholder="Feature name"
-                value={feature.name}
+                value={feature?.name}
                 onChange={(e) =>
                   setFeature({ ...feature, name: e.target.value })
                 }
@@ -158,7 +158,7 @@ const FeaturesAndTraitsCard = () => {
               <Input
                 id="source"
                 placeholder="Source (e.g., Class, Race, Background)"
-                value={feature.source}
+                value={feature?.source}
                 onChange={(e) =>
                   setFeature({ ...feature, source: e.target.value })
                 }
@@ -176,7 +176,7 @@ const FeaturesAndTraitsCard = () => {
                 id="description"
                 placeholder="Feature description"
                 className="min-h-[100px]"
-                value={feature.description}
+                value={feature?.description}
                 onChange={(e) =>
                   setFeature({ ...feature, description: e.target.value })
                 }
@@ -191,14 +191,14 @@ const FeaturesAndTraitsCard = () => {
                 <Label htmlFor="isExpendable">Is expendable?</Label>
                 <Switch
                   id="isExpendable"
-                  checked={feature.isExpendable}
+                  checked={feature?.isExpendable}
                   onCheckedChange={() => {
                     setFeature({
                       ...feature,
-                      isExpendable: !feature.isExpendable,
-                      usesLeft: !feature.isExpendable ? 0 : undefined,
-                      usesTotal: !feature.isExpendable ? 0 : undefined,
-                      rechargeOn: !feature.isExpendable ? "" : undefined,
+                      isExpendable: !feature?.isExpendable,
+                      usesLeft: !feature?.isExpendable ? 0 : undefined,
+                      usesTotal: !feature?.isExpendable ? 0 : undefined,
+                      rechargeOn: !feature?.isExpendable ? "" : undefined,
                     });
                   }}
                 />
@@ -211,7 +211,7 @@ const FeaturesAndTraitsCard = () => {
                       id="usesTotal"
                       type="text"
                       disabled={feature?.areUsesTotalEqualToProfBonus}
-                      value={feature.usesTotal || ""}
+                      value={feature?.usesTotal || ""}
                       onChange={(e) => {
                         const resetUsesTotal = () => {
                           setFeature({
@@ -263,7 +263,7 @@ const FeaturesAndTraitsCard = () => {
                   <div className="flex flex-col items-center gap-2 ">
                     <Label htmlFor="rechargeOn">Recharge</Label>
                     <Select
-                      value={feature.rechargeOn}
+                      value={feature?.rechargeOn}
                       onValueChange={(value) =>
                         setFeature({ ...feature, rechargeOn: value })
                       }

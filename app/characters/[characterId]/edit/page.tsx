@@ -62,8 +62,24 @@ const EditCharacter = () => {
     setValue("stats.hitDice.remaining", level);
     setValue("stats.hitDice.total", level);
 
+    const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
+      if (feature?._id?.length !== 24) {
+        return { ...feature, _id: undefined };
+      }
+      return feature;
+    });
+
+    const attacksWithoutV4Ids = data.attacks?.map((attack) => {
+      if (attack?._id?.length !== 24) {
+        return { ...attack, _id: undefined };
+      }
+      return attack;
+    });
+
     onSubmit({
       ...data,
+      featuresAndTraits: featuresWithoutV4Ids,
+      attacks: attacksWithoutV4Ids,
       passiveWisdom,
       stats: {
         ...data.stats,

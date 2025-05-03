@@ -86,10 +86,14 @@ const Attacks = () => {
             abilityUsedInAttack as keyof CharacterAbilities
           ];
 
+        const addModifier = attack?.attackRoll?.addModifier;
+
         const modifier = getModifier(ability);
 
         const damageRollBonus = hasAttackRoll
-          ? modifier + (attack?.otherDamageModifier || 0)
+          ? addModifier
+            ? modifier + (attack?.otherDamageModifier || 0)
+            : 0
           : 0;
 
         const displayedDamageRoll = `${attack?.damageRoll?.numberOfDice}d${

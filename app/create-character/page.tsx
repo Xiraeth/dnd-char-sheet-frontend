@@ -74,6 +74,15 @@ const CreateCharacter = () => {
     setValue("stats.hitDice.remaining", level);
     setValue("stats.hitDice.total", level);
 
+    const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
+      if (feature?._id?.length !== 24) {
+        return { ...feature, _id: undefined };
+      }
+      return feature;
+    });
+
+    setValue("featuresAndTraits", featuresWithoutV4Ids);
+
     Object.values(spellSlots || {}).forEach(
       (spellSlot: { current?: number; total?: number }, index: number) => {
         setValue(
@@ -339,7 +348,7 @@ const CreateCharacter = () => {
       {
         name: "Fire Bolt",
         actionType: "action",
-        attackRoll: { modifier: 7 },
+        attackRoll: { modifier: 4 },
         damageRoll: {
           numberOfDice: 1,
           diceType: 10,

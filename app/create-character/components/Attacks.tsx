@@ -123,7 +123,12 @@ const AttacksCard = () => {
     const attackToSave = {
       ...attack,
       isProficient: isAttackRoll ? attack.isProficient : undefined,
-      attackRoll: isAttackRoll ? { modifier: attackRollModifier } : undefined,
+      attackRoll: isAttackRoll
+        ? {
+            modifier: attackRollModifier,
+            addModifier: attack.attackRoll?.addModifier,
+          }
+        : undefined,
       damageRoll: isAttackRoll
         ? attack.damageRoll
         : { ...attack.damageRoll, abilityUsed: undefined },
@@ -132,14 +137,12 @@ const AttacksCard = () => {
     if (attack._id) {
       setValue(
         "attacks",
-        attacks.map((a: Attack) =>
-          a._id === attack._id || a._id === attack.id ? attackToSave : a
-        )
+        attacks.map((a: Attack) => (a._id === attack._id ? attackToSave : a))
       );
     } else {
       setValue("attacks", [
         ...(attacks || []),
-        { ...attackToSave, id: uuidv4() },
+        { ...attackToSave, _id: uuidv4() },
       ]);
     }
     setAttack(DEFAULT_ATTACK);
@@ -164,9 +167,7 @@ const AttacksCard = () => {
   };
 
   const handleEditAttack = (id: string) => {
-    const selectedAttack = attacks.find(
-      (attack: Attack) => attack._id === id || attack.id === id
-    );
+    const selectedAttack = attacks.find((attack: Attack) => attack._id === id);
 
     if (selectedAttack) {
       const attackType = selectedAttack.abilitySave ? "save" : "roll";
@@ -209,12 +210,12 @@ const AttacksCard = () => {
             <div
               key={attack?._id || index}
               className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
-              onClick={() => handleEditAttack(attack?._id || attack.id || "")}
+              onClick={() => handleEditAttack(attack?._id || "")}
             >
               <p>{attack.name}</p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={(e) => handleDelete(e, attack?._id || attack.id || "")}
+                onClick={(e) => handleDelete(e, attack?._id || "")}
               />
             </div>
           ))}
@@ -530,6 +531,29 @@ const AttacksCard = () => {
                   checked={attack.isProficient}
                   onCheckedChange={() =>
                     setAttack({ ...attack, isProficient: !attack.isProficient })
+                  }
+                />
+              </div>
+            )}
+
+            {attackType === "roll" && (
+              <div className="col-span-full flex justify-center items-center gap-4">
+                <Label
+                  htmlFor="addModifier"
+                  className="text-xs sm:text-sm italic text-black/80"
+                >
+                  Add ability modifier to attack roll?
+                </Label>
+                <Checkbox
+                  checked={attack.attackRoll?.addModifier}
+                  onCheckedChange={() =>
+                    setAttack({
+                      ...attack,
+                      attackRoll: {
+                        ...attack.attackRoll,
+                        addModifier: !attack.attackRoll?.addModifier,
+                      },
+                    })
                   }
                 />
               </div>
