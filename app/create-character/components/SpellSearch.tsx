@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown, RefreshCcw } from "lucide-react";
 import {
   Command,
@@ -49,22 +49,40 @@ export function SpellSearch({
   });
 
   const characterClass = watch("basicInfo.class")?.toLowerCase();
+  const [queryClass, setQueryClass] = useState<string | undefined>(undefined);
+
+  // Update queryClass whenever characterClass changes
+  useEffect(() => {
+    if (characterClass) {
+      console.log("Character class found in SpellSearch:", characterClass);
+      if (characterClass === "custom") {
+        setQueryClass(undefined);
+      } else if (limitQueryToClass) {
+        setQueryClass(characterClass);
+      }
+    }
+  }, [characterClass, limitQueryToClass]);
+
+  // Skip query if no class is selected
   const shouldSkipQuery = !characterClass || characterClass === "";
 
-  // Only execute the query if we have a valid character class
   const { data, loading, error, refetch } = useQuery(GET_SPELLS, {
     variables: {
-      class: limitQueryToClass
-        ? characterClass === "custom"
-          ? undefined
-          : characterClass
-        : undefined,
+      class: queryClass,
     },
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
     errorPolicy: "all",
-    skip: shouldSkipQuery, // Skip the query if no character class is available
+    skip: shouldSkipQuery,
   });
+
+  useEffect(() => {
+    if (data) {
+      console.log("Spells data received:", {
+        count: data.spells?.length || 0,
+      });
+    }
+  }, [data]);
 
   const filteredSpellsObjectArray: SpellObject[] =
     data?.spells?.map((spell: Spell) => ({

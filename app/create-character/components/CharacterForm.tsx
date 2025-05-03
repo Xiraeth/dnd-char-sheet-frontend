@@ -22,10 +22,12 @@ const CharacterForm = ({
   isSpellcaster,
   setIsSpellcaster,
   isSubmitting,
+  formReady = true,
 }: {
   isSpellcaster: boolean;
   setIsSpellcaster: (isSpellcaster: boolean) => void;
   isSubmitting?: boolean;
+  formReady?: boolean;
 }) => {
   const characterId = useParams() as { characterId: string };
   const { watch, setError, clearErrors } = useFormContext();
@@ -72,7 +74,7 @@ const CharacterForm = ({
       {/* spell slots */}
       {isSpellcaster && <SpellSlotsCard />}
       {/* spells */}
-      {isSpellcaster && <SpellsCard />}
+      {isSpellcaster && formReady && <SpellsCard />}
       {/* proficiencies and languages */}
       <ProfsAndLangsCard />
       {/* inventory */}

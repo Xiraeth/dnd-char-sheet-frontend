@@ -36,7 +36,7 @@ const SpellcastingCard = () => {
         <div>
           <Label htmlFor="spellcastingClass">Spellcasting Class</Label>
           <Select
-            value={watch("spellcasting.spellcastingClass")}
+            value={watch("spellcasting.spellcastingClass") || ""}
             onValueChange={(value) => {
               setValue("spellcasting.spellcastingClass", value);
               const classSpellcastingAbility =
@@ -71,13 +71,12 @@ const SpellcastingCard = () => {
                 );
               }
             }}
-            {...register("spellcasting.spellcastingClass")}
           >
-            <SelectTrigger className="text-indigo-600">
-              <SelectValue placeholder="Spellcasting Class">
-                {watch("spellcasting.spellcastingClass") ||
-                  "Spellcasting Class"}
-              </SelectValue>
+            <SelectTrigger
+              className="text-indigo-600"
+              id="spellcasting-class-trigger"
+            >
+              <SelectValue placeholder="Spellcasting Class" />
             </SelectTrigger>
             <SelectContent id="spellcastingClass" className="text-indigo-600">
               {spellcastingClassesObject.map((ability) => (
@@ -92,7 +91,7 @@ const SpellcastingCard = () => {
         <div>
           <Label htmlFor="spellcastingAbility">Spellcasting Ability</Label>
           <Select
-            value={watch("spellcasting.spellcastingAbility")}
+            value={watch("spellcasting.spellcastingAbility") || ""}
             onValueChange={(value) => {
               // Set the spellcasting ability first
               setValue(
@@ -121,17 +120,12 @@ const SpellcastingCard = () => {
                 }
               }
             }}
-            {...register("spellcasting.spellcastingAbility")}
           >
-            <SelectTrigger className="text-indigo-600">
-              <SelectValue placeholder="Spellcasting Ability">
-                {watch("spellcasting.spellcastingAbility")
-                  ? (watch("spellcasting.spellcastingAbility") || "")
-                      .charAt(0)
-                      .toUpperCase() +
-                    (watch("spellcasting.spellcastingAbility") || "").slice(1)
-                  : "Spellcasting Ability"}
-              </SelectValue>
+            <SelectTrigger
+              className="text-indigo-600"
+              id="spellcasting-ability-trigger"
+            >
+              <SelectValue placeholder="Spellcasting Ability" />
             </SelectTrigger>
             <SelectContent id="spellcastingAbility" className="text-indigo-600">
               {SPELLCASTING_ABILITIES.map((ability) => (

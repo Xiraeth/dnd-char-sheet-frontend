@@ -14,11 +14,12 @@ import CharacterProvider, {
   useCharacter,
 } from "@/app/characters/[characterId]/components/CharacterProvider";
 import { Loader } from "lucide-react";
+import { SPELLCASTING_CLASSES } from "@/app/constants";
 
 const EditCharacter = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { character, isLoading, setCharacter } = useCharacter();
-
+  const [formReady, setFormReady] = useState(false);
   const [isSpellcaster, setIsSpellcaster] = useState(false);
   const router = useRouter();
 
@@ -38,18 +39,60 @@ const EditCharacter = () => {
         hitDiceType: character.stats?.hitDice?.diceType,
       });
 
-      // Use this to force a complete reset with the character data
+      // Reset the form with the character data
       reset(character);
 
+      // Directly set values for fields that might not be properly captured by reset
+      if (character.basicInfo?.class) {
+        setValue("basicInfo.class", character.basicInfo.class);
+      }
+
+      if (character.basicInfo?.alignment) {
+        setValue("basicInfo.alignment", character.basicInfo.alignment);
+      }
+
+      if (character.stats?.hitDice?.diceType) {
+        setValue("stats.hitDice.diceType", character.stats.hitDice.diceType);
+      }
+
+      if (character.spellcasting?.spellcastingClass) {
+        setValue(
+          "spellcasting.spellcastingClass",
+          character.spellcasting.spellcastingClass
+        );
+      }
+
+      if (character.spellcasting?.spellcastingAbility) {
+        setValue(
+          "spellcasting.spellcastingAbility",
+          character.spellcasting.spellcastingAbility
+        );
+      }
+
       // Set isSpellcaster based on character data
-      if (
-        character.basicInfo?.class?.toLowerCase() === "custom" ||
-        character.spellcasting
-      ) {
+      const isSpellcastingClass =
+        character.basicInfo?.class &&
+        SPELLCASTING_CLASSES.includes(character.basicInfo.class);
+      const hasSpellcastingData = !!character.spellcasting;
+      const isCustomSpellcaster =
+        character.basicInfo?.class?.toLowerCase() === "custom";
+
+      console.log("Spellcasting detection:", {
+        isSpellcastingClass,
+        hasSpellcastingData,
+        isCustomSpellcaster,
+      });
+
+      if (isSpellcastingClass || hasSpellcastingData || isCustomSpellcaster) {
         setIsSpellcaster(true);
       }
+
+      // Mark the form as ready after a small delay to ensure values are set
+      setTimeout(() => {
+        setFormReady(true);
+      }, 100);
     }
-  }, [character, reset]);
+  }, [character, reset, setValue]);
 
   const preSubmit = async (data: Character) => {
     const perceptionModifier = getModifier(data.abilities.wisdom);
@@ -160,6 +203,14 @@ const EditCharacter = () => {
     );
   }
 
+  if (!formReady) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Loader size={24} className="animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
       <BackButton url={`/characters/${character?._id}`} />
@@ -170,6 +221,7 @@ const EditCharacter = () => {
             isSpellcaster={isSpellcaster}
             setIsSpellcaster={setIsSpellcaster}
             isSubmitting={isSubmitting}
+            formReady={formReady}
           />
         </form>
       </FormProvider>

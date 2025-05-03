@@ -2,7 +2,7 @@ import { Character, Spell } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormContext } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SpellSearch } from "@/app/create-character/components/SpellSearch";
 import { X } from "lucide-react";
 import CustomSpellForm from "@/app/create-character/components/CustomSpellForm";
@@ -37,9 +37,16 @@ const SpellsCard = () => {
   const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null);
   const { watch, setValue } = useFormContext<Character>();
 
-  const spells = watch("spells");
-
+  const spells = watch("spells") || [];
   const characterClass = watch("basicInfo.class");
+
+  // Debug log the spells information
+  useEffect(() => {
+    console.log("SpellsCard rendered with:", {
+      spellsCount: spells?.length || 0,
+      characterClass,
+    });
+  }, [spells, characterClass]);
 
   return (
     <Card>

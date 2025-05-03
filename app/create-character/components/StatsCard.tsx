@@ -103,22 +103,15 @@ const StatsCard = () => {
             Hit Dice Type
           </Label>
           <Select
-            {...register("stats.hitDice.diceType", {
-              required: "Hit Dice Type is required",
-            })}
             onValueChange={(value) => {
               setValue("stats.hitDice.diceType", parseInt(value));
             }}
-            value={watch("stats.hitDice.diceType")?.toString()}
+            value={watch("stats.hitDice.diceType")?.toString() || ""}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Hit Dice Type">
-                {watch("stats.hitDice.diceType")
-                  ? `d${watch("stats.hitDice.diceType")}`
-                  : "Hit Dice Type"}
-              </SelectValue>
+            <SelectTrigger id="hit-dice-trigger">
+              <SelectValue placeholder="Hit Dice Type" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent id="hit-dice-content">
               {DICE_OPTIONS.map((dice) => (
                 <SelectItem key={dice.value} value={dice.value.toString()}>
                   {dice.label}

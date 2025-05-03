@@ -97,17 +97,12 @@ const BasicInfoCard = ({
                 setValue("spellcasting.spellAttackBonus", spellAttackBonus);
               }
             }}
-            {...register("basicInfo.class", {
-              required: "Class is required",
-            })}
-            value={watch("basicInfo.class")}
+            value={watch("basicInfo.class") || ""}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Class">
-                {watch("basicInfo.class") || "Class"}
-              </SelectValue>
+            <SelectTrigger id="class-trigger">
+              <SelectValue placeholder="Class" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent id="class-content">
               {CLASSES.map((dndClass) => (
                 <SelectItem key={dndClass} value={dndClass}>
                   {dndClass}
@@ -191,17 +186,12 @@ const BasicInfoCard = ({
           </Label>
           <Select
             onValueChange={(value) => setValue("basicInfo.alignment", value)}
-            value={watch("basicInfo.alignment")}
-            {...register("basicInfo.alignment", {
-              required: "Alignment is required",
-            })}
+            value={watch("basicInfo.alignment") || ""}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Alignment">
-                {watch("basicInfo.alignment") || "Alignment"}
-              </SelectValue>
+            <SelectTrigger id="alignment-trigger">
+              <SelectValue placeholder="Alignment" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent id="alignment-content">
               {ALIGNMENTS.map((alignment) => (
                 <SelectItem key={alignment} value={alignment}>
                   {alignment}
