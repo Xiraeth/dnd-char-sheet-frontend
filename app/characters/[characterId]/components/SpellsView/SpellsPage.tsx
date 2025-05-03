@@ -32,7 +32,7 @@ const SpellView = () => {
     return acc;
   }, {} as Record<string, Spell[]>);
 
-  const spellsByLevelArray = Object.values(spellsByLevel || {});
+  const spellsByLevelArray = Object.entries(spellsByLevel || {});
 
   const expendSpellSlot = async (level: number, spellSlotsCurrent: number) => {
     if (isUpdating) return;
@@ -112,33 +112,36 @@ const SpellView = () => {
 
   return (
     spellsByLevelArray &&
-    spellsByLevelArray?.map((level, index) => {
+    spellsByLevelArray?.map((level) => {
+      const levelNumber = parseInt(level[0]);
+      const spells = level[1];
+
       const spellSlotsTotal =
-        spellSlots?.[`level${index}` as keyof typeof spellSlots]?.total;
+        spellSlots?.[`level${levelNumber}` as keyof typeof spellSlots]?.total;
       const spellSlotsCurrent =
-        spellSlots?.[`level${index}` as keyof typeof spellSlots]?.current;
+        spellSlots?.[`level${levelNumber}` as keyof typeof spellSlots]?.current;
 
       return (
-        <div key={index} className="mb-10">
+        <div key={levelNumber} className="mb-10">
           <p className="font-mrEaves text-2xl sm:text-3xl font-bold text-center">{`${
-            index === 0 ? "Cantrips" : `Level ${index}`
+            levelNumber === 0 ? "Cantrips" : `Level ${levelNumber}`
           }`}</p>
           <div className="w-full flex justify-between items-center">
             <div className="flex flex-col font-scalySans">
-              {index !== 0 && (
+              {levelNumber !== 0 && (
                 <div className="flex gap-2">
                   <p>Spell slots: </p>
                   {spellSlotsCurrent}/{spellSlotsTotal}
                 </div>
               )}
             </div>
-            {index !== 0 && (
+            {levelNumber !== 0 && (
               <div className="flex flex-col gap-2">
                 <Button
                   className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
                   disabled={(spellSlotsCurrent || 0) <= 0}
                   onClick={() => {
-                    expendSpellSlot(index, spellSlotsCurrent || 0);
+                    expendSpellSlot(levelNumber, spellSlotsCurrent || 0);
                   }}
                 >
                   Use spell slot
@@ -149,7 +152,7 @@ const SpellView = () => {
                   size="sm"
                   onClick={() => {
                     restoreSpellSlot(
-                      index,
+                      levelNumber,
                       spellSlotsCurrent || 0,
                       spellSlotsTotal || 0
                     );
@@ -162,8 +165,8 @@ const SpellView = () => {
           </div>
 
           <Accordion type="multiple" className="w-full">
-            {level &&
-              level?.map((spell) => {
+            {spells &&
+              spells?.map((spell) => {
                 return (
                   <AccordionItem
                     value={spell?._id || ""}

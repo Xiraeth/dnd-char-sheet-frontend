@@ -69,11 +69,6 @@ const CreateCharacter = () => {
       ? perceptionModifier + 10 + profBonus
       : perceptionModifier + 10;
 
-    setValue("passiveWisdom", passiveWisdom);
-    setValue("stats.hitPointsCurrent", hitpoints);
-    setValue("stats.hitDice.remaining", level);
-    setValue("stats.hitDice.total", level);
-
     const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
       if (feature?._id?.length !== 24) {
         return { ...feature, _id: undefined };
@@ -81,22 +76,44 @@ const CreateCharacter = () => {
       return feature;
     });
 
-    setValue("featuresAndTraits", featuresWithoutV4Ids);
+    const attacksWithoutV4Ids = data.attacks?.map((attack) => {
+      if (attack?._id?.length !== 24) {
+        return { ...attack, _id: undefined };
+      }
+      return attack;
+    });
 
-    Object.values(spellSlots || {}).forEach(
+    const spellSlotsToSubmit = Object.values(spellSlots || {}).map(
       (spellSlot: { current?: number; total?: number }, index: number) => {
-        setValue(
-          `spellSlots.level${index + 1}.total` as keyof Character,
-          Number(spellSlot.current)
-        );
+        return {
+          [`level${index + 1}.total`]: Number(spellSlot.total),
+          [`level${index + 1}.current`]: Number(spellSlot.current),
+        };
       }
     );
+
+    const dataToSubmit = {
+      ...data,
+      stats: {
+        ...data.stats,
+        hitPointsCurrent: hitpoints,
+        hitDice: {
+          ...data.stats.hitDice,
+          remaining: level,
+          total: level,
+        },
+      },
+      featuresAndTraits: featuresWithoutV4Ids,
+      attacks: attacksWithoutV4Ids,
+      spellSlots: spellSlotsToSubmit,
+      passiveWisdom: passiveWisdom,
+    };
 
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/create-character`,
         {
-          ...data,
+          ...dataToSubmit,
           userId: user?.id,
         },
         {
