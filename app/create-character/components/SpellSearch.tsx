@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, RefreshCcw } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -50,7 +50,7 @@ export function SpellSearch({
 
   const characterClass = watch("basicInfo.class")?.toLowerCase();
 
-  const { data, loading } = useQuery(GET_SPELLS, {
+  const { data, loading, error, refetch } = useQuery(GET_SPELLS, {
     variables: {
       class: limitQueryToClass
         ? characterClass === "custom"
@@ -58,10 +58,13 @@ export function SpellSearch({
           : characterClass
         : undefined,
     },
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only", // Ensures fresh data each time
+    errorPolicy: "all", // Don't throw on error, handle it gracefully
   });
 
-  const filteredSpellsObjectArray: SpellObject[] = data?.spells?.map(
-    (spell: Spell) => ({
+  const filteredSpellsObjectArray: SpellObject[] =
+    data?.spells?.map((spell: Spell) => ({
       label: spell?.name,
       value: {
         name: spell?.name,
@@ -75,8 +78,7 @@ export function SpellSearch({
         level: spell?.level,
         components: spell?.components,
       },
-    })
-  );
+    })) || [];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -95,7 +97,22 @@ export function SpellSearch({
         <Command>
           <CommandInput placeholder="Search spells..." className="h-9" />
           <CommandList>
-            {!loading && filteredSpellsObjectArray?.length === 0 ? (
+            {error ? (
+              <CommandEmpty className="py-2 px-2 text-center">
+                <div className="flex flex-col items-center gap-2 py-4 text-sm text-red-500">
+                  <span>Failed to load spells</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => refetch()}
+                    className="flex items-center gap-1"
+                  >
+                    <RefreshCcw size={14} />
+                    Retry
+                  </Button>
+                </div>
+              </CommandEmpty>
+            ) : !loading && filteredSpellsObjectArray?.length === 0 ? (
               <CommandEmpty className="py-2 px-2 text-center text-sm">
                 No spells found
               </CommandEmpty>
