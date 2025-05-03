@@ -9,6 +9,7 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 type CharactersResponse = {
   success: boolean;
   count: number;
@@ -104,7 +105,19 @@ const Characters = () => {
     <>
       <BackButton url="/" />
       <div className="h-screen flex flex-col gap-4 items-center justify-center font-bookInsanity">
-        <h1 className="text-2xl font-bold">Your characters</h1>
+        {characters?.data?.length ? (
+          <h1 className="text-2xl font-bold">Your characters</h1>
+        ) : (
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <h1 className="text-2xl font-bold">You have no characters</h1>
+            <Link
+              href="/create-character"
+              className="text-blue-500 hover:underline transition-all duration-150 text-2xl"
+            >
+              Create
+            </Link>
+          </div>
+        )}
         {characters?.data &&
           characters?.data?.map((char) => (
             <CharacterCard
