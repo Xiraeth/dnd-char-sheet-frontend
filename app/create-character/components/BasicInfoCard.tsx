@@ -103,7 +103,9 @@ const BasicInfoCard = ({
             value={watch("basicInfo.class")}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Class" />
+              <SelectValue placeholder="Class">
+                {watch("basicInfo.class") || "Class"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {CLASSES.map((dndClass) => (
@@ -195,7 +197,9 @@ const BasicInfoCard = ({
             })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Alignment" />
+              <SelectValue placeholder="Alignment">
+                {watch("basicInfo.alignment") || "Alignment"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {ALIGNMENTS.map((alignment) => (

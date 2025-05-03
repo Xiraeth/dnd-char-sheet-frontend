@@ -49,7 +49,9 @@ export function SpellSearch({
   });
 
   const characterClass = watch("basicInfo.class")?.toLowerCase();
+  const shouldSkipQuery = !characterClass || characterClass === "";
 
+  // Only execute the query if we have a valid character class
   const { data, loading, error, refetch } = useQuery(GET_SPELLS, {
     variables: {
       class: limitQueryToClass
@@ -59,8 +61,9 @@ export function SpellSearch({
         : undefined,
     },
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only", // Ensures fresh data each time
-    errorPolicy: "all", // Don't throw on error, handle it gracefully
+    fetchPolicy: "network-only",
+    errorPolicy: "all",
+    skip: shouldSkipQuery, // Skip the query if no character class is available
   });
 
   const filteredSpellsObjectArray: SpellObject[] =
@@ -88,8 +91,9 @@ export function SpellSearch({
           aria-expanded={open}
           variant="subtle"
           className="w-full justify-between"
+          disabled={shouldSkipQuery}
         >
-          Search for a spell
+          {shouldSkipQuery ? "Select a class first" : "Search for a spell"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -97,7 +101,11 @@ export function SpellSearch({
         <Command>
           <CommandInput placeholder="Search spells..." className="h-9" />
           <CommandList>
-            {error ? (
+            {shouldSkipQuery ? (
+              <CommandEmpty className="py-2 px-2 text-center text-sm">
+                Please select a class first
+              </CommandEmpty>
+            ) : error ? (
               <CommandEmpty className="py-2 px-2 text-center">
                 <div className="flex flex-col items-center gap-2 py-4 text-sm text-red-500">
                   <span>Failed to load spells</span>

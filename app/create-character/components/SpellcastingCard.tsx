@@ -71,9 +71,13 @@ const SpellcastingCard = () => {
                 );
               }
             }}
+            {...register("spellcasting.spellcastingClass")}
           >
             <SelectTrigger className="text-indigo-600">
-              <SelectValue placeholder="Spellcasting Class" />
+              <SelectValue placeholder="Spellcasting Class">
+                {watch("spellcasting.spellcastingClass") ||
+                  "Spellcasting Class"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent id="spellcastingClass" className="text-indigo-600">
               {spellcastingClassesObject.map((ability) => (
@@ -117,9 +121,17 @@ const SpellcastingCard = () => {
                 }
               }
             }}
+            {...register("spellcasting.spellcastingAbility")}
           >
             <SelectTrigger className="text-indigo-600">
-              <SelectValue placeholder="Spellcasting Ability" />
+              <SelectValue placeholder="Spellcasting Ability">
+                {watch("spellcasting.spellcastingAbility")
+                  ? (watch("spellcasting.spellcastingAbility") || "")
+                      .charAt(0)
+                      .toUpperCase() +
+                    (watch("spellcasting.spellcastingAbility") || "").slice(1)
+                  : "Spellcasting Ability"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent id="spellcastingAbility" className="text-indigo-600">
               {SPELLCASTING_ABILITIES.map((ability) => (

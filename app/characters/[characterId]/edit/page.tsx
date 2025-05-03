@@ -24,6 +24,7 @@ const EditCharacter = () => {
 
   const methods = useForm<Character>({
     defaultValues: {},
+    mode: "onBlur",
   });
 
   const { handleSubmit, setValue, reset } = methods;
@@ -31,6 +32,13 @@ const EditCharacter = () => {
   // Reset form when character data is loaded
   useEffect(() => {
     if (character) {
+      console.log("Resetting form with character data:", {
+        class: character.basicInfo?.class,
+        alignment: character.basicInfo?.alignment,
+        hitDiceType: character.stats?.hitDice?.diceType,
+      });
+
+      // Use this to force a complete reset with the character data
       reset(character);
 
       // Set isSpellcaster based on character data

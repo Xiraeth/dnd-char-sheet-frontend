@@ -112,7 +112,11 @@ const StatsCard = () => {
             value={watch("stats.hitDice.diceType")?.toString()}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Hit Dice Type" />
+              <SelectValue placeholder="Hit Dice Type">
+                {watch("stats.hitDice.diceType")
+                  ? `d${watch("stats.hitDice.diceType")}`
+                  : "Hit Dice Type"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {DICE_OPTIONS.map((dice) => (
