@@ -348,7 +348,7 @@ const CreateCharacter = () => {
       {
         name: "Fire Bolt",
         actionType: "action",
-        attackRoll: { modifier: 4 },
+        attackRoll: { modifier: 4, addModifier: false },
         damageRoll: {
           numberOfDice: 1,
           diceType: 10,
