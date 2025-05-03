@@ -426,13 +426,15 @@ const CreateCharacter = () => {
     <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
       <BackButton url="/" />
       <p className="text-2xl font-bold text-center">Create a new character</p>
-      <Button
-        variant="default"
-        className="text-center w-full flex justify-center"
-        onClick={populateFormWithTestData}
-      >
-        Populate form with test data
-      </Button>
+      {process.env.NODE_ENV === "development" && (
+        <Button
+          variant="default"
+          className="text-center w-full flex justify-center"
+          onClick={populateFormWithTestData}
+        >
+          Populate form with test data
+        </Button>
+      )}
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 ">
           <CharacterForm
