@@ -54,7 +54,7 @@ export function SpellSearch({
   // Update queryClass whenever characterClass changes
   useEffect(() => {
     if (characterClass) {
-      if (characterClass === "custom") {
+      if (characterClass === "custom" || !limitQueryToClass) {
         setQueryClass(undefined);
       } else if (limitQueryToClass) {
         setQueryClass(characterClass);

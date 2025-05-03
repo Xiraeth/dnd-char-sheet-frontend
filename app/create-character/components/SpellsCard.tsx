@@ -34,6 +34,7 @@ const SelectedSpellBlock = ({
 const SpellsCard = () => {
   const [isCreateSpellFormOpen, setIsCreateSpellFormOpen] = useState(false);
   const [limitQueryToClass, setLimitQueryToClass] = useState(true);
+
   const [selectedSpell, setSelectedSpell] = useState<Spell | null>(null);
   const { watch, setValue } = useFormContext<Character>();
 
