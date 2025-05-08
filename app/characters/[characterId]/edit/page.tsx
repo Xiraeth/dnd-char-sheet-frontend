@@ -1,7 +1,7 @@
 "use client";
 
 import BackButton from "@/components/BackButton";
-import { Character } from "@/app/types";
+import { Character, Feat } from "@/app/types";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useState, useEffect } from "react";
@@ -97,12 +97,6 @@ const EditCharacter = () => {
       ? perceptionModifier + 10 + profBonus
       : perceptionModifier + 10;
 
-    setValue("passiveWisdom", passiveWisdom);
-    setValue("stats.hitPointsCurrent", hitpoints);
-    setValue("stats.hitPointsTemp", 0);
-    setValue("stats.hitDice.remaining", level);
-    setValue("stats.hitDice.total", level);
-
     const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
       if (feature?._id?.length !== 24) {
         return { ...feature, _id: undefined };
@@ -117,10 +111,18 @@ const EditCharacter = () => {
       return attack;
     });
 
+    const featsWithoutV4Ids = data.feats?.map((feat: Feat) => {
+      if (feat?._id?.length !== 24) {
+        return { ...feat, _id: undefined };
+      }
+      return feat;
+    });
+
     onSubmit({
       ...data,
       featuresAndTraits: featuresWithoutV4Ids,
       attacks: attacksWithoutV4Ids,
+      feats: featsWithoutV4Ids,
       passiveWisdom,
       stats: {
         ...data.stats,

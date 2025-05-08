@@ -38,6 +38,7 @@ export interface CharacterContextType {
 }
 
 export interface Feat {
+  _id?: string;
   name: string;
   description: string;
   level: string;

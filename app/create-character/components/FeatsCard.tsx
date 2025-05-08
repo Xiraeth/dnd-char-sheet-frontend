@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
 interface Feat {
-  id?: string;
+  _id?: string;
   name: string;
   description: string;
   level: string;
@@ -52,18 +52,18 @@ const FeatsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
-      if (feat.id) {
+      if (feat._id) {
         setValue(
           "feats",
           feats.map((f: Feat) => {
-            if (f.id === feat.id) {
+            if (f._id === feat._id) {
               return { ...f, ...feat };
             }
             return f;
           })
         );
       } else {
-        setValue("feats", [...(feats || []), { ...feat, id: uuidv4() }]);
+        setValue("feats", [...(feats || []), { ...feat, _id: uuidv4() }]);
       }
       setFeat(DEFAULT_FEAT);
       setIsEditFeatFormOpen(false);
@@ -84,12 +84,12 @@ const FeatsCard = () => {
     setFeat(DEFAULT_FEAT);
     setValue(
       "feats",
-      feats?.filter((feat: Feat) => feat.id !== id)
+      feats?.filter((feat: Feat) => feat._id !== id)
     );
   };
 
   const handleFeatClick = (id: string) => {
-    setFeat(feats?.find((feat: Feat) => feat.id === id));
+    setFeat(feats?.find((feat: Feat) => feat?._id === id));
     setIsEditFeatFormOpen(true);
   };
 
@@ -102,16 +102,16 @@ const FeatsCard = () => {
         <div className="flex gap-2 flex-wrap">
           {feats?.map((feat: Feat, index: number) => (
             <div
-              key={feat?.id || index}
+              key={feat?._id || index}
               className="flex gap-2 bg-black/90 w-fit text-white rounded-md px-4 py-2 items-center text-sm mb-4 cursor-pointer hover:bg-black/75 transition-all duration-150"
-              onClick={() => handleFeatClick(feat?.id || "")}
+              onClick={() => handleFeatClick(feat?._id || "")}
             >
               <p>
-                {feat.name} (Level {feat.level})
+                {feat?.name} (Level {feat?.level})
               </p>
               <X
                 className="size-4 cursor-pointer hover:text-red-600 transition-all duration-150"
-                onClick={(e) => handleDelete(e, feat?.id)}
+                onClick={(e) => handleDelete(e, feat?._id)}
               />
             </div>
           ))}
@@ -126,7 +126,7 @@ const FeatsCard = () => {
               <Input
                 id="name"
                 placeholder="Feat name"
-                value={feat.name}
+                value={feat?.name}
                 onChange={(e) => setFeat({ ...feat, name: e.target.value })}
               />
               {errors.name && (
@@ -142,7 +142,7 @@ const FeatsCard = () => {
                 id="level"
                 type="string"
                 placeholder="Level when feat was acquired"
-                value={feat.level}
+                value={feat?.level}
                 onChange={(e) => setFeat({ ...feat, level: e.target.value })}
               />
               {errors.level && (
@@ -158,7 +158,7 @@ const FeatsCard = () => {
                 id="description"
                 placeholder="Feat description"
                 className="min-h-[100px]"
-                value={feat.description}
+                value={feat?.description}
                 onChange={(e) =>
                   setFeat({ ...feat, description: e.target.value })
                 }

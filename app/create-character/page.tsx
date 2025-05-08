@@ -6,6 +6,7 @@ import {
   CharacterAbilities,
   CharacterSavingThrows,
   CharacterSkills,
+  Feat,
 } from "@/app/types";
 import { useForm, FormProvider } from "react-hook-form";
 import { ABILITIES, SKILLS } from "@/app/constants";
@@ -83,6 +84,13 @@ const CreateCharacter = () => {
       return attack;
     });
 
+    const featsWithoutV4Ids = data.feats?.map((feat: Feat) => {
+      if (feat?._id?.length !== 24) {
+        return { ...feat, _id: undefined };
+      }
+      return feat;
+    });
+
     const spellSlotsToSubmit = Object.values(spellSlots || {}).map(
       (spellSlot: { current?: number; total?: number }, index: number) => {
         return {
@@ -103,6 +111,7 @@ const CreateCharacter = () => {
           total: level,
         },
       },
+      feats: featsWithoutV4Ids,
       featuresAndTraits: featuresWithoutV4Ids,
       attacks: attacksWithoutV4Ids,
       spellSlots: spellSlotsToSubmit,
