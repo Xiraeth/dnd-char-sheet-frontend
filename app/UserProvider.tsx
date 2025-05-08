@@ -10,6 +10,7 @@ import {
 } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -22,18 +23,59 @@ interface UserContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   logout: () => Promise<void>;
+  handleNoToken: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  const handleNoToken = () => {
+    toast.error("You must be logged in to view this page");
+    localStorage.removeItem("dnd-char-sheet-user");
+    router.push("/");
+    setUser(null);
+  };
+
   useEffect(() => {
+    if (window.location.pathname === "/") {
+      try {
+        const fetchUser = async () => {
+          const userFromLocalStorage = localStorage.getItem(
+            "dnd-char-sheet-user"
+          );
+          try {
+            const response = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_URL}/user`,
+              {
+                withCredentials: true,
+              }
+            );
+
+            if (response.status !== 200) {
+              throw new Error("Failed to fetch user");
+            }
+          } catch (err) {
+            if (axios.isAxiosError(err)) {
+              if (err?.status === 401 && userFromLocalStorage) {
+                handleNoToken();
+              }
+            }
+          }
+        };
+
+        fetchUser();
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    }
+
     // Initialize from localStorage after mount
     const savedUser = localStorage.getItem("dnd-char-sheet-user");
 
@@ -79,9 +121,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
       );
 
       if (response.status === 200) {
-        sessionStorage.setItem("userLoggedOut", "true");
         toast.success("Logged out successfully");
         localStorage.removeItem("dnd-char-sheet-user");
+        router.push("/");
+        window.location.reload();
         setUser(null);
       } else {
         throw new Error("Failed to log out");
@@ -106,6 +149,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     isAuthenticated: !!user,
     isLoading,
     logout,
+    handleNoToken,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

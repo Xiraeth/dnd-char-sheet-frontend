@@ -5,7 +5,7 @@ import {
   UpdateCharacterResponseType,
 } from "@/app/types";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useContext, createContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useUser } from "@/app/UserProvider";
@@ -23,8 +23,7 @@ const CharacterContext = createContext<CharacterContextType>({
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const { user } = useUser();
+  const { handleNoToken } = useUser();
   const [character, setCharacter] = useState<Character | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [characterError, setCharacterError] = useState<string | null>(null);
@@ -34,26 +33,29 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     setIsLoading(true);
 
-    if (!user && !isLoading) {
-      toast.error("You must be logged in to view this page");
-      router.replace("/");
-      return;
-    }
-
     try {
       const fetchCharacter = async () => {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/${characterId}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/${characterId}`,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-        setCharacter(response.data.character);
-        setIsLoading(false);
+          setCharacter(response.data.character);
+          setIsLoading(false);
+        } catch (err) {
+          if (axios.isAxiosError(err)) {
+            if (err?.status === 401) {
+              handleNoToken();
+            }
+          }
+          setIsLoading(false);
+        }
       };
 
       fetchCharacter();
@@ -69,7 +71,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
       }
       setIsLoading(false);
     }
-  }, [user, characterId, router]);
+  }, [characterId]);
 
   const deleteCharacter = async (
     characterId: string

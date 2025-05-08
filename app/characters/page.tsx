@@ -8,7 +8,6 @@ import axios from "axios";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
 type CharactersResponse = {
   success: boolean;
@@ -17,7 +16,7 @@ type CharactersResponse = {
 };
 
 const Characters = () => {
-  const { user, isLoading } = useUser();
+  const { user, isLoading, handleNoToken } = useUser();
   const router = useRouter();
   const [characters, setCharacters] = useState<CharactersResponse | null>(null);
   const [areCharactersLoading, setAreCharactersLoading] = useState(true);
@@ -30,12 +29,6 @@ const Characters = () => {
 
   useEffect(() => {
     if (!isMounted) return;
-
-    if (!user && isMounted) {
-      toast.error("You must be logged in to view your characters");
-      router.push("/");
-      return;
-    }
 
     try {
       setAreCharactersLoading(true);
@@ -55,10 +48,7 @@ const Characters = () => {
           if (axios.isAxiosError(err)) {
             setError(err.response?.data?.message || "An error occurred");
             if (err?.status === 401) {
-              toast.error("You must be logged in to view your characters");
-              localStorage.removeItem("dnd-char-sheet-user");
-              router.push("/");
-              return;
+              handleNoToken();
             }
           } else {
             setError("An error occurred. Server is probably down.");
@@ -79,7 +69,7 @@ const Characters = () => {
         setError("An error occurred. Server is probably down.");
       }
     }
-  }, [user, isMounted, isLoading]);
+  }, [isMounted, isLoading]);
 
   const handleCharacterClick = (characterId?: string) => {
     if (characterId) {
