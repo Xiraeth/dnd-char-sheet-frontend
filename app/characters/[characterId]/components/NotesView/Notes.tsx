@@ -28,7 +28,7 @@ const Notes = () => {
       <textarea
         className="w-full border-2 border-black/50 rounded-md p-2 text-md sm:text-lg font-scalySans bg-white/50 text-black outline-none ring-0 focus:border-black focus:bg-white/80"
         value={notes}
-        rows={10}
+        rows={20}
         onChange={handleNotesChange}
       />
 

@@ -87,7 +87,6 @@ const EditCharacter = () => {
   const preSubmit = async (data: Character) => {
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
-    const hitpoints = data.stats.hitPointsTotal;
     const level = data.basicInfo.level;
     const profBonus = isProficientInPerception
       ? getProficiencyBonus(data.basicInfo.level)
@@ -126,8 +125,9 @@ const EditCharacter = () => {
       passiveWisdom,
       stats: {
         ...data.stats,
-        hitPointsCurrent: hitpoints,
-        hitPointsTemp: 0,
+        hitPointsTotal: data.stats.hitPointsTotal,
+        hitPointsCurrent: data.stats.hitPointsCurrent,
+        hitPointsTemp: data.stats.hitPointsTemp || 0,
         hitDice: {
           remaining: level,
           total: level,
