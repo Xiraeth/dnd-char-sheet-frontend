@@ -49,7 +49,7 @@ const CustomSpellForm = ({
       damage_type: {
         name: "",
       },
-      damage_at_slot_level: [],
+      damage_at_character_level: [],
     },
   };
 
@@ -166,11 +166,11 @@ const CustomSpellForm = ({
               level: e.target.value,
               damage: {
                 damage_type: { name: spell.damage?.damage_type?.name || "" },
-                damage_at_slot_level: [
+                damage_at_character_level: [
                   {
-                    damage:
-                      spell.damage?.damage_at_slot_level?.[0]?.damage || "",
-                    level: e.target.value,
+                    value:
+                      spell.damage?.damage_at_character_level?.[0]?.value || "",
+                    level: parseInt(e.target.value) || 0,
                   },
                 ],
               },
@@ -299,7 +299,7 @@ const CustomSpellForm = ({
         <Input
           id="damage"
           className="text-indigo-600"
-          value={spell.damage?.damage_at_slot_level?.[0]?.damage || ""}
+          value={spell.damage?.damage_at_character_level?.[0]?.value || ""}
           onChange={(e) =>
             setSelectedSpell?.({
               ...spell,
@@ -307,10 +307,10 @@ const CustomSpellForm = ({
                 damage_type: {
                   name: spell.damage?.damage_type?.name || "",
                 },
-                damage_at_slot_level: [
+                damage_at_character_level: [
                   {
-                    damage: e.target.value,
-                    level: spell?.level || "0",
+                    value: e.target.value,
+                    level: parseInt(spell?.level) || 0,
                   },
                 ],
               },

@@ -4,7 +4,7 @@ import { gql } from "@apollo/client";
  * Query to fetch spells for a specific class
  */
 export const GET_SPELLS = gql`
-  query GetSpells($class: StringFilter) {
+  query GetSpells($class: [String!]) {
     spells(class: $class, limit: 1000) {
       name
       desc
@@ -21,9 +21,9 @@ export const GET_SPELLS = gql`
         damage_type {
           name
         }
-        damage_at_slot_level {
-          damage
+        damage_at_character_level {
           level
+          value
         }
       }
     }

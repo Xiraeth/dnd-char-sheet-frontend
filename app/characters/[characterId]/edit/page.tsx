@@ -63,6 +63,10 @@ const EditCharacter = () => {
         );
       }
 
+      if (character.spellSlots) {
+        setValue("spellSlots", character.spellSlots);
+      }
+
       // Set isSpellcaster based on character data
       const isSpellcastingClass =
         character.basicInfo?.class &&
@@ -117,12 +121,24 @@ const EditCharacter = () => {
       return feat;
     });
 
+    const spellSlotsToSubmit = Object.values(data.spellSlots || {}).reduce(
+      (acc, cur, index) => {
+        acc[`level${index + 1}`] = {
+          current: Number(cur.current),
+          total: Number(cur.total || cur.current),
+        };
+        return acc;
+      },
+      {}
+    );
+
     onSubmit({
       ...data,
       featuresAndTraits: featuresWithoutV4Ids,
       attacks: attacksWithoutV4Ids,
       feats: featsWithoutV4Ids,
       passiveWisdom,
+      spellSlots: spellSlotsToSubmit,
       stats: {
         ...data.stats,
         hitPointsTotal: data.stats.hitPointsTotal,

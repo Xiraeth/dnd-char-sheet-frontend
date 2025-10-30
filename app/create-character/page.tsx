@@ -91,13 +91,15 @@ const CreateCharacter = () => {
       return feat;
     });
 
-    const spellSlotsToSubmit = Object.values(spellSlots || {}).map(
-      (spellSlot: { current?: number; total?: number }, index: number) => {
-        return {
-          [`level${index + 1}.total`]: Number(spellSlot.total),
-          [`level${index + 1}.current`]: Number(spellSlot.current),
+    const spellSlotsToSubmit = Object.values(spellSlots || {}).reduce(
+      (acc, cur, index) => {
+        acc[`level${index + 1}`] = {
+          current: Number(cur.current),
+          total: Number(cur.total),
         };
-      }
+        return acc;
+      },
+      {}
     );
 
     const dataToSubmit = {
@@ -427,10 +429,10 @@ const CreateCharacter = () => {
           damage_type: {
             name: "Fire",
           },
-          damage_at_slot_level: [
+          damage_at_character_level: [
             {
-              damage: "8d6",
-              level: "3",
+              value: "8d6",
+              level: 3,
             },
           ],
         },

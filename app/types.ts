@@ -253,9 +253,9 @@ export interface Spell {
     damage_type: {
       name: string;
     };
-    damage_at_slot_level?: {
-      damage: string;
-      level: string;
+    damage_at_character_level?: {
+      value: string;
+      level: number;
     }[];
   };
 }

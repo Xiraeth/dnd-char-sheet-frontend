@@ -105,6 +105,7 @@ export const CLASSES = [
 export const SPELLCASTING_CLASSES = [
   "Bard",
   "Cleric",
+  "Ranger",
   "Druid",
   "Paladin",
   "Sorcerer",
