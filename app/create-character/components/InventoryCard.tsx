@@ -6,6 +6,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 const InventoryCard = () => {
   const { register, control } = useFormContext<Character>();
@@ -45,7 +46,9 @@ const InventoryCard = () => {
                   {...register(`inventory.items.${index}.name`)}
                 />
 
-                <Input
+                <Textarea
+                  className="min-h-[20px] p-2 border rounded-md text-indigo-600"
+                  rows={1}
                   placeholder="Description"
                   {...register(`inventory.items.${index}.description`)}
                 />

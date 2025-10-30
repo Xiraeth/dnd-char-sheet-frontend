@@ -42,7 +42,9 @@ const Equipment = () => {
                 return (
                   <div key={itemName}>
                     <p className="font-bold text-dndRed">{itemName}</p>
-                    <p>{itemDescription}</p>
+                    <pre className="w-[calc(100vw - 2rem)] text-wrap font-scalySans">
+                      {itemDescription}
+                    </pre>
                   </div>
                 );
               })}
