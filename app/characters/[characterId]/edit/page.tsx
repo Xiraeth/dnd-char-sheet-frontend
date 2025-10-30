@@ -5,7 +5,11 @@ import { Character, Feat } from "@/app/types";
 import { useForm, FormProvider } from "react-hook-form";
 
 import { useState, useEffect } from "react";
-import { getModifier, getProficiencyBonus } from "@/lib/utils";
+import {
+  calculatePassiveWisdom,
+  getModifier,
+  getProficiencyBonus,
+} from "@/lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -91,14 +95,18 @@ const EditCharacter = () => {
   const preSubmit = async (data: Character) => {
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
+    const isExpertInPerception = data.skills.perception.hasExpertise;
     const level = data.basicInfo.level;
     const profBonus = isProficientInPerception
       ? getProficiencyBonus(data.basicInfo.level)
       : 0;
 
-    const passiveWisdom = isProficientInPerception
-      ? perceptionModifier + 10 + profBonus
-      : perceptionModifier + 10;
+    const passiveWisdom = calculatePassiveWisdom({
+      perceptionModifier,
+      proficiencyBonus: profBonus,
+      isExpertInPerception,
+      isProficientInPerception,
+    });
 
     const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
       if (feature?._id?.length !== 24) {

@@ -36,3 +36,21 @@ export const calculateSpellAttackBonus = ({
 export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1)?.toLowerCase();
 };
+
+export const calculatePassiveWisdom = ({
+  perceptionModifier,
+  proficiencyBonus,
+  isExpertInPerception,
+  isProficientInPerception,
+}: {
+  perceptionModifier: number;
+  proficiencyBonus: number;
+  isExpertInPerception: boolean;
+  isProficientInPerception: boolean;
+}) => {
+  return isExpertInPerception
+    ? perceptionModifier + 10 + proficiencyBonus * 2
+    : isProficientInPerception
+    ? perceptionModifier + 10 + proficiencyBonus
+    : perceptionModifier + 10;
+};

@@ -12,7 +12,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import { ABILITIES, SKILLS } from "@/app/constants";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { getModifier, getProficiencyBonus } from "@/lib/utils";
+import {
+  calculatePassiveWisdom,
+  getModifier,
+  getProficiencyBonus,
+} from "@/lib/utils";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -59,6 +63,7 @@ const CreateCharacter = () => {
     setIsSubmitting(true);
     const perceptionModifier = getModifier(data.abilities.wisdom);
     const isProficientInPerception = data.skills.perception.hasProficiency;
+    const isExpertInPerception = data.skills.perception.hasExpertise;
     const hitpoints = data.stats.hitPointsTotal;
     const level = data.basicInfo.level;
     const profBonus = isProficientInPerception
@@ -66,9 +71,12 @@ const CreateCharacter = () => {
       : 0;
     const spellSlots = data.spellSlots;
 
-    const passiveWisdom = isProficientInPerception
-      ? perceptionModifier + 10 + profBonus
-      : perceptionModifier + 10;
+    const passiveWisdom = calculatePassiveWisdom({
+      perceptionModifier,
+      proficiencyBonus: profBonus,
+      isExpertInPerception,
+      isProficientInPerception,
+    });
 
     const featuresWithoutV4Ids = data.featuresAndTraits?.map((feature) => {
       if (feature?._id?.length !== 24) {
