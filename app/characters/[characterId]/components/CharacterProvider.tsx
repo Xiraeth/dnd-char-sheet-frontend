@@ -20,6 +20,11 @@ const CharacterContext = createContext<CharacterContextType>({
       status: 200,
       message: "Character updated successfully",
     }),
+  shortRest: () =>
+    Promise.resolve({
+      status: 200,
+      message: "Character short rested successfully",
+    }),
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
@@ -115,7 +120,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.status === 400) {
         return {
           status: response.status,
-          message: "Character updated successfully",
+          message: response.data.message,
           error: response.data.error,
         };
       }
@@ -124,7 +129,8 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
 
       return {
         status: response.status,
-        message: "Character updated successfully",
+        message: response.data.message,
+        character: response.data?.character,
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -133,6 +139,39 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         toast.error("Error updating character");
       }
       return { status: 500, message: "Failed to update character" };
+    }
+  };
+
+  const shortRest = async (characterId: string, hitDiceExpended?: number) => {
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/${characterId}/shortRest`,
+        { hitDiceExpended },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setCharacter(response.data.character);
+      }
+
+      return {
+        status: response.status,
+        message: response.data.message,
+        character: response.data.character,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Error short resting character",
+          error.response?.data.message?.error
+        );
+      } else {
+        toast.error("Error short resting character");
+      }
+      return { status: 500, message: "Failed to short rest character" };
     }
   };
 
@@ -145,6 +184,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         updateCharacter,
         characterError,
         isLoading,
+        shortRest,
       }}
     >
       {children}

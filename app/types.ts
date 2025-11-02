@@ -23,6 +23,13 @@ export interface UpdateCharacterResponseType {
   character?: Character;
 }
 
+export interface ShortRestResponseType {
+  status: number;
+  message: string;
+  error?: string;
+  character?: Character;
+}
+
 export interface CharacterContextType {
   character?: Character | null;
   setCharacter: (character: Character) => void;
@@ -35,6 +42,10 @@ export interface CharacterContextType {
   ) => Promise<UpdateCharacterResponseType>;
   characterError?: string | null;
   isLoading?: boolean;
+  shortRest: (
+    characterId: string,
+    hitDiceExpended?: number
+  ) => Promise<ShortRestResponseType>;
 }
 
 export interface Feat {

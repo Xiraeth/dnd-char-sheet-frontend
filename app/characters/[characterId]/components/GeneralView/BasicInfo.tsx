@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,9 +20,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const BasicInfo = () => {
-  const { character, deleteCharacter } = useCharacter();
+  const { character, deleteCharacter, shortRest } = useCharacter();
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isShortRestDialogOpen, setIsShortRestDialogOpen] = useState(false);
+  const [hitDiceToExpend, setHitDiceToExpend] = useState<number | undefined>(
+    undefined
+  );
 
   const handleDeleteClick = async () => {
     setIsDeleteDialogOpen(false);
@@ -29,7 +34,6 @@ const BasicInfo = () => {
       try {
         const response = await deleteCharacter(character._id);
         if (response.status === 200) {
-          toast.success("Character deleted successfully");
           router.push("/characters");
         }
       } catch (error) {
@@ -46,6 +50,51 @@ const BasicInfo = () => {
 
   const handleRedirectToEdit = () => {
     router.push(`/characters/${character?._id}/edit`);
+  };
+
+  const handleShortRest = async (hitDiceToExpend?: number) => {
+    const remainingHitDice = character?.stats?.hitDice?.remaining;
+
+    if (
+      hitDiceToExpend &&
+      remainingHitDice &&
+      hitDiceToExpend > remainingHitDice
+    ) {
+      toast.error(
+        `Not enough hit dice to expend. You have ${remainingHitDice} hit dice remaining.`
+      );
+      return;
+    }
+
+    if (hitDiceToExpend && !remainingHitDice) {
+      toast.error("No hit dice to expend");
+      return;
+    }
+
+    try {
+      if (character?._id) {
+        const response = await shortRest(
+          character?._id,
+          Number(hitDiceToExpend || "0")
+        );
+        if (response.status === 200) {
+          setIsShortRestDialogOpen(false);
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Error short resting character",
+          error.response?.data.message
+        );
+      } else {
+        toast.error("Error short resting character");
+      }
+    }
+  };
+
+  const handleLongRest = () => {
+    console.log("long rest");
   };
 
   return (
@@ -77,6 +126,18 @@ const BasicInfo = () => {
               Edit
             </p>
             <p
+              className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2"
+              onClick={() => setIsShortRestDialogOpen(true)}
+            >
+              Short rest
+            </p>
+            <p
+              className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2"
+              onClick={handleLongRest}
+            >
+              Long rest
+            </p>
+            <p
               className="cursor-pointer hover:bg-black/10 transition-all duration-150 p-2 text-red-600"
               onClick={() => setIsDeleteDialogOpen(true)}
             >
@@ -86,40 +147,74 @@ const BasicInfo = () => {
         </Popover>
 
         {/* delete character dialog */}
-        <div className="flex gap-2 absolute">
-          <Dialog
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-          >
-            <DialogContent className="w-10/12 sm:max-w-fit bg-bgTextureDarkened rounded-md font-mrEaves text-xl sm:text-2xl font-bold">
-              <DialogHeader className="sr-only">
-                <DialogTitle>
-                  Are you sure you want to delete this character?
-                </DialogTitle>
-              </DialogHeader>
-
-              <p className="text-center pt-2">
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent className="w-10/12 sm:max-w-fit bg-bgTextureDarkened rounded-md font-mrEaves text-xl sm:text-2xl font-bold py-8 flex flex-col gap-6">
+            <DialogHeader className="sr-only">
+              <DialogTitle>
                 Are you sure you want to delete this character?
-              </p>
-              <div className="flex justify-center items-center gap-2">
-                <Button
-                  type="submit"
-                  variant="destructive"
-                  className="font-bookInsanity"
-                  onClick={handleDeleteClick}
-                >
-                  Yes
-                </Button>
-                <Button
-                  type="submit"
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                >
-                  No
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+              </DialogTitle>
+            </DialogHeader>
+
+            <p className="text-center pt-2 text-3xl">
+              Are you sure you want to delete this character?
+            </p>
+            <div className="flex justify-center items-center gap-2">
+              <Button
+                type="submit"
+                variant="destructive"
+                className="font-bookInsanity text-lg w-1/2 drop-shadow-lg shadow-sm shadow-black/40"
+                onClick={handleDeleteClick}
+              >
+                Yes
+              </Button>
+              <Button
+                type="submit"
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="text-lg font-bookInsanity w-1/2 drop-shadow-lg shadow-sm shadow-black/40"
+              >
+                No
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* short rest dialog */}
+        <Dialog
+          open={isShortRestDialogOpen}
+          onOpenChange={setIsShortRestDialogOpen}
+        >
+          <DialogContent className="w-10/12 sm:max-w-fit bg-amber-200 rounded-md font-bookInsanity text-xl sm:text-2xl">
+            <DialogHeader className="sr-only">
+              <DialogTitle>
+                How many hit dice do you want to expend? (optional)
+              </DialogTitle>
+            </DialogHeader>
+
+            <p className="text-center pt-2 text-dndRed">
+              How many hit dice do you want to expend? (optional)
+            </p>
+            <Input
+              type="text"
+              className="font-montserrat text-lg drop-shadow-lg shadow-sm shadow-black/40"
+              value={hitDiceToExpend?.toString() || ""}
+              onChange={(e) => {
+                if (isNaN(Number(e.target.value)) || e.target.value === "") {
+                  setHitDiceToExpend(undefined);
+                } else {
+                  setHitDiceToExpend(Number(e.target.value));
+                }
+              }}
+            />
+            <Button
+              type="submit"
+              variant="default"
+              className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md"
+              onClick={() => handleShortRest(hitDiceToExpend)}
+            >
+              Short rest
+            </Button>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-2 font-bookInsanity">
         <div className="text-base sm:text-lg flex gap-2">
