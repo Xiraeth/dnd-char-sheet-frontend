@@ -94,7 +94,7 @@ const BasicInfo = () => {
   };
 
   const handleLongRest = () => {
-    console.log("long rest");
+    // console.log("long rest");
   };
 
   return (
