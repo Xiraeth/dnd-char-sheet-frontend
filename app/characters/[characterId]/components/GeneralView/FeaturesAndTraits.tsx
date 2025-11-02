@@ -159,11 +159,11 @@ const FeaturesAndTraits = () => {
                     </div>
                   )}
 
-                  <pre className="w-fit font-scalySans text-base text-wrap">
+                  <pre className="w-fit font-scalySans text-lg text-wrap">
                     {description}
                   </pre>
                   {source && (
-                    <p className="text-black/80 my-1 italic font-scalySans">
+                    <p className="text-gray-700 my-1 italic font-scalySans font-bold">
                       Source: {source}
                     </p>
                   )}

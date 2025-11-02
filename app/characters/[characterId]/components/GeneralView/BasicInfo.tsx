@@ -64,7 +64,7 @@ const BasicInfo = () => {
         </div>
 
         <Popover>
-          <PopoverTrigger asChild className="sm:absolute sm:right-6 sm:top-20">
+          <PopoverTrigger asChild className="sm:absolute sm:right-6 sm:top-24">
             <div className="size-10 flex justify-center items-center bg-black/80 p-2 rounded-md border border-black/45 shadow-md shadow-black/45 cursor-pointer hover:bg-black/70 transition-all duration-150">
               <Menu size={20} className="text-white" />
             </div>

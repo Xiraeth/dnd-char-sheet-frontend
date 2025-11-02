@@ -1,7 +1,7 @@
 "use client";
 
 import BackButton from "@/components/BackButton";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import CharacterProvider, {
   useCharacter,
@@ -35,11 +35,10 @@ const CharacterPage = () => {
   };
 
   // ----------  return statements ---------- do not write code bellow this point ----------
-
   if (isLoading)
     return (
       <div className="w-screen h-screen flex items-center justify-center">
-        <Loader className="w-10 h-10 animate-spin" />
+        <Loader2 className="w-10 h-10 animate-spin" />
       </div>
     );
 
