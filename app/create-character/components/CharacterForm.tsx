@@ -30,6 +30,7 @@ const CharacterForm = ({
   formReady?: boolean;
 }) => {
   const characterId = useParams() as { characterId: string };
+
   const { watch, setError, clearErrors } = useFormContext();
   const characterClass = watch("basicInfo.class");
   const race = watch("basicInfo.race");
@@ -55,7 +56,7 @@ const CharacterForm = ({
       {/* skills */}
       <SkillsCard />
       {/* stats */}
-      <StatsCard />
+      <StatsCard isEditPage={!!characterId} />
       {/* attacks */}
       <AttacksCard />
       {/* features and traits */}

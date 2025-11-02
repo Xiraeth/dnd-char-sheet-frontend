@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { DICE_OPTIONS } from "@/app/constants";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
-const StatsCard = () => {
+const StatsCard = ({ isEditPage }: { isEditPage: boolean }) => {
   const {
     register,
     setValue,
@@ -98,7 +99,12 @@ const StatsCard = () => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
+        <div
+          className={cn(
+            "flex flex-col gap-2",
+            isEditPage ? "col-span-1" : "col-span-1 md:col-span-2"
+          )}
+        >
           <Label className="text-black" htmlFor="stats.hitDice.diceType">
             Hit Dice Type
           </Label>
@@ -122,6 +128,25 @@ const StatsCard = () => {
           {errors?.stats?.hitDice?.diceType && (
             <p className="text-red-600 text-sm">
               {errors.stats.hitDice.diceType.message}
+            </p>
+          )}
+        </div>
+
+        <div className={cn("flex flex-col gap-2", !isEditPage && "hidden")}>
+          <Label className="text-black" htmlFor="stats.hitDice.diceType">
+            Remaining Hit Dice
+          </Label>
+          <Input
+            placeholder="Remaining Hit Dice"
+            type="number"
+            max={watch("stats.hitDice.total") || 0}
+            {...register("stats.hitDice.remaining", {
+              required: "Remaining Hit Dice is required",
+            })}
+          />
+          {errors?.stats?.hitDice?.remaining && (
+            <p className="text-red-600 text-sm">
+              {errors.stats.hitDice.remaining.message}
             </p>
           )}
         </div>

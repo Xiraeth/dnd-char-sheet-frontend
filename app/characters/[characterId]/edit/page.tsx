@@ -153,8 +153,8 @@ const EditCharacter = () => {
         hitPointsCurrent: data.stats.hitPointsCurrent,
         hitPointsTemp: data.stats.hitPointsTemp || 0,
         hitDice: {
-          remaining: level,
-          total: level,
+          remaining: data.stats.hitDice.remaining || level,
+          total: data.stats.hitDice.total || level,
           diceType: data.stats.hitDice.diceType,
         },
       },
@@ -203,7 +203,6 @@ const EditCharacter = () => {
   };
 
   // ---------- return statements ----------
-
   if (isLoading)
     return (
       <div className="h-screen flex flex-col items-center justify-center">

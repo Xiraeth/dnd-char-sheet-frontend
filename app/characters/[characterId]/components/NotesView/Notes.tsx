@@ -20,7 +20,7 @@ const Notes = () => {
   };
 
   return (
-    <div className="space-y-4 overflow-hidden">
+    <div className="space-y-4 overflow-hidden pb-10">
       <p className=" text-center text-xl sm:text-2xl text-black font-scalySans">
         Here you can keep notes for your campaign
       </p>
