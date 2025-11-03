@@ -14,12 +14,13 @@ const CharacterCard = ({
       onClick={() => onClick(character?._id)}
     >
       {character?.appearance?.photo && (
-        <div className="w-[75px] md:w-[100px] h-[75px] md:h-[100px] rounded-full overflow-hidden">
+        <div className="w-[75px] md:w-[100px] h-[75px] md:h-[100px] rounded-full overflow-hidden flex-shrink-0">
           <Image
             src={character?.appearance?.photo}
             width={100}
             height={100}
             alt="Character photo"
+            className="w-full h-full object-cover"
           />
         </div>
       )}
