@@ -62,7 +62,7 @@ const CharacterPage = () => {
 
   return (
     <div>
-      <BackButton url="/characters" onClick={resetViewMode} />
+      <BackButton url="/" onClick={resetViewMode} />
 
       <div
         id="content"
