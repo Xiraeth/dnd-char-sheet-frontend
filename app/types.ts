@@ -30,6 +30,12 @@ export interface ShortRestResponseType {
   character?: Character;
 }
 
+export interface LongRestResponseType {
+  status: number;
+  message: string;
+  character?: Character;
+}
+
 export interface CharacterContextType {
   character?: Character | null;
   setCharacter: (character: Character) => void;
@@ -46,6 +52,7 @@ export interface CharacterContextType {
     characterId: string,
     hitDiceExpended?: number
   ) => Promise<ShortRestResponseType>;
+  longRest: (characterId: string) => Promise<LongRestResponseType>;
 }
 
 export interface Feat {

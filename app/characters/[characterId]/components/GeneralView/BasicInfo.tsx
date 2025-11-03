@@ -20,10 +20,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const BasicInfo = () => {
-  const { character, deleteCharacter, shortRest } = useCharacter();
+  const { character, deleteCharacter, shortRest, longRest } = useCharacter();
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isShortRestDialogOpen, setIsShortRestDialogOpen] = useState(false);
+  const [isLongRestDialogOpen, setIsLongRestDialogOpen] = useState(false);
   const [hitDiceToExpend, setHitDiceToExpend] = useState<number | undefined>(
     undefined
   );
@@ -93,8 +94,24 @@ const BasicInfo = () => {
     }
   };
 
-  const handleLongRest = () => {
-    // console.log("long rest");
+  const handleLongRest = async () => {
+    try {
+      if (character?._id) {
+        const response = await longRest(character?._id);
+        if (response.status === 200) {
+          setIsLongRestDialogOpen(false);
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Error long resting character",
+          error.response?.data.message
+        );
+      } else {
+        toast.error("Error long resting character");
+      }
+    }
   };
 
   return (
@@ -133,7 +150,7 @@ const BasicInfo = () => {
             </p>
             <p
               className="cursor-pointer border-b border-black/45 hover:bg-black/10 transition-all duration-150 p-2"
-              onClick={handleLongRest}
+              onClick={() => setIsLongRestDialogOpen(true)}
             >
               Long rest
             </p>
@@ -212,6 +229,31 @@ const BasicInfo = () => {
               onClick={() => handleShortRest(hitDiceToExpend)}
             >
               Short rest
+            </Button>
+          </DialogContent>
+        </Dialog>
+
+        {/* long rest dialog */}
+        <Dialog
+          open={isLongRestDialogOpen}
+          onOpenChange={setIsLongRestDialogOpen}
+        >
+          <DialogContent className="w-10/12 sm:max-w-fit bg-green-600 rounded-md font-bookInsanity text-xl sm:text-2xl">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Are you sure you want to long rest?</DialogTitle>
+            </DialogHeader>
+
+            <p className="text-center pt-2 text-white">
+              Are you sure you want to long rest?
+            </p>
+
+            <Button
+              type="submit"
+              variant="default"
+              className="font-bookInsanity text-dark transition-all duration-150 drop-shadow-md bg-white hover:bg-gray-100"
+              onClick={handleLongRest}
+            >
+              Long rest
             </Button>
           </DialogContent>
         </Dialog>

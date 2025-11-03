@@ -25,6 +25,11 @@ const CharacterContext = createContext<CharacterContextType>({
       status: 200,
       message: "Character short rested successfully",
     }),
+  longRest: () =>
+    Promise.resolve({
+      status: 200,
+      message: "Character long rested successfully",
+    }),
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
@@ -34,6 +39,8 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   const [characterError, setCharacterError] = useState<string | null>(null);
 
   const { characterId } = useParams();
+
+  const { user } = useUser();
 
   useEffect(() => {
     setIsLoading(true);
@@ -179,6 +186,39 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const longRest = async (characterId: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/${characterId}/longRest`,
+        { userId: user?.id },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Long rest successful");
+        setCharacter(response.data.character);
+      }
+
+      return {
+        status: response.status,
+        message: response.data.message,
+        character: response.data.character,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          "Error long resting character",
+          error.response?.data.message
+        );
+      } else {
+        toast.error("Error long resting character");
+      }
+      return { status: 500, message: "Failed to long rest character" };
+    }
+  };
+
   return (
     <CharacterContext.Provider
       value={{
@@ -189,6 +229,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         characterError,
         isLoading,
         shortRest,
+        longRest,
       }}
     >
       {children}
