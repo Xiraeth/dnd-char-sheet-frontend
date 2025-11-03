@@ -91,7 +91,7 @@ const Attacks = () => {
             onClick={handleInfoOpen}
           />
           <span className="italic">Attack Roll</span>
-          <div className="w-[30px] h-[30px] bg-red-400 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/80 transition-all duration-150 active:bg-white/60">
+          <div className="w-[30px] h-[30px] bg-red-400 rounded-full flex items-center justify-center transition-all duration-150">
             <Image width={23} height={23} src="/d20.png" alt="d20" />
           </div>
 
@@ -111,7 +111,7 @@ const Attacks = () => {
 
         <div className="flex gap-2 items-center">
           <span className="italic">Damage Roll</span>
-          <div className="w-[30px] h-[30px] bg-indigo-400 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/80 transition-all duration-150 active:bg-white/60">
+          <div className="w-[30px] h-[30px] bg-indigo-400 rounded-full flex items-center justify-center transition-all duration-150">
             <Image width={23} height={30} src="/d20.png" alt="d20" />
           </div>
         </div>
