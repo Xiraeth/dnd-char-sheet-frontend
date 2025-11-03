@@ -17,6 +17,27 @@ interface User {
   username: string;
 }
 
+/**
+ * Validates that a parsed object from localStorage matches the User interface structure
+ * @param user - The object to validate
+ * @returns true if valid, false otherwise
+ */
+const isValidUser = (user: unknown): user is User => {
+  if (!user || typeof user !== "object") {
+    return false;
+  }
+
+  const userObj = user as Record<string, unknown>;
+
+  return (
+    typeof userObj.id === "string" &&
+    userObj.id.length > 0 &&
+    typeof userObj.username === "string" &&
+    userObj.username.length > 0 &&
+    !("password" in userObj) // Ensure password is never stored
+  );
+};
+
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
@@ -44,12 +65,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (window.location.pathname === "/") {
+    /**
+     * Verifies user authentication with the server and sets user state
+     * Always verifies with server before trusting localStorage
+     */
+    const verifyAndSetUser = async () => {
       try {
-        const fetchUser = async () => {
-          const userFromLocalStorage = localStorage.getItem(
-            "dnd-char-sheet-user"
-          );
+        const userFromLocalStorage = localStorage.getItem(
+          "dnd-char-sheet-user"
+        );
+
+        // If there's a user in localStorage, verify it with the server
+        if (userFromLocalStorage) {
           try {
             const response = await axios.get(
               `${process.env.NEXT_PUBLIC_API_URL}/user`,
@@ -58,44 +85,63 @@ export function UserProvider({ children }: { children: ReactNode }) {
               }
             );
 
-            if (response.status !== 200) {
-              throw new Error("Failed to fetch user");
+            if (response.status === 200 && response.data.user) {
+              // Server confirms user is authenticated, set user from server response
+              const serverUser = response.data.user;
+              if (isValidUser(serverUser)) {
+                setUser(serverUser);
+              } else {
+                // Server returned invalid user data, clear localStorage
+                localStorage.removeItem("dnd-char-sheet-user");
+                setUser(null);
+              }
+            } else {
+              // Invalid response, clear localStorage
+              localStorage.removeItem("dnd-char-sheet-user");
+              setUser(null);
             }
           } catch (err) {
+            // Server verification failed, clear localStorage
             if (axios.isAxiosError(err)) {
-              if (err?.status === 401 && userFromLocalStorage) {
-                handleNoToken();
+              if (err.response?.status === 401) {
+                localStorage.removeItem("dnd-char-sheet-user");
+                setUser(null);
               }
             }
+            // Clear localStorage on any error to prevent stale auth state
+            localStorage.removeItem("dnd-char-sheet-user");
+            setUser(null);
           }
-        };
+        } else {
+          // No user in localStorage, verify with server anyway to check for valid session
+          try {
+            const response = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_URL}/user`,
+              {
+                withCredentials: true,
+              }
+            );
 
-        fetchUser();
+            if (response.status === 200 && response.data.user) {
+              const serverUser = response.data.user;
+              if (isValidUser(serverUser)) {
+                setUser(serverUser);
+              }
+            }
+          } catch {
+            // No valid session, user remains null
+            setUser(null);
+          }
+        }
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.error("Error verifying user:", err);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
-    // Initialize from localStorage after mount
-    const savedUser = localStorage.getItem("dnd-char-sheet-user");
-
-    // Check if the user is authenticated via the custom header
-    const authStatus = document
-      .querySelector('meta[name="auth-status"]')
-      ?.getAttribute("content");
-
-    // If the user is not authenticated according to the server but exists in localStorage,
-    // clear the user from localStorage
-    if (authStatus === "unauthenticated" && savedUser) {
-      console.log(
-        "User is not authenticated according to server, clearing from localStorage"
-      );
-      localStorage.removeItem("dnd-char-sheet-user");
-    } else if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-
-    setIsLoading(false);
+    verifyAndSetUser();
   }, []);
 
   // Update localStorage when user changes

@@ -66,7 +66,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
           setIsLoading(false);
         } catch (err) {
           if (axios.isAxiosError(err)) {
-            if (err?.status === 401) {
+            if (err.response?.status === 401) {
               handleNoToken();
             }
           }

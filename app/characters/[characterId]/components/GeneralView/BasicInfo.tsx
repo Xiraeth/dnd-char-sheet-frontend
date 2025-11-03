@@ -127,12 +127,13 @@ const BasicInfo = () => {
       <div className="flex justify-between sm:justify-start gap-0 sm:gap-20 w-full sm:w-fit items-center">
         <div className="text-4xl sm:text-6xl text-dndRed font-scalySans flex gap-2 items-center">
           {character?.appearance?.photo && (
-            <div className="w-[75px] md:w-[100px] h-[75px] md:h-[100px] rounded-full overflow-hidden">
+            <div className="w-[75px] md:w-[100px] h-[75px] md:h-[100px] rounded-full overflow-hidden flex-shrink-0">
               <Image
                 src={character?.appearance?.photo}
                 width={100}
                 height={100}
                 alt="Character photo"
+                className="w-full h-full object-cover"
               />
             </div>
           )}
