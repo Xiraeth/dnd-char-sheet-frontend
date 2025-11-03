@@ -85,10 +85,6 @@ const Signup = () => {
               )}
             </div>
             <Button>Sign Up</Button>
-            <p className="text-sm text-center text-red-600/85 italic font-bookInsanity">
-              NOTE: Don&apos;t use a secure password, this app does not use any
-              encryption yet
-            </p>
             {error && (
               <p className="text-red-600 text-sm pl-2 text-center">{error}</p>
             )}
