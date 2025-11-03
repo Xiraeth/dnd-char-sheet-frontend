@@ -11,7 +11,7 @@ import {
 import { useForm, FormProvider } from "react-hook-form";
 import { ABILITIES, SKILLS } from "@/app/constants";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   calculatePassiveWisdom,
   getModifier,
@@ -49,7 +49,16 @@ const CreateCharacter = () => {
   const [isSpellcaster, setIsSpellcaster] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isAuthenticated, isLoading, handleNoToken } = useUser();
+
+  /**
+   * Redirect to login if not authenticated
+   */
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      handleNoToken();
+    }
+  }, [isAuthenticated, isLoading, handleNoToken]);
 
   const methods = useForm<Character>({
     defaultValues,
@@ -376,6 +385,7 @@ const CreateCharacter = () => {
           "When you reach 2nd level, you choose an arcane tradition, shaping your practice of magic through one of the following schools. Your choice grants you features at 2nd level and again at 6th, 10th, and 14th level.",
         source: "Wizard",
         isExpendable: false,
+        rechargeOn: undefined,
       },
     ]);
 

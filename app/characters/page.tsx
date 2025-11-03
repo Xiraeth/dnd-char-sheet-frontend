@@ -16,12 +16,21 @@ type CharactersResponse = {
 };
 
 const Characters = () => {
-  const { user, isLoading, handleNoToken } = useUser();
+  const { user, isLoading, isAuthenticated, handleNoToken } = useUser();
   const router = useRouter();
   const [characters, setCharacters] = useState<CharactersResponse | null>(null);
   const [areCharactersLoading, setAreCharactersLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+
+  /**
+   * Redirect to login if not authenticated
+   */
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      handleNoToken();
+    }
+  }, [isAuthenticated, isLoading, handleNoToken]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,7 +56,7 @@ const Characters = () => {
           setAreCharactersLoading(false);
           if (axios.isAxiosError(err)) {
             setError(err.response?.data?.message || "An error occurred");
-            if (err?.status === 401) {
+            if (err.response?.status === 401) {
               handleNoToken();
             }
           } else {

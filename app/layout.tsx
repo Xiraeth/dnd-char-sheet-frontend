@@ -105,9 +105,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="light">
-      <head>
-        <meta name="auth-status" content="loading" />
-      </head>
+      <head></head>
       <body
         className={`mt-0 bg-bgTextureDarkened bg-fixed bg-cover bg-center ${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${bookinsanity.variable} ${scalySans.variable} ${mrEaves.variable} min-h-screen`}
         suppressHydrationWarning

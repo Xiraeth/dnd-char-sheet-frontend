@@ -32,9 +32,23 @@ const Login = () => {
     try {
       const response = await axios.post(`${API_URL}/login`, data);
       if (response.data.user) {
-        setUser(response.data.user);
-        toast.success("Logged in successfully");
-        router.push("/");
+        // Validate user object structure before setting
+        const user = response.data.user;
+        if (
+          typeof user === "object" &&
+          user !== null &&
+          typeof user.id === "string" &&
+          user.id.length > 0 &&
+          typeof user.username === "string" &&
+          user.username.length > 0 &&
+          !("password" in user)
+        ) {
+          setUser(user);
+          toast.success("Logged in successfully");
+          router.push("/");
+        } else {
+          throw new Error("Invalid user data received");
+        }
       } else {
         throw new Error("User not found");
       }

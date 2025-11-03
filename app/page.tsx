@@ -47,7 +47,7 @@ export default function Home() {
           setAreCharactersLoading(false);
           if (axios.isAxiosError(err)) {
             setError(err.response?.data?.message || "An error occurred");
-            if (err?.status === 401) {
+            if (err.response?.status === 401) {
               handleNoToken();
             }
           } else {
