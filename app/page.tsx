@@ -85,6 +85,7 @@ export default function Home() {
     );
   }
 
+  // ---------- return (jsx) statements ----------
   if (!isAuthenticated) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4 font-bookInsanity">
@@ -141,16 +142,7 @@ export default function Home() {
       <div className="h-fit flex flex-col gap-4 items-center font-bookInsanity">
         {characters?.data?.length ? null : (
           <div className="flex flex-col gap-2 items-center justify-center">
-            <h1 className="text-2xl font-bold">You have no characters</h1>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => {
-                router.push("/create-character");
-              }}
-            >
-              Create Character
-            </Button>
+            <h1 className="text-lg text-dndRed py-2">You have no characters</h1>
           </div>
         )}
         {characters?.data &&
