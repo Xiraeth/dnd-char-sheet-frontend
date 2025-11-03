@@ -1,4 +1,5 @@
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
+import { RechargeOnType } from "@/app/types";
 import { useUser } from "@/app/UserProvider";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -6,6 +7,13 @@ import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
+const rechargeMap = {
+  daily: "daily",
+  longRest: "on long rest",
+  longOrShortRest: "on long/short rest",
+  shortRest: "on short rest",
+};
 
 const FeaturesAndTraits = () => {
   const { user } = useUser();
@@ -118,17 +126,26 @@ const FeaturesAndTraits = () => {
               const isExpendable = feature?.isExpendable;
               const usesLeft = feature?.usesLeft;
               const maxUses = feature?.usesTotal;
+              const rechargesOn = feature?.rechargeOn;
 
               return (
                 <div key={title} className="font-bookInsanity">
-                  <p className="text-xl font-bold text-dndRed">{title}</p>
+                  <p className="text-2xl font-bold text-dndRed">{title}</p>
 
                   {isExpendable && (
                     <div className="w-full flex justify-between items-center">
-                      <p className="text-black/80 my-1 italic font-scalySans">
-                        Uses left: {usesLeft}/{maxUses}
-                      </p>
+                      <div className="flex gap-2 items-center">
+                        <p className="text-black my-1 italic font-montserrat text-base font-bold">
+                          Uses left: {usesLeft}/{maxUses}
+                        </p>
 
+                        {rechargesOn && (
+                          <p className="text-indigo-700 drop-shadow-2xl font-bold text-xl py-2 font-roboto">
+                            (Recharges{" "}
+                            {rechargeMap[rechargesOn as RechargeOnType]})
+                          </p>
+                        )}
+                      </div>
                       <div className="flex gap-2">
                         <Button
                           className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
@@ -162,8 +179,9 @@ const FeaturesAndTraits = () => {
                   <pre className="w-fit font-scalySans text-lg text-wrap">
                     {description}
                   </pre>
+
                   {source && (
-                    <p className="text-gray-700 my-1 italic font-scalySans font-bold">
+                    <p className="text-gray-800 my-1 italic font-bookInsanity font-bold">
                       Source: {source}
                     </p>
                   )}

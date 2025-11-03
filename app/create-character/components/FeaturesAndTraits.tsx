@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Feature } from "@/app/types";
+import { Feature, RechargeOnType } from "@/app/types";
 import {
   Select,
   SelectValue,
@@ -26,7 +26,7 @@ const DEFAULT_FEATURE: Feature = {
   isExpendable: false,
   usesLeft: 0,
   usesTotal: 0,
-  rechargeOn: "",
+  rechargeOn: undefined,
 };
 
 const FeaturesAndTraitsCard = () => {
@@ -198,7 +198,7 @@ const FeaturesAndTraitsCard = () => {
                       isExpendable: !feature?.isExpendable,
                       usesLeft: !feature?.isExpendable ? 0 : undefined,
                       usesTotal: !feature?.isExpendable ? 0 : undefined,
-                      rechargeOn: !feature?.isExpendable ? "" : undefined,
+                      rechargeOn: undefined,
                     });
                   }}
                 />
@@ -265,7 +265,10 @@ const FeaturesAndTraitsCard = () => {
                     <Select
                       value={feature?.rechargeOn}
                       onValueChange={(value) =>
-                        setFeature({ ...feature, rechargeOn: value })
+                        setFeature({
+                          ...feature,
+                          rechargeOn: value as RechargeOnType,
+                        })
                       }
                     >
                       <SelectTrigger>

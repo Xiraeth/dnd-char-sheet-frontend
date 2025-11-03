@@ -57,6 +57,12 @@ export interface CharacterContextType {
   isShortRestLoading: boolean;
 }
 
+export type RechargeOnType =
+  | "daily"
+  | "longRest"
+  | "longOrShortRest"
+  | "shortRest";
+
 export interface Feat {
   _id?: string;
   name: string;
@@ -221,7 +227,7 @@ export interface Feature {
   isExpendable?: boolean;
   usesLeft?: number;
   usesTotal?: number;
-  rechargeOn?: string;
+  rechargeOn: RechargeOnType | undefined;
   areUsesTotalEqualToProfBonus?: boolean;
   actionType?: string;
 }
