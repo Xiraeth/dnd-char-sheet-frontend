@@ -348,7 +348,7 @@ const CreateCharacter = () => {
     // Other
     setValue("otherProficiencies", "Arcana, History, Investigation");
     setValue("languages", "Common, Elvish, Draconic, Infernal");
-    setValue("inspiration", 1);
+    setValue("inspiration", 0);
     setValue(
       "characterBackstory",
       "Eldric was born in a small village and showed an early aptitude for magic. He was taken as an apprentice by a local wizard and eventually enrolled in a prestigious magical academy. After graduating, he traveled the world in search of ancient knowledge and magical artifacts."

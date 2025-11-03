@@ -5,6 +5,7 @@ import Equipment from "@/app/characters/[characterId]/components/GeneralView/Equ
 import FeaturesAndTraits from "@/app/characters/[characterId]/components/GeneralView/FeaturesAndTraits";
 import OtherProficienciesAndLanguages from "@/app/characters/[characterId]/components/GeneralView/OtherProficienciesAndLanguages";
 import Personality from "@/app/characters/[characterId]/components/GeneralView/Personality";
+import ProfAndInspiration from "@/app/characters/[characterId]/components/GeneralView/ProfAndInspiration";
 import SavingThrows from "@/app/characters/[characterId]/components/GeneralView/SavingThrows";
 import Skills from "@/app/characters/[characterId]/components/GeneralView/Skills";
 import Stats from "@/app/characters/[characterId]/components/GeneralView/Stats";
@@ -16,6 +17,10 @@ const GeneralPage = () => {
   return (
     <>
       <BasicInfo />
+
+      <DndDivider />
+
+      <ProfAndInspiration />
 
       <DndDivider />
 

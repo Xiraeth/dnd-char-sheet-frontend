@@ -153,7 +153,11 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
       );
 
       if (response.status === 200) {
-        toast.success(response.data.message);
+        let toastMessage = response.data.message;
+        if (response.data.restoredHitpoints) {
+          toastMessage += `. You restored ${response.data.restoredHitpoints} hit points.`;
+        }
+        toast.success(toastMessage);
         setCharacter(response.data.character);
       }
 
