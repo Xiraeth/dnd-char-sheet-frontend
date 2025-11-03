@@ -17,7 +17,7 @@ const ProfAndInspiration = () => {
 
       <div className="flex items-center justify-center gap-2 py-2">
         <p className="font-bold text-dndRed">Inspiration</p>
-        <p>{character?.inspiration}</p>
+        <p>{character?.inspiration?.toString() || 0}</p>
       </div>
     </div>
   );

@@ -13,10 +13,14 @@ import GeneralPage from "@/app/characters/[characterId]/components/GeneralView/G
 import SpellsPage from "@/app/characters/[characterId]/components/SpellsView/SpellsPage";
 import CombatPage from "@/app/characters/[characterId]/components/CombatView/CombatPage";
 import Notes from "@/app/characters/[characterId]/components/NotesView/Notes";
+import { useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const CharacterPage = () => {
   const { character, isLoading, characterError } = useCharacter();
   const [viewMode, setViewMode] = useState<ViewModeType>(null);
+
+  const isInfoOpen = useSearchParams().get("overlay") === "true";
 
   useEffect(() => {
     const viewModeFromLocalStorage = localStorage.getItem(
@@ -60,7 +64,13 @@ const CharacterPage = () => {
     <div>
       <BackButton url="/characters" onClick={resetViewMode} />
 
-      <div id="content" className="p-4 pt-10 sm:mt-0 sm:pt-4">
+      <div
+        id="content"
+        className={cn(
+          "pt-10 sm:mt-0 sm:pt-4",
+          !isInfoOpen ? "p-4" : "overflow-hidden px-4"
+        )}
+      >
         <ViewMode viewMode={viewMode} setViewMode={setViewMode} />
 
         {viewMode === "General" && <GeneralPage />}

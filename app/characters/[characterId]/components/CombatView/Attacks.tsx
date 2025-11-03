@@ -4,17 +4,20 @@ import { Card } from "@/components/ui/card";
 import { DiceType, getProficiencyBonus, rollDice } from "@/lib/utils";
 import Image from "next/image";
 import { getModifier } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Info, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Attacks = () => {
   const { character } = useCharacter();
-
+  const router = useRouter();
   const [attackResults, setAttackResults] = useState<
     Record<string, number | null>
   >({});
 
   const [isCriticalHit, setIsCriticalHit] = useState<boolean>(false);
   const [isCriticalFail, setIsCriticalFail] = useState<boolean>(false);
+  const [isInfoOpen, setIsInfoOpen] = useState<boolean>(false);
 
   const [damageResults, setDamageResults] = useState<
     Record<string, number | null>
@@ -33,17 +36,77 @@ const Attacks = () => {
     return { result, isCriticalHit, isCriticalFail };
   };
 
+  const handleInfoOpen = () => {
+    setIsInfoOpen(!isInfoOpen);
+  };
+
+  useEffect(() => {
+    const eventListener = (e: MouseEvent) => {
+      if (
+        e.target instanceof HTMLElement &&
+        !e.target.closest(".info-tooltip")
+      ) {
+        setIsInfoOpen(false);
+      }
+    };
+
+    document.addEventListener("click", eventListener);
+
+    return () => {
+      document.removeEventListener("click", eventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isInfoOpen) {
+      // Add overlay to the URL
+      router.push(`/characters/${character?._id}?overlay=true`);
+
+      // Prevent body scroll when overlay is open
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    } else {
+      // Remove overlay from the URL
+      router.push(`/characters/${character?._id}`);
+    }
+  }, [isInfoOpen]);
+
   return (
     <div className="space-y-4">
+      {isInfoOpen && (
+        <div className="overlay bg-black/50 fixed inset-0 z-40"></div>
+      )}
+
       <p className="text-dndRed font-bold font-mrEaves text-center text-3xl sm:text-4xl">
         Attacks
       </p>
       <div className="flex justify-end items-center gap-4 text-base">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center relative">
+          <Info
+            className="text-gray-700 size-5 cursor-pointer hover:text-gray-800 transition-all duration-150"
+            onClick={handleInfoOpen}
+          />
           <span className="italic">Attack Roll</span>
           <div className="w-[30px] h-[30px] bg-red-400 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/80 transition-all duration-150 active:bg-white/60">
             <Image width={23} height={23} src="/d20.png" alt="d20" />
           </div>
+
+          {isInfoOpen && (
+            <div className="info-tooltip absolute -left-40 bottom-0 z-50 w-[400px] p-2 rounded-md shadow-md drop-shadow-lg shadow-black/20 bg-white/80 backdrop-blur-md">
+              <p className="pr-4">
+                All necessary modifiers have been added to the attack and damage
+                rolls.
+              </p>
+              <X
+                className="absolute top-2 right-2 size-4 cursor-pointer hover:text-red-500 transition-all duration-150"
+                onClick={handleInfoOpen}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex gap-2 items-center">
