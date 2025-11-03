@@ -123,7 +123,7 @@ const BasicInfo = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-end gap-1 w-full justify-center sm:justify-between">
+    <div className="flex flex-col sm:flex-row items-start sm:items-end gap-1 w-full justify-center sm:justify-between sm:pt-4 md:pt-0">
       <div className="flex justify-between sm:justify-start gap-0 sm:gap-20 w-full sm:w-fit items-center">
         <div className="text-4xl sm:text-6xl text-dndRed font-scalySans flex gap-2 items-center">
           {character?.appearance?.photo && (
@@ -140,7 +140,7 @@ const BasicInfo = () => {
         </div>
 
         <Popover>
-          <PopoverTrigger asChild className="sm:absolute sm:right-6 sm:top-24">
+          <PopoverTrigger asChild className="sm:absolute sm:right-6 sm:top-28">
             <div className="size-10 flex justify-center items-center bg-black/80 p-2 rounded-md border border-black/45 shadow-md shadow-black/45 cursor-pointer hover:bg-black/70 transition-all duration-150">
               <Menu size={20} className="text-white" />
             </div>
@@ -287,13 +287,17 @@ const BasicInfo = () => {
         </Dialog>
       </div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-2 font-bookInsanity">
-        <div className="text-base sm:text-lg flex gap-2">
-          <span>Level</span> <span>{character?.basicInfo?.level}</span>
+        <div className="text-base sm:text-lg flex flex-row sm:flex-col md:flex-row gap-2 sm:gap-0 md:gap-2">
+          <span>Level {character?.basicInfo?.level}</span>
           {character?.basicInfo?.race} {character?.basicInfo?.class}{" "}
         </div>
         <VerticalDivider />
-        <p className="text-base sm:text-lg flex justify-between">
-          {character?.basicInfo?.alignment}, {character?.basicInfo?.background}
+        <p className="text-base sm:text-lg flex flex-row sm:flex-col md:flex-row gap-2 sm:gap-0 md:gap-2">
+          <span>
+            {character?.basicInfo?.alignment}
+            <span className="inline sm:hidden md:inline">, </span>
+          </span>
+          <span>{character?.basicInfo?.background}</span>
         </p>
       </div>
     </div>

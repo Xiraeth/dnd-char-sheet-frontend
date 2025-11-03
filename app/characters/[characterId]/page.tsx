@@ -67,8 +67,8 @@ const CharacterPage = () => {
       <div
         id="content"
         className={cn(
-          "pt-10 sm:mt-0 sm:pt-4",
-          !isInfoOpen ? "p-4 pt-10" : "overflow-hidden px-4"
+          "pt-12 sm:mt-0 sm:pt-6",
+          !isInfoOpen ? "p-4 pt-12" : "overflow-hidden px-4"
         )}
       >
         <ViewMode viewMode={viewMode} setViewMode={setViewMode} />

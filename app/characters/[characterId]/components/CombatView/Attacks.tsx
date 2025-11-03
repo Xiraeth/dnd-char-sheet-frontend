@@ -96,7 +96,7 @@ const Attacks = () => {
           </div>
 
           {isInfoOpen && (
-            <div className="info-tooltip absolute -left-40 bottom-0 z-50 w-[400px] p-2 rounded-md shadow-md drop-shadow-lg shadow-black/20 bg-white/80 backdrop-blur-md">
+            <div className="info-tooltip absolute left-0 sm:-left-40 bottom-0 z-50 w-[250px] sm:w-[400px] p-2 rounded-md shadow-md drop-shadow-lg shadow-black/20 bg-white/80 backdrop-blur-md">
               <p className="pr-4">
                 All necessary modifiers have been added to the attack and damage
                 rolls.
