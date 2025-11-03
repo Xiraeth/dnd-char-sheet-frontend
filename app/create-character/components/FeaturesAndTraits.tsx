@@ -33,13 +33,12 @@ const FeaturesAndTraitsCard = () => {
   const { watch, setValue } = useFormContext();
   const [isEditFeatureFormOpen, setIsEditFeatureFormOpen] = useState(false);
   const [feature, setFeature] = useState<Feature>(DEFAULT_FEATURE);
-  const [errors, setErrors] = useState<Partial<Feature>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const featuresAndTraits = watch("featuresAndTraits");
-
   const proficiencyBonus = getProficiencyBonus(watch("basicInfo.level"));
 
-  const validateFeature = () => {
-    const newErrors: Partial<Feature> = {};
+  const validateFeature = (): Record<string, string> => {
+    const newErrors: Record<string, string> = {};
 
     if (!feature.name) {
       newErrors.name = "Name is required";
@@ -51,6 +50,15 @@ const FeaturesAndTraitsCard = () => {
 
     if (!feature.source) {
       newErrors.source = "Source is required";
+    }
+
+    if (feature.isExpendable && !feature.usesTotal) {
+      newErrors.usesTotal = "Uses total is required when feature is expendable";
+    }
+
+    if (feature.isExpendable && !feature.rechargeOn) {
+      newErrors.rechargeOn =
+        "Recharge timer is required when feature is expendable";
     }
 
     setErrors(newErrors);
@@ -202,6 +210,9 @@ const FeaturesAndTraitsCard = () => {
                     });
                   }}
                 />
+                {errors.isExpendable && (
+                  <p className="text-red-600 text-sm">{errors.isExpendable}</p>
+                )}
               </div>
               {feature?.isExpendable && (
                 <>
@@ -238,6 +249,10 @@ const FeaturesAndTraitsCard = () => {
                         });
                       }}
                     />
+                    {errors.usesTotal && (
+                      <p className="text-red-600 text-sm">{errors.usesTotal}</p>
+                    )}
+
                     <div className="flex justify-between gap-2 items-center">
                       <p className="italic text-black/80 text-xs">
                         (equal to proficiency bonus)
@@ -283,6 +298,11 @@ const FeaturesAndTraitsCard = () => {
                         <SelectItem value="daily">Daily</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.rechargeOn && (
+                      <p className="text-red-600 text-sm">
+                        {errors.rechargeOn}
+                      </p>
+                    )}
                   </div>
                 </>
               )}
