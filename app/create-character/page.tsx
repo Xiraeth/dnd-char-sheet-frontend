@@ -228,11 +228,11 @@ const CreateCharacter = () => {
     setValue("skills.stealth.hasExpertise", false);
 
     // Intelligence skills
-    setValue("skills.arcana.value", getModifier(18) + getProficiencyBonus(5)); // Intelligence modifier + proficiency
+    setValue("skills.arcana.value", getModifier(18)); // Intelligence modifier
     setValue("skills.arcana.hasProficiency", true);
     setValue("skills.arcana.hasExpertise", false);
 
-    setValue("skills.history.value", getModifier(18) + getProficiencyBonus(5)); // Intelligence modifier + proficiency
+    setValue("skills.history.value", getModifier(18)); // Intelligence modifier
     setValue("skills.history.hasProficiency", true);
     setValue("skills.history.hasExpertise", false);
 

@@ -53,6 +53,8 @@ export interface CharacterContextType {
     hitDiceExpended?: number
   ) => Promise<ShortRestResponseType>;
   longRest: (characterId: string) => Promise<LongRestResponseType>;
+  isLongRestLoading: boolean;
+  isShortRestLoading: boolean;
 }
 
 export interface Feat {

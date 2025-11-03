@@ -30,12 +30,16 @@ const CharacterContext = createContext<CharacterContextType>({
       status: 200,
       message: "Character long rested successfully",
     }),
+  isLongRestLoading: false,
+  isShortRestLoading: false,
 });
 
 const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   const { handleNoToken } = useUser();
   const [character, setCharacter] = useState<Character | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLongRestLoading, setIsLongRestLoading] = useState(false);
+  const [isShortRestLoading, setIsShortRestLoading] = useState(false);
   const [characterError, setCharacterError] = useState<string | null>(null);
 
   const { characterId } = useParams();
@@ -150,6 +154,7 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const shortRest = async (characterId: string, hitDiceExpended?: number) => {
+    setIsShortRestLoading(true);
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/${characterId}/shortRest`,
@@ -183,10 +188,13 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         toast.error("Error short resting character");
       }
       return { status: 500, message: "Failed to short rest character" };
+    } finally {
+      setIsShortRestLoading(false);
     }
   };
 
   const longRest = async (characterId: string) => {
+    setIsLongRestLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/${characterId}/longRest`,
@@ -216,6 +224,8 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         toast.error("Error long resting character");
       }
       return { status: 500, message: "Failed to long rest character" };
+    } finally {
+      setIsLongRestLoading(false);
     }
   };
 
@@ -230,6 +240,8 @@ const CharacterProvider = ({ children }: { children: React.ReactNode }) => {
         isLoading,
         shortRest,
         longRest,
+        isLongRestLoading,
+        isShortRestLoading,
       }}
     >
       {children}
