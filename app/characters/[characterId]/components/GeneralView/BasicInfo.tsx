@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { Loader2, Menu } from "lucide-react";
@@ -126,12 +127,14 @@ const BasicInfo = () => {
       <div className="flex justify-between sm:justify-start gap-0 sm:gap-20 w-full sm:w-fit items-center">
         <div className="text-4xl sm:text-6xl text-dndRed font-scalySans flex gap-2 items-center">
           {character?.appearance?.photo && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={character?.appearance?.photo}
-              alt={character?.basicInfo?.name}
-              className="rounded-full w-[50px] h-[50px]"
-            />
+            <div className="w-[75px] md:w-[100px] h-[75px] md:h-[100px] rounded-full overflow-hidden">
+              <Image
+                src={character?.appearance?.photo}
+                width={100}
+                height={100}
+                alt="Character photo"
+              />
+            </div>
           )}
           {character?.basicInfo?.name}
         </div>
