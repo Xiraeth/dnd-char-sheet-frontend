@@ -112,7 +112,7 @@ const CreateCharacter = () => {
       (acc, cur, index) => {
         acc[`level${index + 1}`] = {
           current: Number(cur.current),
-          total: Number(cur.total),
+          total: Number(cur.current) || Number(cur.total) || 0,
         };
         return acc;
       },

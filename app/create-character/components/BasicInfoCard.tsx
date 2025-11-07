@@ -169,6 +169,7 @@ const BasicInfoCard = ({
 
                 setValue("spellcasting.spellAttackBonus", spellAttackBonus);
                 setValue("spellcasting.spellSaveDC", spellSaveDC);
+                setValue("stats.hitDice.total", level);
               },
             })}
           />
