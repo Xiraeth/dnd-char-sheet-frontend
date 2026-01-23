@@ -16,6 +16,12 @@ const rechargeMap = {
   other: "other",
 } as const;
 
+const getColourForUsesLeft = (usesLeft: number) => {
+  if (usesLeft === 0) return 'text-red-600';
+}
+
+
+
 const getRechargesOnText = (rechargeOn: RechargeOnType, customRechargeOn?: string) => {
   if (rechargeOn === 'other') {
     return `Recharges ${customRechargeOn}`;
@@ -30,6 +36,13 @@ const FeaturesAndTraits = () => {
   const [areFeaturesAndTraitsVisible, setAreFeaturesAndTraitsVisible] =
     useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const featuresMap = new Map();
+
+  character?.featuresAndTraits?.forEach(feat => {
+    featuresMap.set(feat?._id, feat);
+  })
+
 
   const expendFeature = async (featureId: string, usesLeft: number) => {
     if (isUpdating) return;
@@ -129,37 +142,31 @@ const FeaturesAndTraits = () => {
         !!character?.featuresAndTraits?.length && (
           <div className="flex flex-col gap-4 text-base sm:text-lg">
             {character?.featuresAndTraits?.map((feature) => {
-              const title = feature?.name;
-              const description = feature?.description;
-              const source = feature?.source;
-              const isExpendable = feature?.isExpendable;
-              const usesLeft = feature?.usesLeft;
-              // this will always be a number - the type says it can be a string because when EDITING or CREATING the caracter, it might temporarily be a string. this makes it easier to handle the input field
-              const maxUses = typeof feature?.usesTotal === 'number' ? feature?.usesTotal : parseInt(feature?.usesTotal as string);
-              const rechargesOn = feature?.rechargeOn;
-              const customRechargeOn = feature?.customRechargeOn;
+              const { name, description, source, isExpendable, usesLeft, usesTotal, rechargeOn, customRechargeOn, _id } = featuresMap.get(feature._id);
+
+              const colourForUsesLeft = getColourForUsesLeft(usesLeft);
 
               return (
-                <div key={title} className="font-bookInsanity">
-                  <p className="text-2xl font-bold text-dndRed">{title}</p>
+                <div key={_id} className="font-bookInsanity">
+                  <p className="text-2xl font-bold text-dndRed">{name}</p>
 
                   {isExpendable && (
                     <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
                       <div className="flex gap-2 items-center">
                         <p className="text-black my-1 italic font-montserrat text-base font-bold">
-                          Uses left: {usesLeft}/{maxUses}
+                          Uses left: <span className={clsx(colourForUsesLeft)}>{usesLeft}</span>/{usesTotal}
                         </p>
 
-                        {rechargesOn && (
+                        {rechargeOn && (
                           <p className="text-indigo-700 drop-shadow-2xl font-bold text-xl py-2 font-roboto">
-                            {getRechargesOnText(rechargesOn, customRechargeOn)}
+                            {getRechargesOnText(rechargeOn, customRechargeOn)}
                           </p>
                         )}
                       </div>
                       <div className="flex gap-2 mb-4 sm:mb-0">
                         <Button
                           className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
-                          disabled={(usesLeft || 0) <= 0}
+                          disabled={(usesLeft || 0) <= 0 || isUpdating}
                           size="sm"
                           onClick={() => {
                             expendFeature(feature?._id || "", usesLeft || 0);
@@ -170,13 +177,13 @@ const FeaturesAndTraits = () => {
 
                         <Button
                           className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
-                          disabled={(usesLeft || 0) >= (maxUses || 0)}
+                          disabled={(usesLeft || 0) >= (usesTotal || 0) || isUpdating}
                           size="sm"
                           onClick={() => {
                             restoreFeature(
                               feature?._id || "",
                               usesLeft || 0,
-                              maxUses || 0
+                              usesTotal || 0
                             );
                           }}
                         >
