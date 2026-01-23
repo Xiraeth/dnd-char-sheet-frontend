@@ -374,19 +374,22 @@ const CreateCharacter = () => {
         description:
           "Once per day when you finish a short rest, you can choose expended spell slots to recover. The spell slots can have a combined level that is equal to or less than half your wizard level (rounded up), and none of the slots can be 6th level or higher.",
         source: "Wizard",
-        rechargeOn: "daily",
-        usesTotal: 1,
-        usesLeft: 1,
         isExpendable: true,
+        rechargeOn: "daily",
+        usesTotal: 10,
+        usesLeft: 10,
         chargesRestored: 'all',
       },
       {
-        name: "Arcane Tradition - School of Evocation",
+        name: "Expendable with Dice",
         description:
-          "When you reach 2nd level, you choose an arcane tradition, shaping your practice of magic through one of the following schools. Your choice grants you features at 2nd level and again at 6th, 10th, and 14th level.",
+          "Eldric's Spellbook expends 1 charge per spell slot recovered.",
         source: "Wizard",
-        isExpendable: false,
-        rechargeOn: undefined,
+        isExpendable: true,
+        rechargeOn: 'other',
+        customRechargeOn: 'when i kill an enemy',
+        usesTotal: 4,
+        usesLeft: 4,
         chargesRestored: 'dice',
         rechargeDice: {
           typeOfDice: 1,
@@ -395,14 +398,23 @@ const CreateCharacter = () => {
         },
       },
       {
-        name: "Third Eye",
+        name: "Expendable with Arbitrary Number",
         description:
-          "At 3rd level, you gain the ability to see in the Ethereal Plane. You can see and interact with creatures and objects on the Ethereal Plane, as if they were a normal distance away. The DM determines whether you can see a creature or object.",
+          "Eldric's Spellbook is a collection of spells that he has learned over the years. It is a powerful tool that he uses to help him in his adventures.",
+        source: "Wizard",
+        isExpendable: true,
+        rechargeOn: 'longOrShortRest',
+        chargesRestored: 'arbitraryNumber',
+        usesTotal: 10,
+        usesLeft: 10,
+        rechargeAmount: 1,
+      },
+      {
+        name: "Arcane Tradition - School of Evocation",
+        description:
+          "When you reach 2nd level, you choose an arcane tradition, shaping your practice of magic through one of the following schools. Your choice grants you features at 2nd level and again at 6th, 10th, and 14th level.",
         source: "Wizard",
         isExpendable: false,
-        rechargeOn: undefined,
-        chargesRestored: 'arbitraryNumber',
-        rechargeAmount: 1,
       },
     ]);
 

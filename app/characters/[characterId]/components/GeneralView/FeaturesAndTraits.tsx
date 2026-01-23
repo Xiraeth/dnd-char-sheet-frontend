@@ -13,7 +13,16 @@ const rechargeMap = {
   longRest: "on long rest",
   longOrShortRest: "on long/short rest",
   shortRest: "on short rest",
-};
+  other: "other",
+} as const;
+
+const getRechargesOnText = (rechargeOn: RechargeOnType, customRechargeOn?: string) => {
+  if (rechargeOn === 'other') {
+    return `Recharges ${customRechargeOn}`;
+  }
+
+  return `Recharges ${rechargeMap[rechargeOn as RechargeOnType]}`;
+}
 
 const FeaturesAndTraits = () => {
   const { user } = useUser();
@@ -125,15 +134,17 @@ const FeaturesAndTraits = () => {
               const source = feature?.source;
               const isExpendable = feature?.isExpendable;
               const usesLeft = feature?.usesLeft;
-              const maxUses = feature?.usesTotal;
+              // this will always be a number - the type says it can be a string because when EDITING or CREATING the caracter, it might temporarily be a string. this makes it easier to handle the input field
+              const maxUses = typeof feature?.usesTotal === 'number' ? feature?.usesTotal : parseInt(feature?.usesTotal as string);
               const rechargesOn = feature?.rechargeOn;
+              const customRechargeOn = feature?.customRechargeOn;
 
               return (
                 <div key={title} className="font-bookInsanity">
                   <p className="text-2xl font-bold text-dndRed">{title}</p>
 
                   {isExpendable && (
-                    <div className="w-full flex justify-between items-center">
+                    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
                       <div className="flex gap-2 items-center">
                         <p className="text-black my-1 italic font-montserrat text-base font-bold">
                           Uses left: {usesLeft}/{maxUses}
@@ -141,12 +152,11 @@ const FeaturesAndTraits = () => {
 
                         {rechargesOn && (
                           <p className="text-indigo-700 drop-shadow-2xl font-bold text-xl py-2 font-roboto">
-                            (Recharges{" "}
-                            {rechargeMap[rechargesOn as RechargeOnType]})
+                            {getRechargesOnText(rechargesOn, customRechargeOn)}
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mb-4 sm:mb-0">
                         <Button
                           className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
                           disabled={(usesLeft || 0) <= 0}
@@ -155,7 +165,7 @@ const FeaturesAndTraits = () => {
                             expendFeature(feature?._id || "", usesLeft || 0);
                           }}
                         >
-                          Expend a use
+                          Expend a charge
                         </Button>
 
                         <Button
@@ -170,7 +180,7 @@ const FeaturesAndTraits = () => {
                             );
                           }}
                         >
-                          Restore a use
+                          Restore a charge
                         </Button>
                       </div>
                     </div>

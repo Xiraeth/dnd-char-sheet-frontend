@@ -37,7 +37,7 @@ const Characters = () => {
   }, [user, isLoading]);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || isLoading || !isAuthenticated) return;
 
     try {
       setAreCharactersLoading(true);
@@ -71,8 +71,8 @@ const Characters = () => {
       if (axios.isAxiosError(err)) {
         setError(
           err.response?.data?.error ||
-            err.response?.data?.message ||
-            "An error occurred"
+          err.response?.data?.message ||
+          "An error occurred"
         );
       } else {
         setError("An error occurred. Server is probably down.");

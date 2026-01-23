@@ -75,6 +75,10 @@ const FeaturesAndTraitsCard = () => {
       newErrors.chargesRestored = "The amount of charges restored is mandatory";
     }
 
+    if (feature.rechargeOn === 'other' && !feature.customRechargeOn) {
+      newErrors.customRechargeOn = "Custom recharge timer is required";
+    }
+
     if (feature.chargesRestored === 'arbitraryNumber' && (!feature.rechargeAmount || feature.rechargeAmount === '-')) {
       newErrors.rechargeAmount = "Recharge amount must be a postive integer";
     }
@@ -350,6 +354,9 @@ const FeaturesAndTraitsCard = () => {
                           }
                           placeholder="When does it recharge?"
                         />
+                        {errors.customRechargeOn && (
+                          <p className="text-red-600 text-sm">{errors.customRechargeOn}</p>
+                        )}
                       </div>
                     ) : null}
 

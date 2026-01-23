@@ -38,7 +38,7 @@ const CharacterPage = () => {
     localStorage.removeItem("dnd-char-sheet-character-view-mode");
   };
 
-  // ----------  return statements ---------- do not write code bellow this point ----------
+  // ---------- return (jsx) statements ----------
   if (isLoading)
     return (
       <div className="w-screen h-screen flex items-center justify-center">

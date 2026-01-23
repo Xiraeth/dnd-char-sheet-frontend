@@ -238,7 +238,7 @@ export interface Feature {
   isExpendable?: boolean;
   usesLeft?: number;
   usesTotal?: number | string;
-  rechargeOn: RechargeOnType | undefined;
+  rechargeOn?: RechargeOnType;
   customRechargeOn?: string;
   rechargeDice?: RechargeDiceType; 
   rechargeAmount?: number | string; // in case the recharge amount is an arbitrary number - use this instead of the rechargeDice above

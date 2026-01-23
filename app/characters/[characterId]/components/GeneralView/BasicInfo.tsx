@@ -43,7 +43,7 @@ const BasicInfo = () => {
       try {
         const response = await deleteCharacter(character._id);
         if (response.status === 200) {
-          router.push("/characters");
+          router.push("/");
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
