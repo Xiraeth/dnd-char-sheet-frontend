@@ -142,6 +142,7 @@ export const RACES = [
   "Goliath",
   "Harengon",
   "Kenku",
+  "Lizardfolk",
   "Locathah",
   "Owlin",
   "Satyr",
