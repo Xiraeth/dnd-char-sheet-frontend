@@ -160,8 +160,8 @@ const CreateCharacter = () => {
       if (axios.isAxiosError(error)) {
         toast.error(
           error.response?.data?.error ||
-            error.response?.data?.message ||
-            "An error occurred"
+          error.response?.data?.message ||
+          "An error occurred"
         );
       } else {
         toast.error("Server is probably down.");
@@ -378,6 +378,7 @@ const CreateCharacter = () => {
         usesTotal: 1,
         usesLeft: 1,
         isExpendable: true,
+        chargesRestored: 'all',
       },
       {
         name: "Arcane Tradition - School of Evocation",
@@ -386,6 +387,22 @@ const CreateCharacter = () => {
         source: "Wizard",
         isExpendable: false,
         rechargeOn: undefined,
+        chargesRestored: 'dice',
+        rechargeDice: {
+          typeOfDice: 1,
+          amountOfDice: 4,
+          modifier: -1, // -1 to the roll
+        },
+      },
+      {
+        name: "Third Eye",
+        description:
+          "At 3rd level, you gain the ability to see in the Ethereal Plane. You can see and interact with creatures and objects on the Ethereal Plane, as if they were a normal distance away. The DM determines whether you can see a creature or object.",
+        source: "Wizard",
+        isExpendable: false,
+        rechargeOn: undefined,
+        chargesRestored: 'arbitraryNumber',
+        rechargeAmount: 1,
       },
     ]);
 

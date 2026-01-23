@@ -61,7 +61,18 @@ export type RechargeOnType =
   | "daily"
   | "longRest"
   | "longOrShortRest"
-  | "shortRest";
+  | "shortRest"
+  | "other";
+
+
+export type ChargesRestoredType = 'all' | 'dice' | 'arbitraryNumber';
+
+// in case a feature restores '3d4' charges per some time
+export type RechargeDiceType = {
+  typeOfDice: number | string, // d4
+  amountOfDice: number | string, // 3 (d4)
+  modifier?: number | string; // in case a feature has 'recharge 3d4-1'
+}
 
 export interface Feat {
   _id?: string;
@@ -226,8 +237,12 @@ export interface Feature {
   source?: string;
   isExpendable?: boolean;
   usesLeft?: number;
-  usesTotal?: number;
+  usesTotal?: number | string;
   rechargeOn: RechargeOnType | undefined;
+  customRechargeOn?: string;
+  rechargeDice?: RechargeDiceType; 
+  rechargeAmount?: number | string; // in case the recharge amount is an arbitrary number - use this instead of the rechargeDice above
+  chargesRestored?: ChargesRestoredType;
   areUsesTotalEqualToProfBonus?: boolean;
   actionType?: string;
 }

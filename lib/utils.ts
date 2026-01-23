@@ -1,3 +1,4 @@
+import { RechargeDiceType } from "@/app/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -69,4 +70,24 @@ export const rollDice = (numberOfDice: number, diceType: DiceType) => {
     total += getRandomNumberBetween(1, diceTypeNumber);
   }
   return total;
+};
+
+export const validateRechargeDice = (rechargeDice: RechargeDiceType | undefined): Record<string, string> => {
+  if (!rechargeDice) {
+    return {};
+  }
+
+  const newErrors: Record<string, string> = {};
+
+  if (!rechargeDice.typeOfDice || typeof rechargeDice.typeOfDice !== 'number') {
+    newErrors.typeOfDice = "Dice type is required";
+  }
+  if (!rechargeDice.amountOfDice || typeof rechargeDice.amountOfDice !== 'number') {
+    newErrors.amountOfDice = "Amount of dice is required";
+  }
+  if (rechargeDice.modifier && typeof rechargeDice.modifier !== 'number') {
+    newErrors.modifier = "If modifier is set, it must be a number";
+  }
+
+  return newErrors;
 };

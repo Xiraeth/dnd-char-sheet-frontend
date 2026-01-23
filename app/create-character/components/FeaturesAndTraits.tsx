@@ -17,7 +17,8 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getProficiencyBonus } from "@/lib/utils";
+import { getProficiencyBonus, validateRechargeDice } from "@/lib/utils";
+import { DICE_OPTIONS } from "@/app/constants";
 
 const DEFAULT_FEATURE: Feature = {
   name: "",
@@ -27,6 +28,7 @@ const DEFAULT_FEATURE: Feature = {
   usesLeft: 0,
   usesTotal: 0,
   rechargeOn: undefined,
+  chargesRestored: undefined,
 };
 
 const FeaturesAndTraitsCard = () => {
@@ -39,6 +41,14 @@ const FeaturesAndTraitsCard = () => {
 
   const validateFeature = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
+
+    const rechargeDiceErrors = validateRechargeDice(feature.rechargeDice);
+
+    if (Object.keys(rechargeDiceErrors).length) {
+      Object.entries(rechargeDiceErrors).forEach(([key, error]: [string, string]) => {
+        newErrors[key] = error;
+      })
+    }
 
     if (!feature.name) {
       newErrors.name = "Name is required";
@@ -59,6 +69,18 @@ const FeaturesAndTraitsCard = () => {
     if (feature.isExpendable && !feature.rechargeOn) {
       newErrors.rechargeOn =
         "Recharge timer is required when feature is expendable";
+    }
+
+    if (!feature.chargesRestored) {
+      newErrors.chargesRestored = "The amount of charges restored is mandatory";
+    }
+
+    if (feature.chargesRestored === 'arbitraryNumber' && (!feature.rechargeAmount || feature.rechargeAmount === '-')) {
+      newErrors.rechargeAmount = "Recharge amount must be a postive integer";
+    }
+
+    if (typeof feature.rechargeAmount === 'number' && feature.rechargeAmount <= 0) {
+      newErrors.rechargeAmount = "Recharge amount must be a postive integer";
     }
 
     setErrors(newErrors);
@@ -201,12 +223,17 @@ const FeaturesAndTraitsCard = () => {
                   id="isExpendable"
                   checked={feature?.isExpendable}
                   onCheckedChange={() => {
+                    setErrors({ ...errors, usesTotal: "", rechargeOn: "", chargesRestored: "", rechargeAmount: "" });
                     setFeature({
                       ...feature,
                       isExpendable: !feature?.isExpendable,
                       usesLeft: !feature?.isExpendable ? 0 : undefined,
                       usesTotal: !feature?.isExpendable ? 0 : undefined,
+                      areUsesTotalEqualToProfBonus: false,
                       rechargeOn: undefined,
+                      rechargeDice: undefined,
+                      chargesRestored: undefined,
+                      rechargeAmount: undefined,
                     });
                   }}
                 />
@@ -214,8 +241,10 @@ const FeaturesAndTraitsCard = () => {
                   <p className="text-red-600 text-sm">{errors.isExpendable}</p>
                 )}
               </div>
+
               {feature?.isExpendable && (
                 <>
+                  {/* uses total */}
                   <div className="flex flex-col items-center gap-2">
                     <Label htmlFor="usesTotal">Uses total</Label>
                     <Input
@@ -275,40 +304,230 @@ const FeaturesAndTraitsCard = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex flex-col items-center gap-2 ">
-                    <Label htmlFor="rechargeOn">Recharge</Label>
-                    <Select
-                      value={feature?.rechargeOn}
-                      onValueChange={(value) =>
-                        setFeature({
-                          ...feature,
-                          rechargeOn: value as RechargeOnType,
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select recharge" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="shortRest">On short rest</SelectItem>
-                        <SelectItem value="longRest">On long rest</SelectItem>
-                        <SelectItem value="longOrShortRest">
-                          On long/short rest
-                        </SelectItem>
-                        <SelectItem value="daily">Daily</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {errors.rechargeOn && (
-                      <p className="text-red-600 text-sm">
-                        {errors.rechargeOn}
-                      </p>
-                    )}
+
+                  {/* recharge on */}
+                  <div className="flex flex-col items-center gap-2 w-full">
+                    <div className="flex flex-col items-center gap-2 w-full">
+                      <Label htmlFor="rechargeOn">Recharge</Label>
+                      <Select
+                        value={feature?.rechargeOn}
+                        onValueChange={(value) =>
+                          setFeature({
+                            ...feature,
+                            rechargeOn: value as RechargeOnType,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select recharge" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="shortRest">On short rest</SelectItem>
+                          <SelectItem value="longRest">On long rest</SelectItem>
+                          <SelectItem value="longOrShortRest">
+                            On long/short rest
+                          </SelectItem>
+                          <SelectItem value="daily">Daily</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {errors.rechargeOn && (
+                        <p className="text-red-600 text-sm">
+                          {errors.rechargeOn}
+                        </p>
+                      )}
+                    </div>
+
+                    {feature.rechargeOn === 'other' ? (
+                      <div className="w-full">
+                        <Label htmlFor="customRechargeOn">Custom recharge timer</Label>
+                        <Input
+                          id="customRechargeOn"
+                          type="text"
+                          value={feature?.customRechargeOn || ""}
+                          onChange={(e) =>
+                            setFeature({ ...feature, customRechargeOn: e.target.value })
+                          }
+                          placeholder="When does it recharge?"
+                        />
+                      </div>
+                    ) : null}
+
                   </div>
                 </>
               )}
-
-              <div></div>
             </div>
+
+            {/* amount of charges restored */}
+            {feature?.isExpendable && (
+              <div className="flex flex-col gap-2 justify-center items-center">
+                <Label htmlFor="rechargeAmount" className="w-full">Select how many charges are restored every time this feature recharges</Label>
+                <Select
+                  value={feature.chargesRestored}
+                  onValueChange={(value) => {
+                    if (value === 'all') {
+                      setFeature({ ...feature, chargesRestored: 'all', rechargeAmount: undefined, rechargeDice: undefined });
+                      setErrors({ ...errors, chargesRestored: "", rechargeAmount: "", rechargeDice: "" });
+                    } else if (value === 'dice') {
+                      setFeature({ ...feature, chargesRestored: 'dice', rechargeDice: { typeOfDice: 0, amountOfDice: 0 }, rechargeAmount: undefined });
+                      setErrors({ ...errors, chargesRestored: "", rechargeDice: "", rechargeAmount: "" });
+                    } else if (value === 'arbitraryNumber') {
+                      setFeature({ ...feature, chargesRestored: 'arbitraryNumber', rechargeAmount: undefined, rechargeDice: undefined });
+                      setErrors({ ...errors, chargesRestored: "", rechargeAmount: "", rechargeDice: "" });
+                    }
+                  }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select how many charges are restored" />
+                  </SelectTrigger>
+                  <SelectContent className="w-full">
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="dice">Dice</SelectItem>
+                    <SelectItem value="arbitraryNumber">Arbitrary number</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {errors.chargesRestored && (
+                  <p className="text-red-600 text-sm">{errors.chargesRestored}</p>
+                )}
+
+                {/* in case rechargeDice is an object, select the dice amount and type (e.g. 3d4) */}
+                {feature.chargesRestored === 'dice' && (
+                  <div className="flex w-full items-start justify-center gap-2">
+
+                    {/* amount of dice */}
+                    <div className="w-2/5">
+                      <Label htmlFor="rechargeDice.amountOfDice">Amount of dice</Label>
+                      <Input
+                        id="rechargeDice.amountOfDice"
+                        type="number"
+                        value={feature.rechargeDice?.amountOfDice || ''}
+                        onChange={(e) => {
+                          if (e.target.value === "") {
+                            setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || '', amountOfDice: '', modifier: feature.rechargeDice?.modifier || '' } });
+                            return;
+                          }
+
+                          const parsedValue = parseInt(e.target.value);
+                          if (isNaN(parsedValue)) {
+                            return;
+                          }
+                          setFeature({
+                            ...feature,
+                            rechargeDice:
+                            {
+                              ...feature.rechargeDice,
+                              typeOfDice: feature.rechargeDice?.typeOfDice || 0,
+                              amountOfDice: parsedValue
+                            }
+                          });
+                        }}
+                      />
+                      {errors.amountOfDice && (
+                        <p className="text-red-600 text-sm">{errors.amountOfDice}</p>
+                      )}
+                    </div>
+
+                    {/* dice type */}
+                    <div className="w-1/5">
+                      <Label htmlFor="rechargeDice.typeOfDice">Dice type</Label>
+                      <Select
+                        onValueChange={(value) => {
+                          const parsedValue = parseInt(value);
+                          if (isNaN(parsedValue)) {
+                            return;
+                          }
+                          setFeature({ ...feature, rechargeDice: { ...feature.rechargeDice, typeOfDice: parsedValue, amountOfDice: feature.rechargeDice?.amountOfDice || 0 } });
+                        }}
+                        value={feature.rechargeDice?.typeOfDice?.toString() || "0"}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select dice type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DICE_OPTIONS.map((dice) => (
+                            <SelectItem key={dice.value} value={dice.value.toString()}>
+                              {dice.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.typeOfDice && (
+                        <p className="text-red-600 text-sm">{errors.typeOfDice}</p>
+                      )}
+                    </div>
+
+                    {/* modifier */}
+                    <div className="w-2/5">
+                      <Label htmlFor="rechargeDice.modifier">Modifier</Label>
+                      <Input
+                        id="rechargeDice.modifier"
+                        type="text"
+                        value={feature.rechargeDice?.modifier || ""}
+                        onChange={(e) => {
+                          if (e.target.value === "-") {
+                            setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || 0, amountOfDice: feature.rechargeDice?.amountOfDice || 0, modifier: '-' } });
+                            return;
+                          }
+
+                          if (e.target.value === "+") {
+                            setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || 0, amountOfDice: feature.rechargeDice?.amountOfDice || 0, modifier: 1 } });
+                            return;
+                          }
+                          if (e.target.value === "") {
+                            setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || 0, amountOfDice: feature.rechargeDice?.amountOfDice || 0, modifier: undefined } });
+                            return;
+                          }
+
+                          if (isNaN(parseInt(e.target.value))) {
+                            setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || 0, amountOfDice: feature.rechargeDice?.amountOfDice || 0, modifier: undefined } });
+                            return;
+                          }
+
+                          setFeature({ ...feature, rechargeDice: { typeOfDice: feature.rechargeDice?.typeOfDice || 0, amountOfDice: feature.rechargeDice?.amountOfDice || 0, modifier: parseInt(e.target.value) } });
+                        }}
+                        placeholder="Custom modifier (negative or positive constant that gets added to the dice roll)"
+                      />
+                      {errors.modifier && (
+                        <p className="text-red-600 text-sm">{errors.modifier}</p>
+                      )}
+                    </div>
+
+                  </div>
+                )}
+
+                {/* in case neither rechargeFully nor rechargeDice are set, we can assume the feature has a custom recharge amount */}
+                {feature.chargesRestored === 'arbitraryNumber' ? (
+                  <div className="w-full">
+                    <Label htmlFor="rechargeAmount">Recharge amount</Label>
+                    <Input
+                      id="rechargeAmount"
+                      type="text"
+                      value={feature.rechargeAmount || ''}
+                      onChange={(e) => {
+                        if (e.target.value === "-") {
+                          setFeature({ ...feature, rechargeAmount: '-' });
+                          return;
+                        }
+
+                        if (e.target.value === "") {
+                          setFeature({ ...feature, rechargeAmount: '' });
+                          return;
+                        }
+
+                        const parsedValue = parseInt(e.target.value);
+                        if (isNaN(parsedValue)) {
+                          return;
+                        }
+                        setFeature({ ...feature, rechargeAmount: parsedValue });
+                      }}
+                    />
+                    {errors.rechargeAmount && (
+                      <p className="text-red-600 text-sm">{errors.rechargeAmount}</p>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
         )}
 
