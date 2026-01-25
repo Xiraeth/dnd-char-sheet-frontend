@@ -67,9 +67,6 @@ const mrEaves = localFont({
 export const metadata: Metadata = {
   title: "D&D Character Sheet",
   description: "Create and manage your D&D characters",
-  icons: {
-    icon: "./favicon.ico",
-  },
 };
 
 // create multiple fonts
