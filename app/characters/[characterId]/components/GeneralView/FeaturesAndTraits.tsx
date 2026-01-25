@@ -2,6 +2,7 @@ import { useCharacter } from "@/app/characters/[characterId]/components/Characte
 import { RechargeOnType } from "@/app/types";
 import { useUser } from "@/app/UserProvider";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import axios from "axios";
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
@@ -37,6 +38,9 @@ const FeaturesAndTraits = () => {
     useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // key is the feature id, value is the custom recharge amount
+  const [customChargeAmount, setCustomChargeAmount] = useState<Record<string, string | undefined> | undefined>(undefined);
+
   const featuresMap = new Map();
 
   character?.featuresAndTraits?.forEach(feat => {
@@ -44,7 +48,7 @@ const FeaturesAndTraits = () => {
   })
 
 
-  const expendFeature = async (featureId: string, usesLeft: number) => {
+  const expendFeature = async (featureId: string, usesLeft: number, customChargeAmount?: number) => {
     if (isUpdating) return;
 
     if (usesLeft <= 0) {
@@ -52,10 +56,20 @@ const FeaturesAndTraits = () => {
       return;
     }
 
+    if (customChargeAmount && customChargeAmount <= 0) {
+      toast.error("Custom expend charge amount must be a positive integer");
+      return;
+    }
+
+    if (customChargeAmount && customChargeAmount > usesLeft) {
+      toast.error("Custom expend charge amount must be less than the number of uses left");
+      return;
+    }
+
     setIsUpdating(true);
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/expendFeature/${featureId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/expendFeature/${featureId}?customChargeAmount=${customChargeAmount || 1}`,
         user,
         {
           withCredentials: true,
@@ -77,6 +91,7 @@ const FeaturesAndTraits = () => {
         toast.error("Failed to expend feature");
       }
     } finally {
+      setCustomChargeAmount(undefined);
       setIsUpdating(false);
     }
   };
@@ -84,19 +99,35 @@ const FeaturesAndTraits = () => {
   const restoreFeature = async (
     featureId: string,
     usesLeft: number,
-    usesTotal: number
+    usesTotal: number,
+    customChargeAmount?: number
   ) => {
     if (isUpdating) return;
 
     if (usesLeft >= usesTotal) {
-      toast.error("No uses left");
+      toast.error("You cannot restore a feature that has not been expended");
+      return;
+    }
+
+    if (customChargeAmount && customChargeAmount <= 0) {
+      toast.error("Custom recharge amount must be a positive integer");
+      return;
+    }
+
+    if (customChargeAmount && customChargeAmount > usesTotal) {
+      toast.error("Custom recharge amount must be less than the number of uses total");
+      return;
+    }
+
+    if (customChargeAmount && customChargeAmount > (usesTotal - usesLeft)) {
+      toast.error("Custom recharge amount must be less than the number of uses that can be restored");
       return;
     }
 
     setIsUpdating(true);
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/gainFeature/${featureId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/${character?._id}/gainFeature/${featureId}?customChargeAmount=${customChargeAmount || 1}`,
         user,
         {
           withCredentials: true,
@@ -118,6 +149,7 @@ const FeaturesAndTraits = () => {
         toast.error("Failed to restore feature");
       }
     } finally {
+      setCustomChargeAmount(undefined);
       setIsUpdating(false);
     }
   };
@@ -140,18 +172,20 @@ const FeaturesAndTraits = () => {
       </div>
       {!!areFeaturesAndTraitsVisible &&
         !!character?.featuresAndTraits?.length && (
-          <div className="flex flex-col gap-4 text-base sm:text-lg">
+          <div className="flex flex-col gap-4 text-base md:text-lg">
             {character?.featuresAndTraits?.map((feature) => {
               const { name, description, source, isExpendable, usesLeft, usesTotal, rechargeOn, customRechargeOn, _id } = featuresMap.get(feature._id);
 
               const colourForUsesLeft = getColourForUsesLeft(usesLeft);
+
+              const customRechargeAmountForFeature = customChargeAmount?.[_id];
 
               return (
                 <div key={_id} className="font-bookInsanity">
                   <p className="text-2xl font-bold text-dndRed">{name}</p>
 
                   {isExpendable && (
-                    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                    <div className="w-full flex flex-col lg:flex-row justify-between items-start lg:items-center">
                       <div className="flex gap-2 items-center">
                         <p className="text-black my-1 italic font-montserrat text-base font-bold">
                           Uses left: <span className={clsx(colourForUsesLeft)}>{usesLeft}</span>/{usesTotal}
@@ -163,31 +197,53 @@ const FeaturesAndTraits = () => {
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2 mb-4 sm:mb-0">
+
+                      <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto mb-2 lg:mb-2">
                         <Button
-                          className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
+                          className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
                           disabled={(usesLeft || 0) <= 0 || isUpdating}
                           size="sm"
                           onClick={() => {
-                            expendFeature(feature?._id || "", usesLeft || 0);
+                            expendFeature(feature?._id || "", usesLeft || 0, customRechargeAmountForFeature ? +customRechargeAmountForFeature : undefined);
                           }}
                         >
-                          Expend a charge
+                          Expend charges ({customRechargeAmountForFeature || 1})
                         </Button>
 
+                        <Input type="text"
+                          key={`custom-recharge-amount-${_id}`}
+                          value={customChargeAmount?.[_id] || ""}
+                          className="h-[32px] min-w-[90px]"
+                          onChange={(e) => {
+                            if (e.target.value === "") {
+                              setCustomChargeAmount({ ...customChargeAmount, [_id]: undefined });
+                              return;
+                            }
+
+                            if (isNaN(parseInt(e.target.value)) || e.target.value.includes("-")) {
+                              return;
+                            }
+
+                            const parsedValue = parseInt(e.target.value);
+                            setCustomChargeAmount({ ...customChargeAmount, [_id]: parsedValue.toString() });
+                          }}
+                          placeholder="Custom recharge amount"
+                        />
+
                         <Button
-                          className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[26px]"
+                          className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
                           disabled={(usesLeft || 0) >= (usesTotal || 0) || isUpdating}
                           size="sm"
                           onClick={() => {
                             restoreFeature(
                               feature?._id || "",
                               usesLeft || 0,
-                              usesTotal || 0
+                              usesTotal || 0,
+                              customRechargeAmountForFeature ? +customRechargeAmountForFeature : undefined
                             );
                           }}
                         >
-                          Restore a charge
+                          Restore charges ({customRechargeAmountForFeature || 1})
                         </Button>
                       </div>
                     </div>
