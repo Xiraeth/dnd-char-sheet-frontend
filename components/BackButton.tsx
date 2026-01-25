@@ -36,7 +36,7 @@ const BackButton = ({
   return (
     <div
       className={cn(
-        "fixed top-0 left-0 m-2 cursor-pointer rounded-full p-2 hover:bg-white transition-all duration-150",
+        "fixed top-0 left-0 z-50 m-2 cursor-pointer rounded-full p-2 hover:bg-white transition-all duration-150",
         isVisible ? "bg-white" : "bg-transparent"
       )}
     >

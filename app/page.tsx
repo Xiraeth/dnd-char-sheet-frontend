@@ -62,8 +62,8 @@ export default function Home() {
       if (axios.isAxiosError(err)) {
         setError(
           err.response?.data?.error ||
-            err.response?.data?.message ||
-            "An error occurred"
+          err.response?.data?.message ||
+          "An error occurred"
         );
       } else {
         setError("An error occurred. Server is probably down.");
@@ -135,7 +135,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center gap-4 font-mrEaves">
+    <div className="h-screen flex flex-col items-center justify-center gap-4 my-20 sm:my-0 font-mrEaves">
       <p className="text-3xl sm:text-4xl font-bold text-text-dark text-red-600 text-center">
         Welcome {user?.username}
       </p>
@@ -163,12 +163,22 @@ export default function Home() {
         >
           Create new character
         </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          className="sm:hidden w-full"
+          onClick={() => {
+            logout();
+          }}
+        >
+          Log Out
+        </Button>
       </div>
 
       <Button
         variant="outline"
         size="lg"
-        className="absolute bottom-4 right-4"
+        className="hidden sm:block fixed bottom-4 right-4"
         onClick={() => {
           logout();
         }}
