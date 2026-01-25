@@ -24,8 +24,8 @@ const Equipment = () => {
       {isEquipmentVisible && (
         <div className="text-base sm:text-lg">
           {!!character?.inventory?.gold && (
-            <div className="flex gap-2 text-dndRed font-bookInsanity">
-              <p className="font-bold">Gold: </p>
+            <div className="flex gap-2 font-bookInsanity">
+              <p className="font-bold text-dndRed">Gold: </p>
               <p>{character?.inventory?.gold}</p>
             </div>
           )}
@@ -39,9 +39,15 @@ const Equipment = () => {
                 const itemName = item?.name;
                 const itemDescription = item?.description;
 
+                const isConsumable = item?.isConsumable;
+                const numberLeft = item?.numberLeft;
+                const numberTotal = item?.numberTotal;
+
+                const consumableInfo = isConsumable ? `(${numberLeft}/${numberTotal})` : "";
+
                 return (
                   <div key={itemName}>
-                    <p className="font-bold text-dndRed">{itemName}</p>
+                    <span className="font-bold text-dndRed">{itemName}</span> <span className="text-indigo-700 font-bold">{consumableInfo}</span>
                     <pre className="w-[calc(100vw - 2rem)] text-wrap font-scalySans">
                       {itemDescription}
                     </pre>

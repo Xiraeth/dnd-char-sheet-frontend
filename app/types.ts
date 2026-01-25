@@ -166,6 +166,9 @@ export interface DeathSaves {
 export interface Item {
   name: string;
   description: string;
+  isConsumable?: boolean;
+  numberLeft?: number;
+  numberTotal?: number;
 }
 
 export interface Inventory {
