@@ -142,7 +142,7 @@ const Equipment = () => {
                 const customAmount = amountToUpdate?.[_id]
 
                 return (
-                  <div key={_id} className="w-full flex items-center justify-between">
+                  <div key={_id} className="w-full flex-col lg:flex-row flex items-start lg:items-center justify-between">
 
                     <div>
                       <span className="font-bold text-dndRed">{name}</span>{" "}
@@ -152,48 +152,50 @@ const Equipment = () => {
                       </pre>
                     </div>
 
-                    {item.isConsumable ? <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto mb-2 lg:mb-2">
-                      <Button
-                        className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
-                        disabled={(amount || 0) <= 0 || isUpdating}
-                        size="sm"
-                        onClick={() => {
-                          expendItem(_id, amount, customAmount ? +customAmount : undefined,);
-                        }}
-                      >
-                        Use Item ({customAmount || 1})
-                      </Button>
+                    {item.isConsumable ? (
+                      <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto mb-2 lg:mb-2">
+                        <Button
+                          className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[28px] sm:h-[32px]"
+                          disabled={(amount || 0) <= 0 || isUpdating}
+                          size="sm"
+                          onClick={() => {
+                            expendItem(_id, amount, customAmount ? +customAmount : undefined,);
+                          }}
+                        >
+                          Use Item ({customAmount || 1})
+                        </Button>
 
-                      <Input type="text"
-                        key={`custom-recharge-amount-${_id}`}
-                        value={customAmount || ""}
-                        className="h-[32px] min-w-[90px]"
-                        onChange={(e) => {
-                          if (e.target.value === "") {
-                            setAmountToUpdate({ ...amountToUpdate, [_id]: undefined });
-                            return;
-                          }
+                        <Input type="text"
+                          key={`custom-recharge-amount-${_id}`}
+                          value={customAmount || ""}
+                          className="h-[28px] sm:h-[32px] min-w-[90px]"
+                          onChange={(e) => {
+                            if (e.target.value === "") {
+                              setAmountToUpdate({ ...amountToUpdate, [_id]: undefined });
+                              return;
+                            }
 
-                          if (isNaN(parseInt(e.target.value)) || e.target.value.includes("-")) {
-                            return;
-                          }
+                            if (isNaN(parseInt(e.target.value)) || e.target.value.includes("-")) {
+                              return;
+                            }
 
-                          const parsedValue = parseInt(e.target.value);
-                          setAmountToUpdate({ ...amountToUpdate, [_id]: parsedValue.toString() });
-                        }}
-                        placeholder="Custom use amount"
-                      />
+                            const parsedValue = parseInt(e.target.value);
+                            setAmountToUpdate({ ...amountToUpdate, [_id]: parsedValue.toString() });
+                          }}
+                          placeholder="Custom use amount"
+                        />
 
-                      <Button
-                        className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
-                        size="sm"
-                        onClick={() => {
-                          gainItem(_id, customAmount ? +customAmount : undefined);
-                        }}
-                      >
-                        Gain Item ({customAmount || 1})
-                      </Button>
-                    </div> : null}
+                        <Button
+                          className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[28px] sm:h-[32px]"
+                          size="sm"
+                          onClick={() => {
+                            gainItem(_id, customAmount ? +customAmount : undefined);
+                          }}
+                        >
+                          Gain Item ({customAmount || 1})
+                        </Button>
+                      </div>) : null}
+
                   </div>
                 );
               })}

@@ -200,7 +200,7 @@ const FeaturesAndTraits = () => {
 
                       <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto mb-2 lg:mb-2">
                         <Button
-                          className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
+                          className="bg-red-600 text-black hover:bg-red-600/75 transition-all duration-150 drop-shadow-md h-[28px] sm:h-[32px]"
                           disabled={(usesLeft || 0) <= 0 || isUpdating}
                           size="sm"
                           onClick={() => {
@@ -213,7 +213,7 @@ const FeaturesAndTraits = () => {
                         <Input type="text"
                           key={`custom-recharge-amount-${_id}`}
                           value={customChargeAmount?.[_id] || ""}
-                          className="h-[32px] min-w-[90px]"
+                          className="h-[28px] sm:h-[32px] min-w-[90px]"
                           onChange={(e) => {
                             if (e.target.value === "") {
                               setCustomChargeAmount({ ...customChargeAmount, [_id]: undefined });
@@ -231,7 +231,7 @@ const FeaturesAndTraits = () => {
                         />
 
                         <Button
-                          className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[32px]"
+                          className="bg-green-600 text-black hover:bg-green-600/75 transition-all duration-150 drop-shadow-md h-[28px] sm:h-[32px]"
                           disabled={(usesLeft || 0) >= (usesTotal || 0) || isUpdating}
                           size="sm"
                           onClick={() => {
