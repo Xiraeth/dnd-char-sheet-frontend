@@ -207,7 +207,7 @@ const FeaturesAndTraits = () => {
                             expendFeature(feature?._id || "", usesLeft || 0, customRechargeAmountForFeature ? +customRechargeAmountForFeature : undefined);
                           }}
                         >
-                          Expend charges ({customRechargeAmountForFeature || 1})
+                          Use Feature ({customRechargeAmountForFeature || 1})
                         </Button>
 
                         <Input type="text"
@@ -227,7 +227,7 @@ const FeaturesAndTraits = () => {
                             const parsedValue = parseInt(e.target.value);
                             setCustomChargeAmount({ ...customChargeAmount, [_id]: parsedValue.toString() });
                           }}
-                          placeholder="Custom recharge amount"
+                          placeholder="Custom use amount"
                         />
 
                         <Button
@@ -243,7 +243,7 @@ const FeaturesAndTraits = () => {
                             );
                           }}
                         >
-                          Restore charges ({customRechargeAmountForFeature || 1})
+                          Restore Feature ({customRechargeAmountForFeature || 1})
                         </Button>
                       </div>
                     </div>

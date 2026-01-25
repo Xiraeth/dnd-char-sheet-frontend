@@ -335,8 +335,8 @@ const CreateCharacter = () => {
         name: "Staff of Power",
         description: "Magical staff that enhances spellcasting",
       },
-      { name: "Potion of Healing", description: "Restores 2d4+2 hit points", isConsumable: true, numberLeft: 10, numberTotal: 10 },
-      { name: "Arcane Restoration Potion", description: "Restores 5 levels worth of spell slots", isConsumable: true, numberLeft: 3, numberTotal: 5 },
+      { name: "Potion of Healing", description: "Restores 2d4+2 hit points", isConsumable: true, amount: 10 },
+      { name: "Arcane Restoration Potion", description: "Restores 5 levels worth of spell slots", isConsumable: true, amount: 5 },
     ]);
     setValue("inventory.weight", 35);
 
