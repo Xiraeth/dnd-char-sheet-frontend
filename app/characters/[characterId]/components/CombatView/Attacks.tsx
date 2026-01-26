@@ -4,13 +4,11 @@ import { Card } from "@/components/ui/card";
 import { DiceType, getProficiencyBonus, rollDice } from "@/lib/utils";
 import Image from "next/image";
 import { getModifier } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Info, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const Attacks = () => {
   const { character } = useCharacter();
-  const router = useRouter();
   const [attackResults, setAttackResults] = useState<
     Record<string, number | null>
   >({});
@@ -40,46 +38,9 @@ const Attacks = () => {
     setIsInfoOpen(!isInfoOpen);
   };
 
-  useEffect(() => {
-    const eventListener = (e: MouseEvent) => {
-      if (
-        e.target instanceof HTMLElement &&
-        !e.target.closest(".info-tooltip")
-      ) {
-        setIsInfoOpen(false);
-      }
-    };
-
-    document.addEventListener("click", eventListener);
-
-    return () => {
-      document.removeEventListener("click", eventListener);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isInfoOpen) {
-      // Add overlay to the URL
-      router.push(`/characters/${character?._id}?overlay=true`);
-
-      // Prevent body scroll when overlay is open
-      const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = "hidden";
-
-      return () => {
-        document.body.style.overflow = originalStyle;
-      };
-    } else {
-      // Remove overlay from the URL
-      router.push(`/characters/${character?._id}`);
-    }
-  }, [isInfoOpen]);
 
   return (
     <div className="space-y-4">
-      {isInfoOpen && (
-        <div className="overlay bg-black/50 fixed inset-0 z-40"></div>
-      )}
 
       <p className="text-dndRed font-bold font-mrEaves text-center text-3xl sm:text-4xl">
         Attacks
@@ -87,7 +48,7 @@ const Attacks = () => {
       <div className="flex justify-end items-center gap-4 text-base">
         <div className="flex gap-2 items-center relative">
           <Info
-            className="text-gray-700 size-5 cursor-pointer hover:text-gray-800 transition-all duration-150"
+            className="shadow-md drop-shadow-md text-black bg-amber-500 hover:text-amber-500 hover:bg-black size-6 cursor-pointer transition-all duration-150  p-1 rounded-full"
             onClick={handleInfoOpen}
           />
           <span className="italic">Attack Roll</span>
@@ -131,7 +92,7 @@ const Attacks = () => {
 
         const ability =
           character?.abilities?.[
-            abilityUsedInAttack as keyof CharacterAbilities
+          abilityUsedInAttack as keyof CharacterAbilities
           ];
 
         const addModifier = attack?.attackRoll?.addModifier;
@@ -145,9 +106,8 @@ const Attacks = () => {
             : 0
           : 0;
 
-        const displayedDamageRoll = `${attack?.damageRoll?.numberOfDice}d${
-          attack?.damageRoll?.diceType
-        } ${damageRollBonus ? `+ ${damageRollBonus}` : ""}`;
+        const displayedDamageRoll = `${attack?.damageRoll?.numberOfDice}d${attack?.damageRoll?.diceType
+          } ${damageRollBonus ? `+ ${damageRollBonus}` : ""}`;
 
         // ability + prof bonus + other modifier
         const finalAttackRoll =
