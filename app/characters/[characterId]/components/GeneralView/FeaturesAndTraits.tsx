@@ -227,7 +227,7 @@ const FeaturesAndTraits = () => {
                             const parsedValue = parseInt(e.target.value);
                             setCustomChargeAmount({ ...customChargeAmount, [_id]: parsedValue.toString() });
                           }}
-                          placeholder="Custom use amount"
+                          placeholder="Custom amount"
                         />
 
                         <Button
