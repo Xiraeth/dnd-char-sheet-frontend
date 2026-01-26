@@ -7,7 +7,7 @@ import axios from "axios";
 import clsx from "clsx";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast} from "sonner";
 
 const Equipment = () => {
   const { user } = useUser();
@@ -182,7 +182,7 @@ const Equipment = () => {
                             const parsedValue = parseInt(e.target.value);
                             setAmountToUpdate({ ...amountToUpdate, [_id]: parsedValue.toString() });
                           }}
-                          placeholder="Custom use amount"
+                          placeholder="Custom amount"
                         />
 
                         <Button

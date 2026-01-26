@@ -112,7 +112,12 @@ export default function RootLayout({
             <UserProvider>{children}</UserProvider>
           </ApolloProvider>
         </ThemeProvider>
-        <Toaster position="top-right" />
+        <Toaster position="top-center" visibleToasts={2}  toastOptions={{unstyled: true, className: 'flex items-center justify-start gap-4 min-w-[300px] py-2 px-4 rounded-lg shadow-md min-h-[50px]', classNames: {
+          success: "bg-green-500 text-white",
+          error: "bg-red-500 text-white",
+          warning: "bg-amber-500 text-white",
+          info: "bg-sky-500 text-white",
+        }}}/>
       </body>
     </html>
   );
