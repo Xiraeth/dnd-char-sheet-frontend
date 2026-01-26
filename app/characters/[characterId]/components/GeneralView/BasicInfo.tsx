@@ -37,6 +37,8 @@ const BasicInfo = () => {
     undefined
   );
 
+  const remainingHitDice = character?.stats?.hitDice?.remaining;
+
   const handleDeleteClick = async () => {
     setIsDeleteDialogOpen(false);
     if (character?._id) {
@@ -62,7 +64,6 @@ const BasicInfo = () => {
   };
 
   const handleShortRest = async (hitDiceToExpend?: number) => {
-    const remainingHitDice = character?.stats?.hitDice?.remaining;
 
     if (
       hitDiceToExpend &&
@@ -211,7 +212,7 @@ const BasicInfo = () => {
           open={isShortRestDialogOpen}
           onOpenChange={setIsShortRestDialogOpen}
         >
-          <DialogContent className="w-10/12 sm:w-[500px] sm:h-[225px] bg-amber-200 rounded-md font-bookInsanity text-xl sm:text-2xl">
+          <DialogContent className="pt-10 bg-white/80 backdrop-filter backdrop-blur-xl rounded-md font-bookInsanity">
             {isShortRestLoading ? (
               <div className="w-full h-full flex justify-center items-center">
                 <Loader2 className="animate-spin" />
@@ -224,28 +225,33 @@ const BasicInfo = () => {
                   </DialogTitle>
                 </DialogHeader>
 
-                <p className="text-center pt-2 text-dndRed">
-                  How many hit dice do you want to expend? (optional)
-                </p>
-                <Input
-                  type="text"
-                  className="font-montserrat text-lg drop-shadow-lg shadow-sm shadow-black/40"
-                  value={hitDiceToExpend?.toString() || ""}
-                  onChange={(e) => {
-                    if (
-                      isNaN(Number(e.target.value)) ||
-                      e.target.value === ""
-                    ) {
-                      setHitDiceToExpend(undefined);
-                    } else {
-                      setHitDiceToExpend(Number(e.target.value));
-                    }
-                  }}
-                />
+                <div className="flex items-center flex-col md:flex-row justify-between">
+                  <div className="text-center font-montserrat pt-2 text-black text-base">
+                    Expend hit dice (optional)
+                    <span className="italic text-indigo-600 ml-2">
+                      ({remainingHitDice} available)
+                    </span>
+                  </div>
+                  <Input
+                    type="text"
+                    className="font-montserrat text-lg drop-shadow-lg shadow-sm shadow-black/40 w-20"
+                    value={hitDiceToExpend?.toString() || ""}
+                    onChange={(e) => {
+                      if (
+                        isNaN(Number(e.target.value)) ||
+                        e.target.value === ""
+                      ) {
+                        setHitDiceToExpend(undefined);
+                      } else {
+                        setHitDiceToExpend(Number(e.target.value));
+                      }
+                    }}
+                  />
+                </div>
+
                 <Button
                   type="submit"
-                  variant="default"
-                  className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md"
+                  className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md bg-green-600 hover:bg-green-700"
                   onClick={() => handleShortRest(hitDiceToExpend)}
                 >
                   Short rest
@@ -260,10 +266,10 @@ const BasicInfo = () => {
           open={isLongRestDialogOpen}
           onOpenChange={setIsLongRestDialogOpen}
         >
-          <DialogContent className="w-10/12 sm:w-[500px] sm:h-[200px] bg-green-600 rounded-md font-bookInsanity text-xl sm:text-2xl border-none p-10 drop-shadow-lg shadow-white/20 shadow-lg">
+          <DialogContent className="bg-white/80 backdrop-filter backdrop-blur-xl rounded-md font-bookInsanity text-xl sm:text-2xl border-none p-10 drop-shadow-lg shadow-white/20 shadow-lg">
             {isLongRestLoading ? (
               <div className="w-full h-full flex justify-center items-center">
-                <Loader2 className="animate-spin text-white" />
+                <Loader2 className="animate-spin text-black" />
               </div>
             ) : (
               <>
@@ -271,13 +277,12 @@ const BasicInfo = () => {
                 <DialogHeader className="sr-only">
                   <DialogTitle>Are you sure you want to long rest?</DialogTitle>
                 </DialogHeader>
-                <p className="text-center pt-2 text-white">
+                <p className="text-center pt-2 text-black">
                   Are you sure you want to long rest?
                 </p>
                 <Button
                   type="submit"
-                  variant="default"
-                  className="font-bookInsanity text-dark transition-all duration-150 drop-shadow-md bg-white hover:bg-gray-100"
+                  className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md bg-green-600 hover:bg-green-700"
                   onClick={handleLongRest}
                 >
                   Long rest
