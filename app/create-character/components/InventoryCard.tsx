@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const InventoryCard = () => {
   const { register, control } = useFormContext<Character>();
@@ -41,6 +42,16 @@ const InventoryCard = () => {
           {fields.map((item, index) => {
             return (
               <div key={item.id} className="flex gap-2 items-center">
+                <Checkbox checked={item.isConsumable} {...register(`inventory.items.${index}.isConsumable`)} />
+
+                {item.isConsumable && (
+                  <Input
+                    placeholder="# of uses"
+                    className="w-[100px]"
+                    {...register(`inventory.items.${index}.amount`)}
+                  />
+                )}
+
                 <Input
                   placeholder="Name"
                   {...register(`inventory.items.${index}.name`)}

@@ -13,6 +13,9 @@ export function getModifier(value: number) {
 }
 
 export function getProficiencyBonus(level: number) {
+  if (level >=1 && level <= 4) {
+    return 2;
+  }
   return Math.floor(level / 4) + 2;
 }
 
