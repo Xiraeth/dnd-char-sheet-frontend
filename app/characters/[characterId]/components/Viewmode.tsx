@@ -20,7 +20,7 @@ const ViewMode = ({
   };
 
   return (
-    <div className="sm:mt-6">
+    <div className="sm:mt-6 sticky top-0 z-10">
       <div className="block mb-8">
         <Tabs
           value={viewMode || "General"}
