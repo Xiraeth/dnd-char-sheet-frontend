@@ -2,7 +2,7 @@ import { Item } from "@/app/types";
 
 import { Character } from "@/app/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
@@ -42,7 +42,19 @@ const InventoryCard = () => {
           {fields.map((item, index) => {
             return (
               <div key={item.id} className="flex gap-2 items-center">
-                <Checkbox checked={item.isConsumable} {...register(`inventory.items.${index}.isConsumable`)} />
+                <Controller
+                  control={control}
+                  name={`inventory.items.${index}.isConsumable`}
+                  render={({ field: { value, onChange, ...field } }) => (
+                    <Checkbox
+                      {...field}
+                      checked={value === true}
+                      onCheckedChange={(checked) =>
+                        onChange(checked === true)
+                      }
+                    />
+                  )}
+                />
 
                 {item.isConsumable && (
                   <Input

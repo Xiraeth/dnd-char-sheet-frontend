@@ -129,6 +129,20 @@ const EditCharacter = () => {
       return feat;
     });
 
+    /** Normalize isConsumable to boolean (HTML checkboxes can submit "on" as string) */
+    const inventoryItemsWithBooleanConsumable =
+      data.inventory?.items?.map((item) => {
+        const raw: boolean | string | undefined = item.isConsumable as
+          | boolean
+          | string
+          | undefined;
+        const isConsumable =
+          raw === true ||
+          (typeof raw === "string" &&
+            (raw === "on" || raw.toLowerCase() === "true"));
+        return { ...item, isConsumable: Boolean(isConsumable) };
+      }) ?? [];
+
     const spellSlotsToSubmit = Object.values(data.spellSlots || {}).reduce(
       (acc, cur, index) => {
         acc[`level${index + 1}`] = {
@@ -145,6 +159,10 @@ const EditCharacter = () => {
       featuresAndTraits: featuresWithoutV4Ids,
       attacks: attacksWithoutV4Ids,
       feats: featsWithoutV4Ids,
+      inventory: {
+        ...data.inventory,
+        items: inventoryItemsWithBooleanConsumable,
+      },
       passiveWisdom,
       spellSlots: spellSlotsToSubmit,
       stats: {
