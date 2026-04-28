@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -212,29 +213,40 @@ const BasicInfo = () => {
           open={isShortRestDialogOpen}
           onOpenChange={setIsShortRestDialogOpen}
         >
-          <DialogContent className="pt-10 bg-white/80 backdrop-filter backdrop-blur-xl rounded-md font-bookInsanity">
+          <DialogContent className="w-11/12 sm:max-w-md border border-black/15 bg-bgTextureDarkened p-0 font-bookInsanity text-black shadow-2xl shadow-black/40">
             {isShortRestLoading ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <Loader2 className="animate-spin" />
+              <div className="flex min-h-40 w-full items-center justify-center">
+                <Loader2 className="size-8 animate-spin text-dndRed" />
               </div>
             ) : (
-              <>
-                <DialogHeader className="sr-only">
-                  <DialogTitle>
-                    How many hit dice do you want to expend? (optional)
+              <div className="flex flex-col gap-5 p-6 pt-10">
+                <DialogHeader className="space-y-2 text-center">
+                  <DialogTitle className="font-mrEaves text-3xl text-dndRed">
+                    Short Rest
                   </DialogTitle>
+                  <DialogDescription className="font-montserrat text-sm font-bold text-black">
+                    Choose how many hit dice to spend, or leave it empty to rest
+                    without healing.
+                  </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex items-center flex-col md:flex-row justify-between">
-                  <div className="text-center font-montserrat pt-2 text-black text-base">
-                    Expend hit dice (optional)
-                    <span className="italic text-indigo-600 ml-2">
-                      ({remainingHitDice} available)
+                <div className="rounded-lg border border-black/20 bg-white/35 p-4 shadow-inner shadow-white/20">
+                  <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="font-montserrat text-base text-black">
+                      Expend hit dice (optional)
+                    </p>
+                    <span className="w-fit rounded-full border border-indigo-500/30 bg-indigo-100/70 px-3 py-1 font-montserrat text-sm italic text-indigo-700">
+                      ({remainingHitDice ?? 0} available)
                     </span>
                   </div>
+
                   <Input
-                    type="text"
-                    className="font-montserrat text-lg drop-shadow-lg shadow-sm shadow-black/40 w-20"
+                    type="number"
+                    min={0}
+                    max={remainingHitDice ?? 0}
+                    inputMode="numeric"
+                    placeholder="0"
+                    className="h-12 rounded-lg border-black/30 bg-white/60 text-center font-montserrat text-2xl shadow-sm shadow-black/20 focus-visible:ring-dndRed"
                     value={hitDiceToExpend?.toString() || ""}
                     onChange={(e) => {
                       if (
@@ -251,12 +263,12 @@ const BasicInfo = () => {
 
                 <Button
                   type="submit"
-                  className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md bg-green-600 hover:bg-green-700"
+                  className="h-11 rounded-lg bg-green-700 font-bookInsanity text-lg text-white shadow-md shadow-black/30 transition-all duration-150 hover:bg-green-800"
                   onClick={() => handleShortRest(hitDiceToExpend)}
                 >
                   Short rest
                 </Button>
-              </>
+              </div>
             )}
           </DialogContent>
         </Dialog>
@@ -266,28 +278,35 @@ const BasicInfo = () => {
           open={isLongRestDialogOpen}
           onOpenChange={setIsLongRestDialogOpen}
         >
-          <DialogContent className="bg-white/80 backdrop-filter backdrop-blur-xl rounded-md font-bookInsanity text-xl sm:text-2xl border-none p-10 drop-shadow-lg shadow-white/20 shadow-lg">
+          <DialogContent className="w-11/12 sm:max-w-md border border-black/15 bg-bgTextureDarkened p-0 font-bookInsanity text-black shadow-2xl shadow-black/40">
             {isLongRestLoading ? (
-              <div className="w-full h-full flex justify-center items-center">
-                <Loader2 className="animate-spin text-black" />
+              <div className="flex min-h-40 w-full items-center justify-center">
+                <Loader2 className="size-8 animate-spin text-dndRed" />
               </div>
             ) : (
-              <>
-                {" "}
+              <div className="flex flex-col gap-5 p-6 pt-10">
                 <DialogHeader className="sr-only">
                   <DialogTitle>Are you sure you want to long rest?</DialogTitle>
                 </DialogHeader>
-                <p className="text-center pt-2 text-black">
-                  Are you sure you want to long rest?
-                </p>
+
+                <div className="rounded-lg border border-black/20 bg-white/35 p-4 text-center shadow-inner shadow-white/20">
+                  <p className="font-mrEaves text-2xl text-black">
+                    Are you sure you want to long rest?
+                  </p>
+                  <p className="mt-2 font-montserrat text-sm text-black">
+                    This may recover hit points, hit dice, spell slots, and
+                    expended features.
+                  </p>
+                </div>
+
                 <Button
                   type="submit"
-                  className="font-bookInsanity text-white transition-all duration-150 drop-shadow-md bg-green-600 hover:bg-green-700"
+                  className="h-11 rounded-lg bg-green-700 font-bookInsanity text-lg text-white shadow-md shadow-black/30 transition-all duration-150 hover:bg-green-800"
                   onClick={handleLongRest}
                 >
                   Long rest
                 </Button>
-              </>
+              </div>
             )}
           </DialogContent>
         </Dialog>

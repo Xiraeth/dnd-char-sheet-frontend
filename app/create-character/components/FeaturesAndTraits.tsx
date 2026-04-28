@@ -42,14 +42,6 @@ const FeaturesAndTraitsCard = () => {
   const validateFeature = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
 
-    const rechargeDiceErrors = validateRechargeDice(feature.rechargeDice);
-
-    if (Object.keys(rechargeDiceErrors).length) {
-      Object.entries(rechargeDiceErrors).forEach(([key, error]: [string, string]) => {
-        newErrors[key] = error;
-      })
-    }
-
     if (!feature.name) {
       newErrors.name = "Name is required";
     }
@@ -62,29 +54,39 @@ const FeaturesAndTraitsCard = () => {
       newErrors.source = "Source is required";
     }
 
-    if (feature.isExpendable && !feature.usesTotal) {
-      newErrors.usesTotal = "Uses total is required when feature is expendable";
-    }
+    if (feature.isExpendable) {
+      const rechargeDiceErrors = validateRechargeDice(feature.rechargeDice);
 
-    if (feature.isExpendable && !feature.rechargeOn) {
-      newErrors.rechargeOn =
-        "Recharge timer is required when feature is expendable";
-    }
+      if (Object.keys(rechargeDiceErrors).length) {
+        Object.entries(rechargeDiceErrors).forEach(([key, error]: [string, string]) => {
+          newErrors[key] = error;
+        })
+      }
 
-    if (!feature.chargesRestored) {
-      newErrors.chargesRestored = "The amount of charges restored is mandatory";
-    }
+      if (!feature.usesTotal) {
+        newErrors.usesTotal = "Uses total is required when feature is expendable";
+      }
 
-    if (feature.rechargeOn === 'other' && !feature.customRechargeOn) {
-      newErrors.customRechargeOn = "Custom recharge timer is required";
-    }
+      if (!feature.rechargeOn) {
+        newErrors.rechargeOn =
+          "Recharge timer is required when feature is expendable";
+      }
 
-    if (feature.chargesRestored === 'arbitraryNumber' && (!feature.rechargeAmount || feature.rechargeAmount === '-')) {
-      newErrors.rechargeAmount = "Recharge amount must be a postive integer";
-    }
+      if (!feature.chargesRestored) {
+        newErrors.chargesRestored = "The amount of charges restored is mandatory";
+      }
 
-    if (typeof feature.rechargeAmount === 'number' && feature.rechargeAmount <= 0) {
-      newErrors.rechargeAmount = "Recharge amount must be a postive integer";
+      if (feature.rechargeOn === 'other' && !feature.customRechargeOn) {
+        newErrors.customRechargeOn = "Custom recharge timer is required";
+      }
+
+      if (feature.chargesRestored === 'arbitraryNumber' && (!feature.rechargeAmount || feature.rechargeAmount === '-')) {
+        newErrors.rechargeAmount = "Recharge amount must be a postive integer";
+      }
+
+      if (typeof feature.rechargeAmount === 'number' && feature.rechargeAmount <= 0) {
+        newErrors.rechargeAmount = "Recharge amount must be a postive integer";
+      }
     }
 
     setErrors(newErrors);
@@ -97,12 +99,26 @@ const FeaturesAndTraitsCard = () => {
     if (Object.keys(validationErrors).length > 0) {
       return;
     } else {
+      const featureToSave: Feature = feature.isExpendable
+        ? feature
+        : {
+          ...feature,
+          usesLeft: undefined,
+          usesTotal: undefined,
+          areUsesTotalEqualToProfBonus: false,
+          rechargeOn: undefined,
+          customRechargeOn: undefined,
+          rechargeDice: undefined,
+          chargesRestored: undefined,
+          rechargeAmount: undefined,
+        };
+
       if (feature._id) {
         setValue(
           "featuresAndTraits",
           featuresAndTraits.map((f: Feature) => {
             if (f._id === feature._id) {
-              return { ...f, ...feature };
+              return { ...f, ...featureToSave };
             }
             return f;
           })
@@ -110,7 +126,7 @@ const FeaturesAndTraitsCard = () => {
       } else {
         setValue("featuresAndTraits", [
           ...(featuresAndTraits || []),
-          { ...feature, _id: uuidv4() },
+          { ...featureToSave, _id: uuidv4() },
         ]);
       }
       setFeature(DEFAULT_FEATURE);
