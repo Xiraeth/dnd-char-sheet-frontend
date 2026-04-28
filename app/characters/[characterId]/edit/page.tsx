@@ -245,7 +245,7 @@ const EditCharacter = () => {
   }
 
   return (
-    <div className="space-y-4 pb-20 w-10/12 md:w-4/6 mx-auto">
+    <div className="space-y-4 pb-20 w-11/12 xl:w-10/12 2xl:w-4/5 mx-auto">
       <BackButton url={`/characters/${character?._id}`} />
       <p className="text-2xl font-bold text-center">Edit character</p>
       <FormProvider {...methods}>
