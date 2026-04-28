@@ -1,5 +1,6 @@
 import { useCharacter } from "@/app/characters/[characterId]/components/CharacterProvider";
 import Abilities from "@/app/characters/[characterId]/components/GeneralView/Abilities";
+import Backstory from "@/app/characters/[characterId]/components/GeneralView/Backstory";
 import BasicInfo from "@/app/characters/[characterId]/components/GeneralView/BasicInfo";
 import Equipment from "@/app/characters/[characterId]/components/GeneralView/Equipment";
 import FeaturesAndTraits from "@/app/characters/[characterId]/components/GeneralView/FeaturesAndTraits";
@@ -48,6 +49,10 @@ const GeneralPage = () => {
 
       <DndDivider />
 
+      <Backstory />
+
+      <DndDivider />
+
       {character?.otherProficiencies && (
         <>
           <OtherProficienciesAndLanguages />
@@ -56,6 +61,7 @@ const GeneralPage = () => {
       )}
 
       <Personality />
+
     </>
   );
 };
