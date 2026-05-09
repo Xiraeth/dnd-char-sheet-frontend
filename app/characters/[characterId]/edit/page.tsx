@@ -147,7 +147,7 @@ const EditCharacter = () => {
       (acc, cur, index) => {
         acc[`level${index + 1}`] = {
           current: Number(cur.current),
-          total: Number(cur.total || cur.current),
+          total: Number(cur.current),
         };
         return acc;
       },
