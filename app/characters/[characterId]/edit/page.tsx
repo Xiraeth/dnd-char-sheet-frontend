@@ -146,8 +146,8 @@ const EditCharacter = () => {
     const spellSlotsToSubmit = Object.values(data.spellSlots || {}).reduce(
       (acc, cur, index) => {
         acc[`level${index + 1}`] = {
-          current: Number(cur.current),
-          total: Number(cur.current),
+          current: Number(cur.current) > Number(cur.total) ? Number(cur.total) : Number(cur.current),
+          total: Number(cur.total),
         };
         return acc;
       },
