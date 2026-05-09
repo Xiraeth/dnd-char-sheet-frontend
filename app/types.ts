@@ -262,6 +262,8 @@ export interface Attack {
     numberOfDice: number;
     diceType: number;
     abilityUsed?: keyof CharacterAbilities;
+    modifier: number;
+    addModifier: boolean;
   };
   damageType: string;
   range: string;

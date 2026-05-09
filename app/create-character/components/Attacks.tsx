@@ -32,6 +32,8 @@ const DEFAULT_ATTACK: Attack = {
     numberOfDice: 0,
     diceType: 4,
     abilityUsed: undefined,
+    modifier: 0,
+    addModifier: false,
   },
   damageType: "",
   range: "",
@@ -120,6 +122,14 @@ const AttacksCard = () => {
         abilities[attack?.damageRoll?.abilityUsed as keyof CharacterAbilities]
       );
 
+    const damageRollModifier =
+      isAttackRoll &&
+      attack?.damageRoll?.abilityUsed
+        ? getModifier(
+            abilities[attack.damageRoll.abilityUsed as keyof CharacterAbilities]
+          )
+        : 0;
+
     const attackToSave = {
       ...attack,
       isProficient: isAttackRoll ? attack.isProficient : undefined,
@@ -130,8 +140,17 @@ const AttacksCard = () => {
           }
         : undefined,
       damageRoll: isAttackRoll
-        ? attack.damageRoll
-        : { ...attack.damageRoll, abilityUsed: undefined },
+        ? {
+            ...attack.damageRoll,
+            modifier: damageRollModifier,
+            addModifier: Boolean(attack.damageRoll.addModifier),
+          }
+        : {
+            ...attack.damageRoll,
+            abilityUsed: undefined,
+            modifier: 0,
+            addModifier: false,
+          },
     };
 
     if (attack._id) {
@@ -182,6 +201,8 @@ const AttacksCard = () => {
             attackType === "roll"
               ? selectedAttack.damageRoll?.abilityUsed || undefined
               : undefined,
+          modifier: selectedAttack.damageRoll?.modifier || 0,
+          addModifier: Boolean(selectedAttack.damageRoll?.addModifier),
         },
         abilitySave:
           attackType === "save" ? selectedAttack.abilitySave || "" : "",
@@ -242,6 +263,8 @@ const AttacksCard = () => {
                       damageRoll: {
                         ...attack.damageRoll,
                         abilityUsed: undefined,
+                        modifier: 0,
+                        addModifier: false,
                       },
                     });
                   } else {
@@ -250,10 +273,12 @@ const AttacksCard = () => {
                       ...attack,
                       abilitySave: "",
                       isProficient: false,
-                      attackRoll: { modifier: undefined },
+                      attackRoll: { modifier: undefined, addModifier: false },
                       damageRoll: {
                         ...attack.damageRoll,
                         abilityUsed: undefined,
+                        modifier: 0,
+                        addModifier: false,
                       },
                     });
                   }
@@ -496,10 +521,12 @@ const AttacksCard = () => {
                     setAttack({
                       ...attack,
                       abilitySave: value,
-                      attackRoll: { modifier: undefined },
+                      attackRoll: { modifier: undefined, addModifier: false },
                       damageRoll: {
                         ...attack.damageRoll,
                         abilityUsed: undefined,
+                        modifier: 0,
+                        addModifier: false,
                       },
                     });
                   }}
@@ -552,6 +579,29 @@ const AttacksCard = () => {
                       attackRoll: {
                         ...attack.attackRoll,
                         addModifier: !attack.attackRoll?.addModifier,
+                      },
+                    })
+                  }
+                />
+              </div>
+            )}
+
+            {attackType === "roll" && (
+              <div className="col-span-full flex justify-center items-center gap-4">
+                <Label
+                  htmlFor="addDamageModifier"
+                  className="text-xs sm:text-sm italic text-black/80"
+                >
+                  Add ability modifier to damage roll?
+                </Label>
+                <Checkbox
+                  checked={Boolean(attack.damageRoll?.addModifier)}
+                  onCheckedChange={() =>
+                    setAttack({
+                      ...attack,
+                      damageRoll: {
+                        ...attack.damageRoll,
+                        addModifier: !attack.damageRoll?.addModifier,
                       },
                     })
                   }

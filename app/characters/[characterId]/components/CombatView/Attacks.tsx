@@ -79,7 +79,7 @@ const Attacks = () => {
       </div>
 
       {character?.attacks?.map((attack: Attack) => {
-        const hasAttackRoll = !!attack?.attackRoll?.modifier;
+        const hasAttackRoll = typeof attack?.attackRoll?.modifier === "number";
         const isProficient = attack?.isProficient;
 
         const attackRollModifier = isProficient
@@ -95,19 +95,18 @@ const Attacks = () => {
           abilityUsedInAttack as keyof CharacterAbilities
           ];
 
-        const addModifier = attack?.attackRoll?.addModifier;
-
-        const modifier = getModifier(ability);
+        const modifier = typeof ability === "number" ? getModifier(ability) : 0;
+        const damageModifier = attack?.damageRoll?.modifier ?? modifier;
 
         // ability + other modifier
         const damageRollBonus = hasAttackRoll
-          ? addModifier
-            ? modifier + (attack?.otherDamageModifier || 0)
-            : 0
+          ? attack?.damageRoll?.addModifier
+            ? damageModifier + (attack?.otherDamageModifier || 0)
+            : attack?.otherDamageModifier || 0
           : 0;
 
         const displayedDamageRoll = `${attack?.damageRoll?.numberOfDice}d${attack?.damageRoll?.diceType
-          } ${damageRollBonus ? `+ ${damageRollBonus}` : ""}`;
+          } ${damageRollBonus > 0 ? `+ ${damageRollBonus}` : damageRollBonus < 0 ? `- ${Math.abs(damageRollBonus)}` : ""}`;
 
         // ability + prof bonus + other modifier
         const finalAttackRoll =
@@ -156,8 +155,8 @@ const Attacks = () => {
                       `d${attack?.damageRoll?.diceType}` as DiceType
                     );
 
-                    if (attack?.attackRoll?.addModifier)
-                      finalResult += modifier;
+                    if (attack?.damageRoll?.addModifier)
+                      finalResult += damageModifier;
 
                     if (attack.otherDamageModifier)
                       finalResult += attack.otherDamageModifier;

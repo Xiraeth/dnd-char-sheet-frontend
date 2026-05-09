@@ -116,10 +116,34 @@ const EditCharacter = () => {
     });
 
     const attacksWithoutV4Ids = data.attacks?.map((attack) => {
+      const abilityKey = attack.damageRoll?.abilityUsed;
+      const abilityValue =
+        abilityKey && typeof data.abilities[abilityKey] === "number"
+          ? data.abilities[abilityKey]
+          : undefined;
+      const calculatedModifier =
+        typeof abilityValue === "number" ? getModifier(abilityValue) : 0;
+
+      const normalizedAttack = {
+        ...attack,
+        attackRoll: attack.attackRoll
+          ? {
+              ...attack.attackRoll,
+              modifier: attack.attackRoll.modifier ?? 0,
+              addModifier: Boolean(attack.attackRoll.addModifier),
+            }
+          : undefined,
+        damageRoll: {
+          ...attack.damageRoll,
+          modifier: attack.damageRoll?.modifier ?? calculatedModifier,
+          addModifier: Boolean(attack.damageRoll?.addModifier),
+        },
+      };
+
       if (attack?._id?.length !== 24) {
-        return { ...attack, _id: undefined };
+        return { ...normalizedAttack, _id: undefined };
       }
-      return attack;
+      return normalizedAttack;
     });
 
     const featsWithoutV4Ids = data.feats?.map((feat: Feat) => {
